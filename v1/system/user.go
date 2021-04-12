@@ -2,44 +2,46 @@ package system
 
 import (
 	"axe/cache"
-	"github.com/kataras/iris/v12"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/cast"
 )
 
 type UserSystem struct{}
 
 var User = new(UserSystem)
 
-func (u UserSystem) GetUser(c iris.Context) {
-	uid, _ := c.Params().GetInt64("uid")
+func (u UserSystem) GetUser(ctx *fiber.Ctx) error {
+	uid := cast.ToInt64(ctx.Params("uid"))
 	user := cache.User.GetUserById(uid)
-	Ok(c, user)
+	return Ok(ctx, user)
 }
 
-func (u UserSystem) Login(c iris.Context) {
+func (u UserSystem) Login(ctx *fiber.Ctx) error {
 	//err := ctx.ReadJSON(&b)
-	c.JSON(nil)
+	return ctx.JSON(nil)
 }
 
-func (u UserSystem) Logout(c iris.Context) {
-	c.JSON(nil)
+func (u UserSystem) Logout(ctx *fiber.Ctx) error {
+	return ctx.JSON(nil)
 }
 
-func (u UserSystem) EnterGroup(c iris.Context) {
-	c.JSON(nil)
+func (u UserSystem) EnterGroup(ctx *fiber.Ctx) error {
+	return ctx.JSON(nil)
 }
 
-func (u UserSystem) QuitGroup(c iris.Context) {
-	c.JSON(nil)
+func (u UserSystem) QuitGroup(ctx *fiber.Ctx) error {
+	return ctx.JSON(nil)
 }
 
-func (u UserSystem) ApplyActivity(c iris.Context) {
-	c.JSON(nil)
+func (u UserSystem) ApplyActivity(ctx *fiber.Ctx) error {
+	return ctx.JSON(nil)
 }
 
-func (u UserSystem) Cancel(c iris.Context) {
-	c.JSON(nil)
+func (u UserSystem) Cancel(ctx *fiber.Ctx) error {
+	return ctx.JSON(nil)
 }
 
-func (u UserSystem) SaveData(c iris.Context) {
-	c.JSON(nil)
+func (u UserSystem) SaveData(ctx *fiber.Ctx) error {
+	return ctx.JSON(nil)
 }

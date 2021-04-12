@@ -2,7 +2,6 @@ package cache
 
 import (
 	"axe/dao/mysql"
-	"axe/gl"
 	"axe/v1/comp"
 )
 
@@ -20,10 +19,10 @@ var User = &UserCache{
 
 func (uc *UserCache) GetUserById(id int64) *comp.User {
 	if user, ok := uc.usersForId[id]; ok {
-		gl.App.Logger().Infof("获得用户数据（缓存）：%d", id)
+		// gl.App.Logger().Infof("获得用户数据（缓存）：%d", id)
 		return user
 	}
-	gl.App.Logger().Infof("获得用户数据（DB）：%d", id)
+	// gl.App.Logger().Infof("获得用户数据（DB）：%d", id)
 	user := mysql.User.GetUserById(id)
 	user.OutDB()
 	uc.usersForId[id] = user

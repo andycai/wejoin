@@ -2,7 +2,6 @@ package main
 
 import (
 	"axe/dao/mysql"
-	"axe/gl"
 	"axe/v1/router"
 	"fmt"
 
@@ -29,7 +28,6 @@ func main() {
 	mysql.InitMySQL()
 
 	app := fiber.New()
-	gl.App = app
 
 	router.InitRouter(app)
 	app.Listen(viper.GetString("httpServer.addr"))
