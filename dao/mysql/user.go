@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"axe/model"
 	"axe/v1/comp"
 	"fmt"
 )
@@ -35,11 +34,11 @@ func (u *UserDao) GetUserById(id int64) *comp.User {
 	return user
 }
 
-func (u *UserDao) GetUsersByIds(ids string) []model.User {
+func (u *UserDao) GetUsersByIds(ids string) []*comp.User {
 	fields := "id,scores,username,token,nick,wx_token,wx_nick,sex,phone,email,ip,activities,groups,create_at"
 	sql := fmt.Sprintf("SELECT %s FROM `user` WHERE id in(?)", fields)
 
-	var users []model.User
+	var users []*comp.User
 	if err := db.Select(&users, sql, ids); err != nil {
 		// gl.App.Logger().Errorf("Get user data failed, err: %v\n", err)
 	}

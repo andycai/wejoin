@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -28,6 +30,13 @@ func main() {
 	mysql.InitMySQL()
 
 	app := fiber.New()
+	app.Use(requestid.New())
+	app.Use(logger.New(logger.Config{
+		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}​\n​",
+		// Format:     "${pid} ${status} - ${method} ${path}\n",
+		// TimeFormat: "02-Jan-2006",
+		// TimeZone:   "America/New_York",
+	}))
 
 	router.InitRouter(app)
 	app.Listen(viper.GetString("httpServer.addr"))
