@@ -12,7 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
-func FiberMiddleware(app *fiber.App) {
+func Use(app *fiber.App) {
 	// 日志
 	// app.Use(func(c *fiber.Ctx) error {
 	// 	// Log each request

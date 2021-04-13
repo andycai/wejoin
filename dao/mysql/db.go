@@ -10,7 +10,7 @@ import (
 
 var db *sqlx.DB
 
-func InitMySQL() (err error) {
+func ConnectMySQL() (err error) {
 	db, err = sqlx.Open("mysql", viper.GetString("db.dsn"))
 	if err != nil {
 		panic(fmt.Errorf("connect server failed, err: %v\n", err))
@@ -19,4 +19,8 @@ func InitMySQL() (err error) {
 	db.SetMaxIdleConns(viper.GetInt("db.idle"))
 
 	return
+}
+
+func Close() {
+	db.Close()
 }

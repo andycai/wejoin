@@ -10,7 +10,7 @@ var (
 	routerCheck   = make([]func(*fiber.App), 0)
 )
 
-func InitRouter(app *fiber.App) {
+func Setup(app *fiber.App) {
 	for _, f := range routerCheck {
 		f(app)
 	}

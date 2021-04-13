@@ -2,12 +2,14 @@ package log
 
 import (
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 var logger *zap.Logger
+var sugar *zap.SugaredLogger
 
 // init setup logger
 func Setup() {
@@ -20,16 +22,22 @@ func Setup() {
 		getEncoder(),
 		getLogWriter(),
 		level,
-	))
-	defer logger.Sync()
+	), zap.AddCaller())
+	sugar = logger.Sugar()
+	defer func() {
+		logger.Sync()
+		sugar.Sync()
+	}()
 }
 
 func getEncoder() zapcore.Encoder {
 	encoderCfg := zap.NewProductionEncoderConfig()
-	encoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
-	encoderCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	return zapcore.NewConsoleEncoder(encoderCfg)
-	// return zapcore.NewJSONEncoder(encoderCfg)
+	encoderCfg.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+		enc.AppendString(t.Format("2006-01-02 15:04:05"))
+	} // zapcore.ISO8601TimeEncoder
+	encoderCfg.EncodeLevel = zapcore.CapitalLevelEncoder
+	// return zapcore.NewConsoleEncoder(encoderCfg)
+	return zapcore.NewJSONEncoder(encoderCfg)
 }
 
 func getLogWriter() zapcore.WriteSyncer {

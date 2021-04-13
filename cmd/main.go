@@ -14,11 +14,11 @@ import (
 func main() {
 	app := fiber.New()
 	log.Setup()
-	conf.ReadConf()                 // 读取配置
-	mysql.InitMySQL()               // 初始化数据库
-	middleware.FiberMiddleware(app) // 初始化中间件
-
-	router.InitRouter(app) // 初始化路由
+	conf.ReadConf()      // 读取配置
+	mysql.ConnectMySQL() // 初始化数据库
+	middleware.Use(app)  // 初始化中间件
+	router.Setup(app)    // 初始化路由
 
 	app.Listen(viper.GetString("httpServer.addr"))
+	defer mysql.Close()
 }
