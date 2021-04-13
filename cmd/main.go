@@ -1,11 +1,9 @@
 package main
 
 import (
-	"log"
-
 	"github.com/andycai/axe-fiber/conf"
 	"github.com/andycai/axe-fiber/dao/mysql"
-	"github.com/andycai/axe-fiber/gl"
+	"github.com/andycai/axe-fiber/log"
 	"github.com/andycai/axe-fiber/v1/middleware"
 	"github.com/andycai/axe-fiber/v1/router"
 
@@ -15,12 +13,12 @@ import (
 
 func main() {
 	app := fiber.New()
-
-	gl.Logger()
+	log.Setup()
 	conf.ReadConf()                 // 读取配置
 	mysql.InitMySQL()               // 初始化数据库
 	middleware.FiberMiddleware(app) // 初始化中间件
-	router.InitRouter(app)          // 初始化路由
 
-	log.Fatal(app.Listen(viper.GetString("httpServer.addr")))
+	router.InitRouter(app) // 初始化路由
+
+	app.Listen(viper.GetString("httpServer.addr"))
 }

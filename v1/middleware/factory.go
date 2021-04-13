@@ -1,45 +1,50 @@
 package middleware
 
 import (
-	"github.com/andycai/axe-fiber/gl"
+	"fmt"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"go.uber.org/zap"
 )
 
 func FiberMiddleware(app *fiber.App) {
 	// 日志
-	app.Use(func(c *fiber.Ctx) error {
-		// Log each request
-		gl.Log.Info(
-			"fetch URL",
-			zap.String("method", c.Method()),
-			zap.String("path", c.Path()),
-		)
+	// app.Use(func(c *fiber.Ctx) error {
+	// 	// Log each request
+	// 	log.Info(
+	// 		"fetch URL",
+	// 		zap.String("method", c.Method()),
+	// 		zap.String("path", c.Path()),
+	// 	)
 
-		// Go to next middleware
-		return c.Next()
-	})
+	// 	// Go to next middleware
+	// 	return c.Next()
+	// })
 
 	// 限流
-	limiter.New(limiter.Config{
-		Next: func(c *fiber.Ctx) bool {
-			return c.IP() == "127.0.0.1"
-		},
-		Max:          20,
-		Duration:     30 * time.Second,
-		Key:          func(c *fiber.Ctx) string {
-			return c.Get("x-forwarded-for")
-		},
-		LimitReached: func(c *fiber.Ctx) error {
-			return c.SendFile("./toofast.html")
-		},
-		Store: myCustomStore{}
-	})
+	app.Use(
+		limiter.New(limiter.Config{
+			Next: func(c *fiber.Ctx) bool {
+				return c.IP() == "127.0.0.1"
+			},
+			Max:        300,
+			Expiration: 1 * time.Minute,
+			// KeyGenerator: func(c *fiber.Ctx) string {
+			// 	return c.Get("x-forwarded-for")
+			// },
+			LimitReached: func(c *fiber.Ctx) error {
+				fmt.Println("==============")
+				return c.SendString("too fast")
+				// return c.SendFile("./toofast.html")
+			},
+			// Storage: customStarage{}
+		}),
+	)
 
 	app.Use(
 		recover.New(),
