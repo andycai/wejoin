@@ -1,8 +1,9 @@
 package comp
 
 import (
-	"axe/util/slice"
 	"time"
+
+	"github.com/andycai/axe-fiber/util/slice"
 )
 
 type User struct {

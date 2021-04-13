@@ -1,7 +1,7 @@
 package comp
 
 import (
-	"axe/define"
+	"github.com/andycai/axe-fiber/define"
 )
 
 type Group struct {

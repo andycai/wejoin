@@ -1,7 +1,7 @@
 package router
 
 import (
-	"axe/v1/system"
+	"github.com/andycai/axe-fiber/v1/system"
 
 	"github.com/gofiber/fiber/v2"
 )

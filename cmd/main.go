@@ -1,9 +1,10 @@
 package main
 
 import (
-	"axe/dao/mysql"
-	"axe/v1/router"
 	"fmt"
+
+	"github.com/andycai/axe-fiber/dao/mysql"
+	"github.com/andycai/axe-fiber/v1/router"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -25,11 +26,12 @@ func main() {
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 
-	//fmt.Println(viper.GetString("app.cacheDir"))
-
 	mysql.InitMySQL()
 
 	app := fiber.New()
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
+	})
 	app.Use(requestid.New())
 	app.Use(logger.New(logger.Config{
 		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}​\n​",

@@ -1,7 +1,7 @@
 package system
 
 import (
-	"axe/cache"
+	"github.com/andycai/axe-fiber/cache"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cast"

@@ -1,10 +1,11 @@
 package comp
 
 import (
-	"axe/define"
+	"math"
+
+	"github.com/andycai/axe-fiber/define"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
-	"math"
 )
 
 type Activity struct {

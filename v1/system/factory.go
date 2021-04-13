@@ -1,7 +1,7 @@
 package system
 
 import (
-	"axe/define"
+	"github.com/andycai/axe-fiber/define"
 
 	"github.com/gofiber/fiber/v2"
 )

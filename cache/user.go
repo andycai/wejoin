@@ -1,8 +1,8 @@
 package cache
 
 import (
-	"axe/dao/mysql"
-	"axe/v1/comp"
+	"github.com/andycai/axe-fiber/dao/mysql"
+	"github.com/andycai/axe-fiber/v1/comp"
 )
 
 type UserCache struct {

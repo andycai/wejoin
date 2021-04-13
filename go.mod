@@ -1,4 +1,4 @@
-module axe
+module github.com/andycai/axe-fiber
 
 go 1.14
 

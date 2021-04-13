@@ -1,6 +1,6 @@
 package cache
 
-import "axe/v1/comp"
+import "github.com/andycai/axe-fiber/v1/comp"
 
 type ActivityCache struct {
 	activities map[int64]*comp.Activity

@@ -1,8 +1,9 @@
 package mysql
 
 import (
-	"axe/v1/comp"
 	"fmt"
+
+	"github.com/andycai/axe-fiber/v1/comp"
 )
 
 type UserDao struct {
