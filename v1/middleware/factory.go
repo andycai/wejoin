@@ -7,10 +7,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"go.uber.org/zap"
 )
 
 func FiberMiddleware(app *fiber.App) {
+	// 日志
 	app.Use(func(c *fiber.Ctx) error {
 		// Log each request
 		gl.Log.Info(
@@ -21,6 +23,22 @@ func FiberMiddleware(app *fiber.App) {
 
 		// Go to next middleware
 		return c.Next()
+	})
+
+	// 限流
+	limiter.New(limiter.Config{
+		Next: func(c *fiber.Ctx) bool {
+			return c.IP() == "127.0.0.1"
+		},
+		Max:          20,
+		Duration:     30 * time.Second,
+		Key:          func(c *fiber.Ctx) string {
+			return c.Get("x-forwarded-for")
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.SendFile("./toofast.html")
+		},
+		Store: myCustomStore{}
 	})
 
 	app.Use(
