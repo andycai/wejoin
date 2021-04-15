@@ -51,9 +51,17 @@ func Info(msg string, fields ...zap.Field) {
 	logger.Info(msg, fields...)
 }
 
+func Infof(template string, args ...interface{}) {
+	sugar.Infof(template, args...)
+}
+
 // Debug log
 func Debug(msg string, fields ...zap.Field) {
 	logger.Debug(msg, fields...)
+}
+
+func Debugf(template string, args ...interface{}) {
+	sugar.Debugf(template, args...)
 }
 
 // Error log
@@ -61,7 +69,15 @@ func Error(msg string, fields ...zap.Field) {
 	logger.Error(msg, fields...)
 }
 
+func Errorf(template string, args ...interface{}) {
+	sugar.Errorf(template, args...)
+}
+
 // Fatal log
 func Fatal(msg string, fields ...zap.Field) {
 	logger.Fatal(msg, fields...)
+}
+
+func Fatalf(template string, args ...interface{}) {
+	sugar.Fatalf(template, args...)
 }
