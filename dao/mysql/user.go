@@ -23,14 +23,14 @@ func (u *UserDao) GetUserByName(name string) {
 	//
 }
 
-func (u *UserDao) GetIds() {
-	fields := "id"
-	sql := fmt.Sprintf("SELECT %s FROM `user`", fields)
-
-	users := make([]*comp.User, 0)
-	if err := db.Raw(sql).Scan(users).Error; err != nil {
+// GetIDs 获取所有记录的 ID
+func (u *UserDao) GetIDs() []*comp.ID {
+	var ids = make([]*comp.ID, 0)
+	if err := db.Table(comp.TABLE_USER).Find(&ids).Error; err != nil {
 		log.Errorf("获取用户数据出错，err: %s", err)
 	}
+
+	return ids
 }
 
 // GetUserByID 获取 ID 获取用户信息

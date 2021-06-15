@@ -26,7 +26,11 @@ type User struct {
 	ActivitiesV []uint64 `gorm:"-" json:"activities"`
 }
 
-type MapUserIds = map[int64]struct{}
+type MapIDs = map[uint64]struct{}
+
+type ID struct {
+	ID uint64 `gorm:"primaryKey" json:"id"`
+}
 
 // NewUser 创建用户
 func NewUser() *User {

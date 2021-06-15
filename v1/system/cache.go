@@ -37,7 +37,18 @@ func ActivityCacheKey(id uint64) string {
 
 // InitIds 缓存用户、群组和活动的 id
 func (c CacheSystem) InitIds() {
-	//
+	userIDs := mysql.User.GetIDs()
+	for _, v := range userIDs {
+		hub.UserIds[v.ID] = struct{}{}
+	}
+	groupIDs := mysql.Group.GetIDs()
+	for _, v := range groupIDs {
+		hub.GroupIDs[v.ID] = struct{}{}
+	}
+	activityIDs := mysql.Activity.GetIDs()
+	for _, v := range activityIDs {
+		hub.ActivityIDs[v.ID] = struct{}{}
+	}
 }
 
 // ExistsUser 是否存在用户

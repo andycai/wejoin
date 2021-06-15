@@ -13,7 +13,6 @@ var User = new(UserHandler)
 
 func (u UserHandler) GetUser(ctx *fiber.Ctx) error {
 	uid := cast.ToUint64(ctx.Params("uid"))
-	//user := cache.User.GetUserById(uid)
 	user := system.Cache.User(uid)
 
 	return Ok(ctx, user)

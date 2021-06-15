@@ -1,3 +1,5 @@
 package hub
 
-var GroupIds = make(map[int64]struct{})
+import "github.com/andycai/axe-fiber/v1/comp"
+
+var GroupIDs = make(comp.MapIDs)
