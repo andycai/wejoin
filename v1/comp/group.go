@@ -28,7 +28,7 @@ func NewGroup() *Group {
 }
 
 // OutDB 反序列化
-func (g Group) OutDB() {
+func (g *Group) OutDB() {
 	json.Unmarshal([]byte(g.Activities), &g.ActivitiesV)
 	json.Unmarshal([]byte(g.Pending), &g.PendingV)
 	json.Unmarshal([]byte(g.Members), &g.MembersV)

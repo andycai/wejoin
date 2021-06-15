@@ -9,6 +9,7 @@ var codeText = map[int]string{
 	ErrRegister:                      "注册失败！",
 	ErrUserData:                      "获取用户数据失败！",
 	ErrUserUpdateData:                "更新用户数据失败！",
+	ErrUserNotFound:                  "用户不存在！",
 	ErrGroupManagerLimit:             "副群主数量超过限制，不能再委任！",
 	ErrGroupGetData:                  "获取群数据失败！",
 	ErrGroupApprove:                  "入群审批失败！",
@@ -19,6 +20,7 @@ var codeText = map[int]string{
 	ErrGroupRemove:                   "删除群成员失败！",
 	ErrGroupTransfer:                 "转让群主失败！",
 	ErrGroupNonMember:                "不是群成员，没有权限操作！",
+	ErrGroupNotFound:                 "群组不存在！",
 	ErrActivityGetData:               "获取活动数据失败！",
 	ErrActivityCannotApplyNotInGroup: "你不是群组成员不能报名或取消报名群组活动！",
 	ErrActivityUpdate:                "更新活动信息失败！",
@@ -31,6 +33,7 @@ var codeText = map[int]string{
 	ErrActivityNotDoing:              "活动已经结束，不能再操作！",
 	ErrActivityCannotCancel:          "取消报名的时间已过，不能取消报名！",
 	ErrActivityHasBegun:              "活动已经开始，不能报名！",
+	ErrActivityNotFound:              "活动不存在！",
 }
 
 func CodeText(code int) string {

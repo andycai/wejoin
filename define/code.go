@@ -9,6 +9,7 @@ const (
 	ErrRegister                      = -104
 	ErrUserData                      = -105
 	ErrUserUpdateData                = -106
+	ErrUserNotFound                  = -107
 	ErrGroupManagerLimit             = -200
 	ErrGroupGetData                  = -201
 	ErrGroupApprove                  = -202
@@ -19,6 +20,7 @@ const (
 	ErrGroupRemove                   = -207
 	ErrGroupTransfer                 = -208
 	ErrGroupNonMember                = -209
+	ErrGroupNotFound                 = -210
 	ErrActivityGetData               = -300
 	ErrActivityCannotApplyNotInGroup = -301
 	ErrActivityUpdate                = -302
@@ -31,4 +33,5 @@ const (
 	ErrActivityNotDoing              = -309
 	ErrActivityCannotCancel          = -310
 	ErrActivityHasBegun              = -311
+	ErrActivityNotFound              = -312
 )

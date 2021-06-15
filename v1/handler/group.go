@@ -1,13 +1,24 @@
 package handler
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/andycai/axe-fiber/define"
+	"github.com/andycai/axe-fiber/v1/system"
+	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/cast"
+)
 
 type GroupHandler struct{}
 
 var Group = new(GroupHandler)
 
 func (g GroupHandler) GetGroupById(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+	gid := cast.ToUint64(ctx.Params("gid"))
+	if !system.Group.Exists(gid) {
+		return Err(ctx, define.ErrGroupNotFound)
+	}
+	group := system.Cache.Group(gid)
+
+	return Ok(ctx, group)
 }
 
 func (g GroupHandler) GetGroupsByUserId(ctx *fiber.Ctx) error {

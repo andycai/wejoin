@@ -24,8 +24,14 @@ func (g *GroupDao) GetIDs() []*comp.ID {
 	return ids
 }
 
-func (g GroupDao) GetGroupById(id int) {
+func (g GroupDao) GetGroupById(id uint64) *comp.Group {
+	group := comp.NewGroup()
+	if err := db.Table(comp.TABLE_GROUP).Where("id = ?", id).Find(group).Error; err != nil {
+		log.Errorf("获取群组数据出错, ID:%d, err: %s", id, err)
+		return nil
+	}
 
+	return group
 }
 
 func (g GroupDao) GetGroups(page, num int) {

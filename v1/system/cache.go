@@ -75,3 +75,53 @@ func (c CacheSystem) User(id uint64) *comp.User {
 	}
 	return user.(*comp.User)
 }
+
+// ExistsGroup 是否存在群组
+func (c CacheSystem) ExistsGroup(id uint64) bool {
+	return hub.LocalGroupCache.Has(GroupCacheKey(id))
+}
+
+func (c CacheSystem) Group(id uint64) *comp.Group {
+	if !c.ExistsGroup(id) {
+		log.Infof("从 DB 获取群组数据，id:%d", id)
+		group := mysql.Group.GetGroupById(id)
+		group.OutDB()
+		err := hub.LocalGroupCache.Set(GroupCacheKey(id), group)
+		if err != nil {
+			log.Errorf("从 DB 获取群组数据失败，id:%d", id)
+			return nil
+		}
+	}
+
+	group, err := hub.LocalGroupCache.Get(GroupCacheKey(id))
+	if err != nil {
+		log.Errorf("获取群组数据失败，id:%d", id)
+		return nil
+	}
+	return group.(*comp.Group)
+}
+
+// ExistsActivity 是否存在活动
+func (c CacheSystem) ExistsActivity(id uint64) bool {
+	return hub.LocalActivityCache.Has(ActivityCacheKey(id))
+}
+
+func (c CacheSystem) Activity(id uint64) *comp.Activity {
+	if !c.ExistsActivity(id) {
+		log.Infof("从 DB 获取活动数据，id:%d", id)
+		act := mysql.Activity.GetActivityById(id)
+		act.OutDB()
+		err := hub.LocalActivityCache.Set(ActivityCacheKey(id), act)
+		if err != nil {
+			log.Errorf("从 DB 获取活动数据失败，id:%d", id)
+			return nil
+		}
+	}
+
+	act, err := hub.LocalActivityCache.Get(ActivityCacheKey(id))
+	if err != nil {
+		log.Errorf("获取活动数据失败，id:%d", id)
+		return nil
+	}
+	return act.(*comp.Activity)
+}

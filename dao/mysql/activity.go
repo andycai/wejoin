@@ -25,8 +25,14 @@ func (a *ActivityDao) GetIDs() []*comp.ID {
 	return ids
 }
 
-func (a ActivityDao) GetActivityById(id int64) {
+func (a ActivityDao) GetActivityById(id uint64) *comp.Activity {
+	act := comp.NewActivity()
+	if err := db.Table(comp.TABLE_ACTIVITY).Where("id = ?", id).Find(act).Error; err != nil {
+		log.Errorf("获取活动数据出错, ID:%d, err: %s", id, err)
+		return nil
+	}
 
+	return act
 }
 
 func (a ActivityDao) GetActivitiesByType(typ, status, page, num int) {

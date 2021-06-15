@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/andycai/axe-fiber/define"
 	"github.com/andycai/axe-fiber/v1/system"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,6 +14,9 @@ var User = new(UserHandler)
 
 func (u UserHandler) GetUser(ctx *fiber.Ctx) error {
 	uid := cast.ToUint64(ctx.Params("uid"))
+	if !system.User.Exists(uid) {
+		return Err(ctx, define.ErrUserNotFound)
+	}
 	user := system.Cache.User(uid)
 
 	return Ok(ctx, user)

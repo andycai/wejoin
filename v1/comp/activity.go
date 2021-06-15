@@ -38,7 +38,7 @@ func NewActivity() *Activity {
 }
 
 // OutDB 反序列化
-func (a Activity) OutDB() {
+func (a *Activity) OutDB() {
 	json.Unmarshal([]byte(a.Queue), &a.QueueV)
 	json.Unmarshal([]byte(a.QueueSex), &a.QueueSexV)
 }

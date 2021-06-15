@@ -1,13 +1,24 @@
 package handler
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/andycai/axe-fiber/define"
+	"github.com/andycai/axe-fiber/v1/system"
+	"github.com/gofiber/fiber/v2"
+	"github.com/spf13/cast"
+)
 
 type ActivityHandler struct{}
 
 var Activity = new(ActivityHandler)
 
 func (a ActivityHandler) GetActivityById(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+	aid := cast.ToUint64(ctx.Params("aid"))
+	if !system.Activity.Exists(aid) {
+		return Err(ctx, define.ErrActivityNotFound)
+	}
+	act := system.Cache.Activity(aid)
+
+	return Ok(ctx, act)
 }
 
 func (a ActivityHandler) GetActivitiesByUserId(ctx *fiber.Ctx) error {
