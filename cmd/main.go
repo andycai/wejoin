@@ -19,6 +19,11 @@ func main() {
 	middleware.Use(app)  // 初始化中间件
 	router.Setup(app)    // 初始化路由
 
-	app.Listen(viper.GetString("httpServer.addr"))
-	defer mysql.Close()
+	err := app.Listen(viper.GetString("httpServer.addr"))
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		//
+	}()
 }

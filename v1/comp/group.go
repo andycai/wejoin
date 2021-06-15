@@ -2,10 +2,11 @@ package comp
 
 import (
 	"github.com/andycai/axe-fiber/define"
+	"github.com/andycai/axe-fiber/util/slice"
 )
 
 type Group struct {
-	Id          int64    `json:"id"`
+	ID          uint64   `gorm:"primaryKey" json:"id"`
 	Level       int      `json:"level"`
 	Scores      int      `json:"scores"`
 	Name        string   `json:"name"`
@@ -15,22 +16,25 @@ type Group struct {
 	Activities  string   `json:"-"`
 	Pending     string   `json:"-"`
 	Members     string   `json:"-"`
-	ActivitiesV []int64  `json:"activities"`
-	PendingV    []int64  `json:"pending"` // 申请入群列表
-	MembersV    []Member `json:"members"`
+	ActivitiesV []int64  `gorm:"-" json:"activities"`
+	PendingV    []int64  `gorm:"-" json:"pending"` // 申请入群列表
+	MembersV    []Member `gorm:"-" json:"members"`
 }
 
+// NewGroup 新建群组
 func NewGroup() *Group {
 	g := new(Group)
 	return g
 }
 
+// OutDB 反序列化
 func (g Group) OutDB() {
 	json.Unmarshal([]byte(g.Activities), &g.ActivitiesV)
 	json.Unmarshal([]byte(g.Pending), &g.PendingV)
 	json.Unmarshal([]byte(g.Members), &g.MembersV)
 }
 
+// NotInPendingV 不在申请列表
 func (g Group) NotInPendingV(index int) bool {
 	return index < 0 || index >= len(g.PendingV)
 }
@@ -65,6 +69,7 @@ func (g Group) IsManager(uid int64) bool {
 	return false
 }
 
+// ManagerCount 管理员数量
 func (g Group) ManagerCount() int {
 	c := 0
 	for _, member := range g.MembersV {
@@ -75,7 +80,8 @@ func (g Group) ManagerCount() int {
 	return c
 }
 
-func (g *Group) ExistActivity(aid int64) bool {
+// ExistsActivity 是否存在活动
+func (g *Group) ExistsActivity(aid int64) bool {
 	for _, v := range g.ActivitiesV {
 		if v == aid {
 			return true
@@ -84,12 +90,23 @@ func (g *Group) ExistActivity(aid int64) bool {
 	return false
 }
 
+// AddActivity 添加活动
 func (g Group) AddActivity(aid int64) {
-	if !g.ExistActivity(aid) {
+	if !g.ExistsActivity(aid) {
 		g.ActivitiesV = append(g.ActivitiesV, aid)
 	}
 }
 
+// RemoveActivity 移除活动
+func (g *Group) RemoveActivity(aid int64) bool {
+	if g.ExistsActivity(aid) {
+		g.ActivitiesV = slice.RemoveI64(g.ActivitiesV, aid)
+		return true
+	}
+	return false
+}
+
+// Promote 提升管理员
 func (g *Group) Promote(uid int64) bool {
 	for _, member := range g.MembersV {
 		if member.Id == uid {
@@ -100,6 +117,7 @@ func (g *Group) Promote(uid int64) bool {
 	return false
 }
 
+// Transfer 转让群主
 func (g *Group) Transfer(uid, mid int64) bool {
 	b := false
 	if !g.IsMember(uid) || !g.IsMember(mid) {
@@ -118,6 +136,7 @@ func (g *Group) Transfer(uid, mid int64) bool {
 	return b
 }
 
+// Remove 移除群组成员
 func (g *Group) Remove(uid int64) bool {
 	index := -1
 	for i, member := range g.MembersV {
@@ -133,6 +152,7 @@ func (g *Group) Remove(uid int64) bool {
 	return false
 }
 
+// NotIn 不在群组
 func (g Group) NotIn(uid int64) bool {
 	for _, member := range g.MembersV {
 		if member.Id == uid {

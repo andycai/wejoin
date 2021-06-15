@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/andycai/axe-fiber/v1/system"
+	"github.com/andycai/axe-fiber/v1/handler"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,15 +13,15 @@ func init() {
 func registerActivityRouter(app *fiber.App) {
 	actsAPI := app.Group("/activities")
 	{
-		actsAPI.Get("/:aid", system.Activity.GetActivityById)
-		actsAPI.Get("/", system.Activity.GetActivities)
+		actsAPI.Get("/:aid", handler.Activity.GetActivityById)
+		actsAPI.Get("/", handler.Activity.GetActivities)
 
-		actsAPI.Post("/", system.Activity.Create)
-		actsAPI.Post("/:aid/end", system.Activity.End)
-		actsAPI.Post("/:aid/apply", system.Activity.Apply)
-		actsAPI.Post("/:aid/cancel", system.Activity.Cancel)
-		actsAPI.Post("/:aid/remove/:index", system.Activity.Remove)
+		actsAPI.Post("/", handler.Activity.Create)
+		actsAPI.Post("/:aid/end", handler.Activity.End)
+		actsAPI.Post("/:aid/apply", handler.Activity.Apply)
+		actsAPI.Post("/:aid/cancel", handler.Activity.Cancel)
+		actsAPI.Post("/:aid/remove/:index", handler.Activity.Remove)
 
-		actsAPI.Put("/:aid}", system.Activity.Update)
+		actsAPI.Put("/:aid}", handler.Activity.Update)
 	}
 }

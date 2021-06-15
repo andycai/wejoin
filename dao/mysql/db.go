@@ -1,26 +1,19 @@
 package mysql
 
 import (
-	"fmt"
+	"github.com/andycai/axe-fiber/library/database"
+	orm "github.com/andycai/axe-fiber/library/database/gorm"
+	"github.com/spf13/viper"
+	"gorm.io/gorm"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
-	"github.com/spf13/viper"
 )
 
-var db *sqlx.DB
+var db *gorm.DB
 
-func ConnectMySQL() (err error) {
-	db, err = sqlx.Open("mysql", viper.GetString("db.dsn"))
-	if err != nil {
-		panic(fmt.Errorf("connect server failed, err: %v\n", err))
+func ConnectMySQL() {
+	conf := &database.Config{
+		DSN: viper.GetString("db.dsn"),
 	}
-	db.SetMaxOpenConns(viper.GetInt("db.active"))
-	db.SetMaxIdleConns(viper.GetInt("db.idle"))
-
-	return
-}
-
-func Close() {
-	db.Close()
+	db = orm.NewMySQL(conf)
 }

@@ -9,46 +9,51 @@ import (
 )
 
 type Activity struct {
-	Id        int64   `json:"id"`
-	Planner   int64   `json:"planner"`
-	Kind      int     `json:"kind"`                       // 活动分类:1羽毛球,2篮球,3足球,4聚餐...
-	Type      int     `json:"type"`                       // 活动类型:1全局保护,2全局公开,3群组
-	Status    int     `json:"status"`                     // 活动状态:1进行中,2正常结算完成,3手动终止
-	Quota     int     `json:"quota"`                      // 名额
-	GroupId   int     `json:"group_id" db:"group_id"`     // 群组ID
-	Ahead     int     `json:"ahead"`                      // 提前取消报名限制（小时）
-	FeeType   int     `json:"fee_type" db:"fee_type"`     // 结算方式:1免费,2活动前,3活动后男女平均,4活动后男固定|女平摊,5活动后男平摊|女固定
-	FeeMale   int     `json:"fee_male" db:"fee_male"`     // 男费用
-	FeeFemale int     `json:"fee_female" db:"fee_female"` // 女费用
-	Title     string  `json:"title"`
-	Remark    string  `json:"remark"`
-	Addr      string  `json:"addr"`
-	BeginAt   string  `json:"begin_at" db:"begin_at"`
-	EndAt     string  `json:"end_at" db:"end_at"`
-	Queue     string  `json:"-"`
-	QueueSex  string  `json:"-" db:"queue_sex"`
-	QueueV    []int64 `json:"queue" db:"-"`     // 报名队列
-	QueueSexV []int   `json:"queue_sex" db:"-"` // 报名队列中的性别
+	ID        uint64   `gorm:"primaryKey" json:"id"`
+	Planner   uint64   `json:"planner"`
+	Kind      int      `json:"kind"`       // 活动分类:1羽毛球,2篮球,3足球,4聚餐...
+	Type      int      `json:"type"`       // 活动类型:1全局保护,2全局公开,3群组
+	Status    int      `json:"status"`     // 活动状态:1进行中,2正常结算完成,3手动终止
+	Quota     int      `json:"quota"`      // 名额
+	GroupId   uint64   `json:"group_id"`   // 群组ID
+	Ahead     int      `json:"ahead"`      // 提前取消报名限制（小时）
+	FeeType   int      `json:"fee_type"`   // 结算方式:1免费,2活动前,3活动后男女平均,4活动后男固定|女平摊,5活动后男平摊|女固定
+	FeeMale   int      `json:"fee_male"`   // 男费用
+	FeeFemale int      `json:"fee_female"` // 女费用
+	Title     string   `json:"title"`
+	Remark    string   `json:"remark"`
+	Addr      string   `json:"addr"`
+	BeginAt   string   `json:"begin_at"`
+	EndAt     string   `json:"end_at"`
+	Queue     string   `json:"-"`
+	QueueSex  string   `json:"-"`
+	QueueV    []uint64 `gorm:"-" json:"queue"`     // 报名队列
+	QueueSexV []int    `gorm:"-" json:"queue_sex"` // 报名队列中的性别
 }
 
+// NewActivity 新建活动
 func NewActivity() *Activity {
 	a := new(Activity)
 	return a
 }
 
+// OutDB 反序列化
 func (a Activity) OutDB() {
 	json.Unmarshal([]byte(a.Queue), &a.QueueV)
 	json.Unmarshal([]byte(a.QueueSex), &a.QueueSexV)
 }
 
+// InGroup 是否群组活动
 func (a Activity) InGroup() bool {
 	return a.GroupId > 0
 }
 
-func (a Activity) IsPlanner(uid int64) bool {
+// IsPlanner 是否发起者
+func (a Activity) IsPlanner(uid uint64) bool {
 	return uid == a.Planner
 }
 
+// Settle 结算
 func (a Activity) Settle(fee int) {
 	switch a.FeeType {
 	case define.FeeTypeActivityAA:
@@ -62,13 +67,13 @@ func (a Activity) Settle(fee int) {
 	}
 }
 
-// 报名的人数超过候补的限制，避免乱报名，如带100000人报名
+// OverQuota 报名的人数超过候补的限制，避免乱报名，如带100000人报名
 func (a Activity) OverQuota(total int) bool {
 	return len(a.QueueV)+total-a.Quota > define.ActivityOverFlow
 }
 
-// 要取消报名的数量超过已经报名的数量
-func (a Activity) NotEnough(uid int64, total int) bool {
+// NotEnough 要取消报名的数量超过已经报名的数量
+func (a Activity) NotEnough(uid uint64, total int) bool {
 	c := 0
 	for _, v := range a.QueueV {
 		if v == uid {
@@ -78,7 +83,8 @@ func (a Activity) NotEnough(uid int64, total int) bool {
 	return total > c
 }
 
-func (a Activity) InQueueV(uid int64) bool {
+// InQueueV 在报名中
+func (a Activity) InQueueV(uid uint64) bool {
 	for _, v := range a.QueueV {
 		if v == uid {
 			return true
@@ -87,14 +93,16 @@ func (a Activity) InQueueV(uid int64) bool {
 	return false
 }
 
-func (a Activity) GetIdFromQueueV(index int) int64 {
+// GetIdFromQueueV 根据索引从报名队列中获取ID
+func (a Activity) GetIdFromQueueV(index int) uint64 {
 	if index < 0 || index >= len(a.QueueV) {
 		return 0
 	}
 	return a.QueueV[index]
 }
 
-func (a Activity) Enqueue(uid int64, maleCount, femaleCount int) {
+// Enqueue 报名入队
+func (a Activity) Enqueue(uid uint64, maleCount, femaleCount int) {
 	a.fixQueueV()
 	for i := 0; i < maleCount; i++ {
 		a.QueueV = append(a.QueueV, uid)
@@ -106,6 +114,7 @@ func (a Activity) Enqueue(uid int64, maleCount, femaleCount int) {
 	}
 }
 
+// Dequeue 取消报名
 func (a Activity) Dequeue(index int) bool {
 	a.fixQueueV()
 	if index < 0 || index >= len(a.QueueV) {
@@ -116,7 +125,8 @@ func (a Activity) Dequeue(index int) bool {
 	return true
 }
 
-func (a Activity) DequeueMany(uid int64, maleCount, femaleCount int) {
+// DequeueMany 取消多个报名
+func (a Activity) DequeueMany(uid uint64, maleCount, femaleCount int) {
 	a.fixQueueV()
 	mCount := 0
 	fCount := 0
@@ -181,6 +191,7 @@ func (a Activity) totalCount() int {
 	return c
 }
 
+// maleCount 男性数量
 func (a Activity) maleCount() int {
 	c := 0
 	total := a.totalCount()
@@ -192,6 +203,7 @@ func (a Activity) maleCount() int {
 	return c
 }
 
+// femaleCount 女性数量
 func (a Activity) femaleCount() int {
 	c := 0
 	total := a.totalCount()

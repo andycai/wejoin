@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/andycai/axe-fiber/v1/system"
+	"github.com/andycai/axe-fiber/v1/handler"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,19 +13,19 @@ func init() {
 func registerGroupRouter(app *fiber.App) {
 	groupsAPI := app.Group("/groups")
 	{
-		groupsAPI.Get("/:gid", system.Group.GetGroupById)
-		groupsAPI.Get("/", system.Group.GetGroups)
-		groupsAPI.Get("/:gid/pending", system.Group.GetApplyList)
-		groupsAPI.Get("/:gid/activities", system.Group.GetActivitiesByGroupId)
+		groupsAPI.Get("/:gid", handler.Group.GetGroupById)
+		groupsAPI.Get("/", handler.Group.GetGroups)
+		groupsAPI.Get("/:gid/pending", handler.Group.GetApplyList)
+		groupsAPI.Get("/:gid/activities", handler.Group.GetActivitiesByGroupId)
 
-		groupsAPI.Post("/", system.Group.Create)
-		groupsAPI.Post("/:gid/apply", system.Group.Apply)
-		groupsAPI.Post("/:gid/approve", system.Group.Approve)
-		groupsAPI.Post("/:gid/promote/:mid", system.Group.Promote)
-		groupsAPI.Post("/:gid/transfer/:mid", system.Group.Transfer)
-		groupsAPI.Post("/:gid/remove/:mid", system.Group.Remove)
-		groupsAPI.Post("/:gid/quit", system.Group.Quit)
+		groupsAPI.Post("/", handler.Group.Create)
+		groupsAPI.Post("/:gid/apply", handler.Group.Apply)
+		groupsAPI.Post("/:gid/approve", handler.Group.Approve)
+		groupsAPI.Post("/:gid/promote/:mid", handler.Group.Promote)
+		groupsAPI.Post("/:gid/transfer/:mid", handler.Group.Transfer)
+		groupsAPI.Post("/:gid/remove/:mid", handler.Group.Remove)
+		groupsAPI.Post("/:gid/quit", handler.Group.Quit)
 
-		groupsAPI.Put("/:gid", system.Group.Update)
+		groupsAPI.Put("/:gid", handler.Group.Update)
 	}
 }

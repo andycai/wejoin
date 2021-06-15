@@ -7,25 +7,28 @@ import (
 )
 
 type User struct {
-	Id          int64   `json:"id"`
-	Sex         int     `json:"sex"`
-	Scores      int     `json:"scores"`
-	Username    string  `json:"username"`
-	Password    string  `json:"password"`
-	Token       string  `json:"token"`
-	WxToken     string  `json:"wx_token" db:"wx_token"`
-	WxNick      string  `json:"wx_nick" db:"wx_nick"`
-	Nick        string  `json:"nick"`
-	Ip          string  `json:"ip"`
-	Phone       string  `json:"phone"`
-	Email       string  `json:"email"`
-	CreateAt    string  `json:"create_at" db:"create_at"`
-	Groups      string  `json:"-" db:"groups"`
-	Activities  string  `json:"-" db:"activities"`
-	GroupsV     []int   `json:"groups" db:"-"`
-	ActivitiesV []int64 `json:"activities" db:"-"`
+	ID          uint64   `gorm:"primaryKey" json:"id"`
+	Sex         int      `json:"sex"`
+	Scores      int      `json:"scores"`
+	Username    string   `json:"username"`
+	Password    string   `json:"password"`
+	Token       string   `json:"token"`
+	WxToken     string   `json:"wx_token"`
+	WxNick      string   `json:"wx_nick"`
+	Nick        string   `json:"nick"`
+	Ip          string   `json:"ip"`
+	Phone       string   `json:"phone"`
+	Email       string   `json:"email"`
+	CreateAt    string   `json:"create_at"`
+	Groups      string   `json:"-"`
+	Activities  string   `json:"-"`
+	GroupsV     []uint64 `gorm:"-" json:"groups"`
+	ActivitiesV []uint64 `gorm:"-" json:"activities"`
 }
 
+type MapUserIds = map[int64]struct{}
+
+// NewUser 创建用户
 func NewUser() *User {
 	u := new(User)
 	return u
@@ -53,7 +56,8 @@ func (u User) InDB() {
 	}
 }
 
-func (u User) HasActivity(aid int64) bool {
+// ExistsActivity 存在活动
+func (u User) ExistsActivity(aid uint64) bool {
 	for _, activity := range u.ActivitiesV {
 		if activity == aid {
 			return true
@@ -62,23 +66,26 @@ func (u User) HasActivity(aid int64) bool {
 	return false
 }
 
-func (u *User) AddActivity(aid int64) bool {
-	if !u.HasActivity(aid) {
+// AddActivity 添加活动
+func (u *User) AddActivity(aid uint64) bool {
+	if !u.ExistsActivity(aid) {
 		u.ActivitiesV = append(u.ActivitiesV, aid)
 		return true
 	}
 	return false
 }
 
-func (u *User) RemoveActivity(aid int64) bool {
-	if u.HasActivity(aid) {
-		u.ActivitiesV = slice.RemoveI64(u.ActivitiesV, aid)
+// RemoveActivity 移除活动
+func (u *User) RemoveActivity(aid uint64) bool {
+	if u.ExistsActivity(aid) {
+		u.ActivitiesV = slice.RemoveU64(u.ActivitiesV, aid)
 		return true
 	}
 	return false
 }
 
-func (u User) HasGroup(gid int) bool {
+// ExistsGroup 是否在群组
+func (u User) ExistsGroup(gid uint64) bool {
 	for _, group := range u.GroupsV {
 		if group == gid {
 			return true
@@ -87,17 +94,19 @@ func (u User) HasGroup(gid int) bool {
 	return false
 }
 
-func (u *User) AddGroup(gid int) bool {
-	if !u.HasGroup(gid) {
+// AddGroup 添加群组
+func (u *User) AddGroup(gid uint64) bool {
+	if !u.ExistsGroup(gid) {
 		u.GroupsV = append(u.GroupsV, gid)
 		return true
 	}
 	return false
 }
 
-func (u *User) RemoveGroup(gid int) bool {
-	if u.HasGroup(gid) {
-		u.GroupsV = slice.RemoveInt(u.GroupsV, gid)
+// RemoveGroup 移除群组
+func (u *User) RemoveGroup(gid uint64) bool {
+	if u.ExistsGroup(gid) {
+		u.GroupsV = slice.RemoveU64(u.GroupsV, gid)
 		return true
 	}
 	return false

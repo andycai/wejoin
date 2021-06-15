@@ -1,4 +1,4 @@
-package system
+package handler
 
 import (
 	"github.com/andycai/axe-fiber/define"
