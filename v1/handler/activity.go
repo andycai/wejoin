@@ -11,44 +11,44 @@ type ActivityHandler struct{}
 
 var Activity = new(ActivityHandler)
 
-func (a ActivityHandler) GetActivityById(ctx *fiber.Ctx) error {
-	aid := cast.ToUint64(ctx.Params("aid"))
+func (a ActivityHandler) GetActivityById(c *fiber.Ctx) error {
+	aid := cast.ToUint64(c.Params("aid"))
 	if !system.Activity.Exists(aid) {
-		return Err(ctx, define.ErrActivityNotFound)
+		return Err(c, define.ErrActivityNotFound)
 	}
 	act := system.Cache.Activity(aid)
 
-	return Ok(ctx, act)
+	return Ok(c, act)
 }
 
-func (a ActivityHandler) GetActivitiesByUserId(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) GetActivitiesByUserId(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) GetActivities(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) GetActivities(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) Create(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) Create(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) End(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) End(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) Apply(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) Apply(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) Cancel(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) Cancel(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) Remove(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) Remove(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (a ActivityHandler) Update(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (a ActivityHandler) Update(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }

@@ -11,61 +11,69 @@ type GroupHandler struct{}
 
 var Group = new(GroupHandler)
 
-func (g GroupHandler) GetGroupById(ctx *fiber.Ctx) error {
-	gid := cast.ToUint64(ctx.Params("gid"))
+// GetGroupsById 获取单个群组信息
+func (g GroupHandler) GetGroupById(c *fiber.Ctx) error {
+	gid := cast.ToUint64(c.Params("gid"))
 	if !system.Group.Exists(gid) {
-		return Err(ctx, define.ErrGroupNotFound)
+		return Err(c, define.ErrGroupNotFound)
 	}
 	group := system.Cache.Group(gid)
 
-	return Ok(ctx, group)
+	return Ok(c, group)
 }
 
-func (g GroupHandler) GetGroupsByUserId(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+// GetGroupsByUserId 获取当前登录用户的群组列表
+func (g GroupHandler) GetGroupsByUserId(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) GetGroups(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+// GetGroups 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
+func (g GroupHandler) GetGroups(c *fiber.Ctx) error {
+	obj := Body(c)
+	// page := obj.Page
+	// num := obj.Num
+	BodyBack(obj)
+
+	return Ok(c, nil)
 }
 
-func (g GroupHandler) GetApplyList(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) GetApplyList(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) GetActivitiesByGroupId(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) GetActivitiesByGroupId(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Create(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Create(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Apply(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Apply(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Approve(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Approve(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Promote(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Promote(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Transfer(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Transfer(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Remove(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Remove(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
-func (g GroupHandler) Quit(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Quit(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
 
 // put
-func (g GroupHandler) Update(ctx *fiber.Ctx) error {
-	return ctx.JSON(nil)
+func (g GroupHandler) Update(c *fiber.Ctx) error {
+	return c.JSON(nil)
 }
