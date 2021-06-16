@@ -39,3 +39,35 @@ type BodyObject struct {
 	Pass      bool   `json:"pass" form:"pass"`
 	Index     uint   `json:"index" form:"index"`
 }
+
+func (b *BodyObject) Reset() {
+	b.Token = ""
+	b.Username = ""
+	b.Password = ""
+	b.Nick = ""
+	b.Sex = 0
+	b.Page = 0
+	b.Num = 0
+	b.GroupId = 0
+	b.Kind = 0
+	b.Type = 0
+	b.Status = 0
+	b.Quota = 0
+	b.Title = ""
+	b.Remark = ""
+	b.Fee = 0
+	b.FeeType = 0
+	b.FeeMale = 0
+	b.FeeFemale = 0
+	b.Ahead = 0
+	b.BeginAt = ""
+	b.EndAt = ""
+	b.MaleCount = 0
+	b.FemaleCount = 0
+	b.GroupName = ""
+	b.Logo = ""
+	b.Addr = ""
+	b.Notice = ""
+	b.Pass = false
+	b.Index = 0
+}

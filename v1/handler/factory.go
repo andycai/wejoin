@@ -35,6 +35,7 @@ func GetIP(c *fiber.Ctx) string {
 // Body 获取请求体的参数对象
 func Body(c *fiber.Ctx) *comp.BodyObject {
 	body := hub.BodyPool.Get().(*comp.BodyObject)
+	body.Reset()
 	c.BodyParser(body)
 
 	return body
