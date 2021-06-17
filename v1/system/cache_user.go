@@ -20,14 +20,6 @@ func (c CacheSystem) InitUserIds() {
 	for _, v := range userIDs {
 		hub.UserIds[v.ID] = struct{}{}
 	}
-	groupIDs := mysql.Group.GetIds()
-	for _, v := range groupIDs {
-		hub.GroupIDs[v.ID] = struct{}{}
-	}
-	activityIDs := mysql.Activity.GetIds()
-	for _, v := range activityIDs {
-		hub.ActivityIDs[v.ID] = struct{}{}
-	}
 }
 
 // ExistsUser 是否存在用户
