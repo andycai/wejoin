@@ -37,15 +37,15 @@ func ActivityCacheKey(id uint64) string {
 
 // InitIds 缓存用户、群组和活动的 id
 func (c CacheSystem) InitIds() {
-	userIDs := mysql.User.GetIDs()
+	userIDs := mysql.User.GetIds()
 	for _, v := range userIDs {
 		hub.UserIds[v.ID] = struct{}{}
 	}
-	groupIDs := mysql.Group.GetIDs()
+	groupIDs := mysql.Group.GetIds()
 	for _, v := range groupIDs {
 		hub.GroupIDs[v.ID] = struct{}{}
 	}
-	activityIDs := mysql.Activity.GetIDs()
+	activityIDs := mysql.Activity.GetIds()
 	for _, v := range activityIDs {
 		hub.ActivityIDs[v.ID] = struct{}{}
 	}
@@ -59,7 +59,7 @@ func (c CacheSystem) ExistsUser(id uint64) bool {
 func (c CacheSystem) User(id uint64) *comp.User {
 	if !c.ExistsUser(id) {
 		log.Infof("从 DB 获取用户数据，id:%d", id)
-		user := mysql.User.GetUserByID(id)
+		user := mysql.User.GetUserById(id)
 		user.OutDB()
 		err := hub.LocalUserCache.Set(UserCacheKey(id), user)
 		if err != nil {

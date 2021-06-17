@@ -32,8 +32,8 @@ func GetIP(c *fiber.Ctx) string {
 	return c.IP()
 }
 
-// Body 获取请求体的参数对象
-func Body(c *fiber.Ctx) *comp.BodyObject {
+// RetrieveBody 获取请求体的参数对象
+func RetrieveBody(c *fiber.Ctx) *comp.BodyObject {
 	body := hub.BodyPool.Get().(*comp.BodyObject)
 	body.Reset()
 	c.BodyParser(body)
@@ -41,8 +41,8 @@ func Body(c *fiber.Ctx) *comp.BodyObject {
 	return body
 }
 
-// BodyBack 放回对象池
-func BodyBack(obj *comp.BodyObject) {
+// RevertBody 放回对象池
+func RevertBody(obj *comp.BodyObject) {
 	hub.BodyPool.Put(obj)
 }
 

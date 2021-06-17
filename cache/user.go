@@ -25,7 +25,7 @@ func (uc *UserCache) GetUserById(id uint64) *comp.User {
 		return user
 	}
 	log.Info("获得用户数据（DB）：", zap.Uint64("uid", id))
-	user := mysql.User.GetUserByID(id)
+	user := mysql.User.GetUserById(id)
 	user.OutDB()
 	uc.usersForId[id] = user
 

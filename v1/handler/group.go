@@ -29,10 +29,10 @@ func (g GroupHandler) GetGroupsByUserId(c *fiber.Ctx) error {
 
 // GetGroups 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
 func (g GroupHandler) GetGroups(c *fiber.Ctx) error {
-	obj := Body(c)
+	obj := RetrieveBody(c)
 	// page := obj.Page
 	// num := obj.Num
-	BodyBack(obj)
+	RevertBody(obj)
 
 	return Ok(c, nil)
 }
