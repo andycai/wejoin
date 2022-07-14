@@ -1,5 +1,6 @@
 # axe-fiber
- A program of activity organization using Fiber framework. (https://www.dota2.com.cn/hero/axe/)
+
+ A program of activity organization using Fiber framework. 
 
 ## Iris
 
