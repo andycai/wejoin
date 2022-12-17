@@ -1,4 +1,4 @@
-package define
+package enum
 
 const (
 	TypeSexNone = iota

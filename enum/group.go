@@ -1,4 +1,4 @@
-package define
+package enum
 
 const (
 	PositionGroupNone = iota

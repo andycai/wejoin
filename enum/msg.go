@@ -1,4 +1,4 @@
-package define
+package enum
 
 var codeText = map[int]string{
 	Success:                          "成功",
