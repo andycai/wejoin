@@ -29,5 +29,7 @@ require (
 	golang.org/x/text v0.5.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gorm.io/driver/mysql v1.4.4
+	gorm.io/gen v0.3.18
 	gorm.io/gorm v1.24.2
+	gorm.io/plugin/dbresolver v1.4.0
 )
