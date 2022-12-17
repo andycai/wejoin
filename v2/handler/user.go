@@ -39,7 +39,11 @@ func (u UserHandler) Login(c *fiber.Ctx) error {
 	return c.JSON(nil)
 }
 
-func (u UserHandler) Logout(c *fiber.Ctx) error {
+func (u UserHandler) Exit(c *fiber.Ctx) error {
+	return c.JSON(nil)
+}
+
+func (u UserHandler) ExitWx(c *fiber.Ctx) error {
 	return c.JSON(nil)
 }
 

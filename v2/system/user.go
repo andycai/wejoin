@@ -1,6 +1,6 @@
 package system
 
-import "github.com/andycai/axe-fiber/v1/hub"
+import "github.com/andycai/axe-fiber/v2/hub"
 
 type UserSystem struct {
 }

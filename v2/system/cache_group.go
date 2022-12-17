@@ -5,8 +5,8 @@ import (
 
 	"github.com/andycai/axe-fiber/dao/mysql"
 	"github.com/andycai/axe-fiber/log"
-	"github.com/andycai/axe-fiber/v1/comp"
-	"github.com/andycai/axe-fiber/v1/hub"
+	"github.com/andycai/axe-fiber/v2/comp"
+	"github.com/andycai/axe-fiber/v2/hub"
 )
 
 // groupCacheKey 群组缓存 key

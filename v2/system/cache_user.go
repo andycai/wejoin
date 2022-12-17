@@ -5,8 +5,8 @@ import (
 
 	"github.com/andycai/axe-fiber/dao/mysql"
 	"github.com/andycai/axe-fiber/log"
-	"github.com/andycai/axe-fiber/v1/comp"
-	"github.com/andycai/axe-fiber/v1/hub"
+	"github.com/andycai/axe-fiber/v2/comp"
+	"github.com/andycai/axe-fiber/v2/hub"
 )
 
 // userCacheKey 用户缓存 key

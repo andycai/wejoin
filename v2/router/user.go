@@ -11,11 +11,16 @@ func init() {
 }
 
 func registerUserRouter(app *fiber.App) {
-	app.Post("/login", handler.User.Login)
-	app.Post("/login_wx", handler.User.Login)
-	app.Post("/login_wx", handler.User.Logout)
+	// v2 版本路由
+	// 登录
+	app.Post("/v2/login", handler.User.Login)
+	// 退出
+	app.Post("/v2/exit", handler.User.Exit)
+	// 微信登录
+	app.Post("/v2/login_wx", handler.User.Login)
+	app.Post("/v2/exit_wx", handler.User.ExitWx)
 
-	usersAPI := app.Group("/users")
+	usersAPI := app.Group("/v2/users")
 	{
 		usersAPI.Get("/:uid", handler.User.GetUser)
 		usersAPI.Get("/your/groups", handler.Group.GetGroupsByUserId)

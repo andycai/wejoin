@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/v1/system"
+	"github.com/andycai/axe-fiber/v2/system"
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cast"
 )
