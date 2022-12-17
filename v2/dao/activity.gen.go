@@ -54,7 +54,7 @@ func newActivity(db *gorm.DB, opts ...gen.DOOption) activity {
 }
 
 type activity struct {
-	activityDo activityDo
+	activityDo
 
 	ALL       field.Asterisk
 	ID        field.Int32  // 活动ID

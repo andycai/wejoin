@@ -23,7 +23,7 @@ func registerUserRouter(app *fiber.App) {
 	usersAPI := app.Group("/v2/users")
 	{
 		usersAPI.Get("/:uid", handler.User.GetUser)
-		usersAPI.Get("/your/groups", handler.Group.GetGroupsByUserId)
+		usersAPI.Get("/:uid/groups", handler.Group.GetGroupsByUserId)
 		usersAPI.Get("/your/activities", handler.Activity.GetActivitiesByUserId)
 	}
 }

@@ -44,7 +44,7 @@ func newGroup(db *gorm.DB, opts ...gen.DOOption) group {
 }
 
 type group struct {
-	groupDo groupDo
+	groupDo
 
 	ALL      field.Asterisk
 	ID       field.Int32  // 群组ID

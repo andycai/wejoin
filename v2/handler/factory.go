@@ -9,31 +9,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type Context struct {
-	Ctx *fiber.Ctx
-}
+type Ctx = fiber.Ctx
 
-func (c *Context) JSON(data interface{}) error {
-	return c.Ctx.JSON(data)
-}
-
-func (c *Context) Params(key string, defaultValue ...string) string {
-	return c.Ctx.Params(key, defaultValue...)
-}
-
-func Ok(c *fiber.Ctx, data interface{}) error {
-	return c.JSON(fiber.Map{
-		"code": enum.Success,
-		"data": data,
-	})
-}
-
-func GetIP(c *fiber.Ctx) string {
+// 获取远程IP
+func IP(c *Ctx) string {
 	return c.IP()
 }
 
 // RetrieveBody 获取请求体的参数对象
-func RetrieveBody(c *fiber.Ctx) *comp.BodyObject {
+func RetrieveBody(c *Ctx) *comp.BodyObject {
 	body := hub.BodyPool.Get().(*comp.BodyObject)
 	body.Reset()
 	c.BodyParser(body)
@@ -46,42 +30,52 @@ func RevertBody(obj *comp.BodyObject) {
 	hub.BodyPool.Put(obj)
 }
 
-func String(c *fiber.Ctx, key string, defaultValue ...string) string {
+func String(c *Ctx, key string, defaultValue ...string) string {
 	return c.Params(key, defaultValue...)
 }
 
-func Int(c *fiber.Ctx, key string, defaultValue ...string) int {
+func Int(c *Ctx, key string, defaultValue ...string) int {
 	return cast.ToInt(c.Params(key, defaultValue...))
 }
 
-func Uint(c *fiber.Ctx, key string, defaultValue ...string) uint {
+func Uint(c *Ctx, key string, defaultValue ...string) uint {
 	return cast.ToUint(c.Params(key, defaultValue...))
 }
 
-func U32(c *fiber.Ctx, key string, defaultValue ...string) uint32 {
+func U32(c *Ctx, key string, defaultValue ...string) uint32 {
 	return cast.ToUint32(c.Params(key, defaultValue...))
 }
 
-func I32(c *fiber.Ctx, key string, defaultValue ...string) int32 {
+func I32(c *Ctx, key string, defaultValue ...string) int32 {
 	return cast.ToInt32(c.Params(key, defaultValue...))
 }
 
-func U64(c *fiber.Ctx, key string, defaultValue ...string) uint64 {
+func U64(c *Ctx, key string, defaultValue ...string) uint64 {
 	return cast.ToUint64(c.Params(key, defaultValue...))
 }
 
-func I64(c *fiber.Ctx, key string, defaultValue ...string) int64 {
+func I64(c *Ctx, key string, defaultValue ...string) int64 {
 	return cast.ToInt64(c.Params(key, defaultValue...))
 }
 
-func Err(c *fiber.Ctx, code int) error {
+// 正常响应
+func Ok(c *Ctx, data interface{}) error {
+	return c.JSON(fiber.Map{
+		"code": enum.Success,
+		"data": data,
+	})
+}
+
+// 错误响应
+func Err(c *Ctx, code int) error {
 	return c.JSON(fiber.Map{
 		"code": code,
 		"msg":  enum.CodeText(code),
 	})
 }
 
-func Msg(c *fiber.Ctx, code int, msg string) error {
+// 普通消息响应
+func Msg(c *Ctx, code int, msg string) error {
 	return c.JSON(fiber.Map{
 		"code": code,
 		"msg":  msg,

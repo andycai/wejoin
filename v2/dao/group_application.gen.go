@@ -40,7 +40,7 @@ func newGroupApplication(db *gorm.DB, opts ...gen.DOOption) groupApplication {
 }
 
 type groupApplication struct {
-	groupApplicationDo groupApplicationDo
+	groupApplicationDo
 
 	ALL      field.Asterisk
 	ID       field.Int32 // 申请id

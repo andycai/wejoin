@@ -33,7 +33,7 @@ func newGroupMember(db *gorm.DB, opts ...gen.DOOption) groupMember {
 	_groupMember.Scores = field.NewInt32(tableName, "scores")
 	_groupMember.Position = field.NewInt32(tableName, "position")
 	_groupMember.Alias_ = field.NewString(tableName, "alias")
-	_groupMember.Avator = field.NewString(tableName, "avator")
+	_groupMember.Avatar = field.NewString(tableName, "avatar")
 	_groupMember.EnterAt = field.NewTime(tableName, "enter_at")
 	_groupMember.CreateAt = field.NewTime(tableName, "create_at")
 	_groupMember.UpdateAt = field.NewTime(tableName, "update_at")
@@ -45,20 +45,20 @@ func newGroupMember(db *gorm.DB, opts ...gen.DOOption) groupMember {
 }
 
 type groupMember struct {
-	groupMemberDo groupMemberDo
+	groupMemberDo
 
 	ALL      field.Asterisk
-	ID       field.Int32  // 成员id
-	GroupID  field.Int32  // 群组id
-	UserID   field.Int32  // 用户id
-	Scores   field.Int32  // 积分
-	Position field.Int32  // 群组职位
-	Alias_   field.String // 群组中别名
-	Avator   field.String // 头像
-	EnterAt  field.Time   // 进入群组时间
-	CreateAt field.Time   // 创建时间
-	UpdateAt field.Time   // 更新时间
-	DeleteAt field.Time   // 删除时间
+	ID       field.Int32 // 成员id
+	GroupID  field.Int32 // 群组id
+	UserID   field.Int32 // 用户id
+	Scores   field.Int32 // 积分
+	Position field.Int32 // 群组职位
+	Alias_   field.String
+	Avatar   field.String
+	EnterAt  field.Time // 进入群组时间
+	CreateAt field.Time // 创建时间
+	UpdateAt field.Time // 更新时间
+	DeleteAt field.Time // 删除时间
 
 	fieldMap map[string]field.Expr
 }
@@ -81,7 +81,7 @@ func (g *groupMember) updateTableName(table string) *groupMember {
 	g.Scores = field.NewInt32(table, "scores")
 	g.Position = field.NewInt32(table, "position")
 	g.Alias_ = field.NewString(table, "alias")
-	g.Avator = field.NewString(table, "avator")
+	g.Avatar = field.NewString(table, "avatar")
 	g.EnterAt = field.NewTime(table, "enter_at")
 	g.CreateAt = field.NewTime(table, "create_at")
 	g.UpdateAt = field.NewTime(table, "update_at")
@@ -117,7 +117,7 @@ func (g *groupMember) fillFieldMap() {
 	g.fieldMap["scores"] = g.Scores
 	g.fieldMap["position"] = g.Position
 	g.fieldMap["alias"] = g.Alias_
-	g.fieldMap["avator"] = g.Avator
+	g.fieldMap["avatar"] = g.Avatar
 	g.fieldMap["enter_at"] = g.EnterAt
 	g.fieldMap["create_at"] = g.CreateAt
 	g.fieldMap["update_at"] = g.UpdateAt

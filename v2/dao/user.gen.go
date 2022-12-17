@@ -51,7 +51,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 }
 
 type user struct {
-	userDo userDo
+	userDo
 
 	ALL       field.Asterisk
 	ID        field.Int32  // 用户ID

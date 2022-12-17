@@ -42,7 +42,7 @@ func newActivityUser(db *gorm.DB, opts ...gen.DOOption) activityUser {
 }
 
 type activityUser struct {
-	activityUserDo activityUserDo
+	activityUserDo
 
 	ALL        field.Asterisk
 	ID         field.Int32  // 活动报名id

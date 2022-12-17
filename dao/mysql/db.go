@@ -17,3 +17,11 @@ func ConnectMySQL() {
 	}
 	db = orm.NewMySQL(conf)
 }
+
+func CreateDB() *gorm.DB {
+	conf := &database.Config{
+		DSN: viper.GetString("db.dsn"),
+	}
+
+	return orm.NewMySQL(conf)
+}
