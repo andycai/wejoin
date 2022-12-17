@@ -26,7 +26,7 @@ CREATE TABLE `user`
     UNIQUE KEY `username_uindex` (`username`) USING BTREE,
     KEY `token_index` (`token`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COMMENT ='用户表';
+  DEFAULT CHARSET = utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT ='用户表';
 
 --
 -- Table structure for table `group`
@@ -51,7 +51,7 @@ CREATE TABLE `group`
     PRIMARY KEY (`id`),
     KEY `level_index` (`level`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COMMENT ='群组表';
+  DEFAULT CHARSET = utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT ='群组表';
 
 --
 -- Table structure for table `activity`
@@ -85,4 +85,4 @@ CREATE TABLE `activity`
     KEY `kind_status_index` (`kind`, `status`) USING BTREE,
     KEY `type_status_index` (`type`, `status`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COMMENT ='活动表';
+  DEFAULT CHARSET = utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT ='活动表';
