@@ -100,7 +100,7 @@ func (g Group) AddActivity(aid int64) {
 // RemoveActivity 移除活动
 func (g *Group) RemoveActivity(aid int64) bool {
 	if g.ExistsActivity(aid) {
-		g.ActivitiesV = slice.RemoveI64(g.ActivitiesV, aid)
+		g.ActivitiesV = slice.Remove(g.ActivitiesV, aid)
 		return true
 	}
 	return false

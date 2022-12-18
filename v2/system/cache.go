@@ -11,7 +11,4 @@ var Cache = new(CacheSystem)
 
 // InitIds 缓存用户、群组和活动的 id
 func (c CacheSystem) InitIds() {
-	c.InitUserIds()
-	c.InitGroupIds()
-	c.InitActivityIds()
 }

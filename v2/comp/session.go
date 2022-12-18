@@ -1,8 +1,10 @@
 package comp
 
+import "time"
+
 type Session struct {
-	At    int64  `json:"at"`
-	Uid   int64  `json:"uid"`
-	Sex   int    `json:"sex"`
-	Token string `json:"token"`
+	Uid     int32     `json:"uid"`
+	Sex     int32     `json:"sex"`
+	Token   string    `json:"token"`
+	LoginAt time.Time `json:"login_at"`
 }

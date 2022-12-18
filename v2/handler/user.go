@@ -2,34 +2,42 @@ package handler
 
 import (
 	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/v2/dao"
+	"github.com/andycai/axe-fiber/v2/system"
 )
 
 type UserHandler struct{}
 
 var User = new(UserHandler)
 
-// GetCurrentUser 获取当前用户信息
-func (u UserHandler) GetCurrentUser(c *Ctx) error {
-	// TODO: 应该从 session 中获取 uid
-	return Err(c, enum.ErrUserNotFound)
-}
+// 私有方法
 
-// GetUser 获取用户信息
-func (u UserHandler) GetUser(c *Ctx) error {
-	id := I32(c, "uid")
-	q := dao.Q.User
-	// user, err := q.Debug().Where(q.ID.Eq(uid)).Take()
-	user, err := q.Where(q.ID.Eq(id)).Take()
+// pushUserInfo 推送用户信息给前端
+func pushUserInfo(c *Ctx, id int32) error {
+	info, err := system.User.GetInfo(id)
 	if err != nil {
 		return Err(c, enum.ErrUserNotFound)
 	}
 
-	return Ok(c, user)
+	return Ok(c, info)
+}
+
+// 私有方法 end
+
+// GetCurrentUser 获取当前用户信息
+func (uh UserHandler) GetCurrentUser(c *Ctx) error {
+	// TODO: 应该从 session 中获取 uid
+	var id int32 = 1 // 登录获取的用户ID
+	return pushUserInfo(c, id)
+}
+
+// GetUser 获取用户信息
+func (uh UserHandler) GetUser(c *Ctx) error {
+	id := I32(c, "uid")
+	return pushUserInfo(c, id)
 }
 
 // Login 登录
-func (u UserHandler) Login(c *Ctx) error {
+func (uh UserHandler) Login(c *Ctx) error {
 	// ip := c.Context().RemoteIP().String()
 
 	//err := c.ReadJSON(&b)
@@ -43,18 +51,19 @@ func (u UserHandler) Login(c *Ctx) error {
 			})
 		}
 	*/
-	return c.JSON(nil)
+	var id int32 = 1 // 登录获取的用户ID
+	return pushUserInfo(c, id)
 }
 
 // 退出登录
-func (u UserHandler) Exit(c *Ctx) error {
-	return c.JSON(nil)
+func (uh UserHandler) Exit(c *Ctx) error {
+	return Ok(c, nil)
 }
 
-func (u UserHandler) ExitWx(c *Ctx) error {
-	return c.JSON(nil)
+func (uh UserHandler) ExitWx(c *Ctx) error {
+	return Ok(c, nil)
 }
 
-func (u UserHandler) SaveData(c *Ctx) error {
-	return c.JSON(nil)
+func (uh UserHandler) SaveData(c *Ctx) error {
+	return Ok(c, nil)
 }

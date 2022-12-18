@@ -82,7 +82,7 @@ func (u *User) AddActivity(aid uint64) bool {
 // RemoveActivity 移除活动
 func (u *User) RemoveActivity(aid uint64) bool {
 	if u.ExistsActivity(aid) {
-		u.ActivitiesV = slice.RemoveU64(u.ActivitiesV, aid)
+		u.ActivitiesV = slice.Remove(u.ActivitiesV, aid)
 		return true
 	}
 	return false
@@ -110,7 +110,7 @@ func (u *User) AddGroup(gid uint64) bool {
 // RemoveGroup 移除群组
 func (u *User) RemoveGroup(gid uint64) bool {
 	if u.ExistsGroup(gid) {
-		u.GroupsV = slice.RemoveU64(u.GroupsV, gid)
+		u.GroupsV = slice.Remove(u.GroupsV, gid)
 		return true
 	}
 	return false

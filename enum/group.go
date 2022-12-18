@@ -6,3 +6,5 @@ const (
 	PositionGroupOwner
 	PositionGroupManager
 )
+
+const DefaultGroupCount = 20
