@@ -2,6 +2,7 @@ package enum
 
 var codeText = map[int]string{
 	Success:                          "成功",
+	SucGroupApply:                    "申请加入群组成功",
 	ErrParam:                         "参数错误",
 	ErrData:                          "数据错误",
 	ErrOp:                            "操作失败",
@@ -21,6 +22,9 @@ var codeText = map[int]string{
 	ErrGroupTransfer:                 "转让群主失败！",
 	ErrGroupNonMember:                "不是群成员，没有权限操作！",
 	ErrGroupNotFound:                 "群组不存在！",
+	ErrGroupApplicationListNotFound:  "获取群组申请列表数据失败！",
+	ErrGroupApplyTwice:               "已经申请过次群组！",
+	ErrGroupApply:                    "申请加入群组失败！",
 	ErrActivityGetData:               "获取活动数据失败！",
 	ErrActivityCannotApplyNotInGroup: "你不是群组成员不能报名或取消报名群组活动！",
 	ErrActivityUpdate:                "更新活动信息失败！",

@@ -2,6 +2,8 @@ package enum
 
 const (
 	Success                          = 0
+	SucGroupApply                    = 200
+	SucGroupApprove                  = 201
 	ErrParam                         = -100
 	ErrData                          = -101
 	ErrOp                            = -102
@@ -21,6 +23,9 @@ const (
 	ErrGroupTransfer                 = -208
 	ErrGroupNonMember                = -209
 	ErrGroupNotFound                 = -210
+	ErrGroupApplicationListNotFound  = -211
+	ErrGroupApplyTwice               = -212
+	ErrGroupApply                    = -213
 	ErrActivityGetData               = -300
 	ErrActivityCannotApplyNotInGroup = -301
 	ErrActivityUpdate                = -302

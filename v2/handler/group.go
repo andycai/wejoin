@@ -56,11 +56,23 @@ func (gh GroupHandler) GetGroups(c *Ctx) error {
 }
 
 func (gh GroupHandler) GetApplyList(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	list, err := system.Group.GetApplyList(gid)
+	if err != nil {
+		return Err(c, enum.ErrGroupApplicationListNotFound)
+	}
+
+	return Ok(c, list)
 }
 
 func (gh GroupHandler) GetActivitiesByGroupId(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	list, err := system.Activity.GetActivitiesByGroupID(gid)
+	if err != nil {
+		return Err(c, enum.ErrActivityGetData)
+	}
+
+	return Ok(c, list)
 }
 
 func (gh GroupHandler) Create(c *Ctx) error {
@@ -68,11 +80,25 @@ func (gh GroupHandler) Create(c *Ctx) error {
 }
 
 func (gh GroupHandler) Apply(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	err := system.Group.Apply(gid, uid)
+	if err != nil {
+		return Err(c, enum.ErrGroupApply)
+	}
+
+	return Push(c, enum.SucGroupApply)
 }
 
 func (gh GroupHandler) Approve(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	err := system.Group.Approve(gid, uid)
+	if err != nil {
+		return Err(c, enum.ErrGroupApprove)
+	}
+
+	return Push(c, enum.SucGroupApprove)
 }
 
 func (gh GroupHandler) Promote(c *Ctx) error {

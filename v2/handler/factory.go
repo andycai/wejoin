@@ -66,6 +66,14 @@ func Ok(c *Ctx, data interface{}) error {
 	})
 }
 
+// 推送响应
+func Push(c *Ctx, code int) error {
+	return c.JSON(fiber.Map{
+		"code": code,
+		"msg":  enum.CodeText(code),
+	})
+}
+
 // 错误响应
 func Err(c *Ctx, code int) error {
 	return c.JSON(fiber.Map{
