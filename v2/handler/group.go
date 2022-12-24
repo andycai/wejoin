@@ -101,6 +101,17 @@ func (gh GroupHandler) Approve(c *Ctx) error {
 	return Push(c, enum.SucGroupApprove)
 }
 
+func (gh GroupHandler) Refuse(c *Ctx) error {
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	err := system.Group.Refuse(gid, uid)
+	if err != nil {
+		return Err(c, enum.ErrGroupRefuse)
+	}
+
+	return Push(c, enum.SucGroupRefuse)
+}
+
 func (gh GroupHandler) Promote(c *Ctx) error {
 	return Ok(c, nil)
 }

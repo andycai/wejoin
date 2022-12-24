@@ -3,6 +3,8 @@ package enum
 var codeText = map[int]string{
 	Success:                          "成功",
 	SucGroupApply:                    "申请加入群组成功",
+	SucGroupApprove:                  "成功通过申请",
+	SucGroupRefuse:                   "成功拒绝申请",
 	ErrParam:                         "参数错误",
 	ErrData:                          "数据错误",
 	ErrOp:                            "操作失败",

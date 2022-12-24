@@ -105,7 +105,7 @@ func (us GroupSystem) Apply(gid, uid int32) error {
 	return errors.New("application exists")
 }
 
-// Approve 审批申请
+// Approve 批准加入
 func (us GroupSystem) Approve(gid, uid int32) error {
 	ga := dao.Q.GroupApplication
 	rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
@@ -133,6 +133,18 @@ func (us GroupSystem) Approve(gid, uid int32) error {
 	}
 
 	return errors.New("approve failed")
+}
+
+// Refuse 拒绝
+func (us GroupSystem) Refuse(gid, uid int32) error {
+	ga := dao.Q.GroupApplication
+	rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
+	if err == nil && rs != nil {
+		//  更新申请状态
+		_, err = ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Update(ga.Deleted, 1)
+	}
+
+	return err
 }
 
 // Promote 提升管理员

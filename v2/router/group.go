@@ -29,6 +29,8 @@ func registerGroupRouter(app *fiber.App) {
 		groupsAPI.Post("/apply/:gid/:uid", handler.Group.Apply)
 		// 同意加入
 		groupsAPI.Post("/approve/:gid", handler.Group.Approve)
+		// 拒绝加入
+		groupsAPI.Post("/refuse/:gid", handler.Group.Refuse)
 		// 提升为管理员
 		groupsAPI.Post("/promote/:gid/:mid", handler.Group.Promote)
 		// 转让群主
