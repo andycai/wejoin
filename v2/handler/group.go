@@ -15,7 +15,7 @@ var Group = new(GroupHandler)
 func pushGroupInfo(c *Ctx, id int32) error {
 	info, err := system.Group.GetInfo(id)
 	if err != nil {
-		return Err(c, enum.ErrGroupNotFound)
+		return Push(c, enum.ErrGroupNotFound)
 	}
 
 	return Ok(c, info)
@@ -34,7 +34,7 @@ func (gh GroupHandler) GetGroupsByUserID(c *Ctx) error {
 	uid := I32(c, "uid")
 	groups, err := system.Group.GetGroupsByUserID(uid)
 	if err != nil {
-		return Err(c, enum.ErrGroupGetData)
+		return Push(c, enum.ErrGroupGetData)
 	}
 
 	return Ok(c, groups)
@@ -49,7 +49,7 @@ func (gh GroupHandler) GetGroups(c *Ctx) error {
 
 	groups, err := system.Group.GetGroups(page, num)
 	if err != nil {
-		return Err(c, enum.ErrGroupGetData)
+		return Push(c, enum.ErrGroupGetData)
 	}
 
 	return Ok(c, groups)
@@ -59,7 +59,7 @@ func (gh GroupHandler) GetApplyList(c *Ctx) error {
 	gid := I32(c, "gid")
 	list, err := system.Group.GetApplyList(gid)
 	if err != nil {
-		return Err(c, enum.ErrGroupApplicationListNotFound)
+		return Push(c, enum.ErrGroupApplicationListNotFound)
 	}
 
 	return Ok(c, list)
@@ -69,7 +69,7 @@ func (gh GroupHandler) GetActivitiesByGroupId(c *Ctx) error {
 	gid := I32(c, "gid")
 	list, err := system.Activity.GetActivitiesByGroupID(gid)
 	if err != nil {
-		return Err(c, enum.ErrActivityGetData)
+		return Push(c, enum.ErrActivityGetData)
 	}
 
 	return Ok(c, list)
@@ -84,7 +84,7 @@ func (gh GroupHandler) Apply(c *Ctx) error {
 	uid := I32(c, "uid")
 	err := system.Group.Apply(gid, uid)
 	if err != nil {
-		return Err(c, enum.ErrGroupApply)
+		return Push(c, enum.ErrGroupApply)
 	}
 
 	return Push(c, enum.SucGroupApply)
@@ -95,7 +95,7 @@ func (gh GroupHandler) Approve(c *Ctx) error {
 	uid := I32(c, "uid")
 	err := system.Group.Approve(gid, uid)
 	if err != nil {
-		return Err(c, enum.ErrGroupApprove)
+		return Push(c, enum.ErrGroupApprove)
 	}
 
 	return Push(c, enum.SucGroupApprove)
@@ -106,7 +106,7 @@ func (gh GroupHandler) Refuse(c *Ctx) error {
 	uid := I32(c, "uid")
 	err := system.Group.Refuse(gid, uid)
 	if err != nil {
-		return Err(c, enum.ErrGroupRefuse)
+		return Push(c, enum.ErrGroupRefuse)
 	}
 
 	return Push(c, enum.SucGroupRefuse)
@@ -117,6 +117,10 @@ func (gh GroupHandler) Promote(c *Ctx) error {
 }
 
 func (gh GroupHandler) Transfer(c *Ctx) error {
+	return Ok(c, nil)
+}
+
+func (gh GroupHandler) Fire(c *Ctx) error {
 	return Ok(c, nil)
 }
 

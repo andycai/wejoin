@@ -74,14 +74,6 @@ func Push(c *Ctx, code int) error {
 	})
 }
 
-// 错误响应
-func Err(c *Ctx, code int) error {
-	return c.JSON(fiber.Map{
-		"code": code,
-		"msg":  enum.CodeText(code),
-	})
-}
-
 // 普通消息响应
 func Msg(c *Ctx, code int, msg string) error {
 	return c.JSON(fiber.Map{

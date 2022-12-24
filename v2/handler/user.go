@@ -15,7 +15,7 @@ var User = new(UserHandler)
 func pushUserInfo(c *Ctx, id int32) error {
 	info, err := system.User.GetInfo(id)
 	if err != nil {
-		return Err(c, enum.ErrUserNotFound)
+		return Push(c, enum.ErrUserNotFound)
 	}
 
 	return Ok(c, info)

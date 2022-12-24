@@ -24,7 +24,7 @@ func registerGroupRouter(app *fiber.App) {
 		groupsAPI.Get("/activities/:gid", handler.Group.GetActivitiesByGroupId)
 
 		// 创建群组
-		groupsAPI.Post("/", handler.Group.Create)
+		groupsAPI.Post("/create", handler.Group.Create)
 		// 申请加入群组
 		groupsAPI.Post("/apply/:gid/:uid", handler.Group.Apply)
 		// 同意加入
@@ -35,12 +35,15 @@ func registerGroupRouter(app *fiber.App) {
 		groupsAPI.Post("/promote/:gid/:mid", handler.Group.Promote)
 		// 转让群主
 		groupsAPI.Post("/transfer/:gid/:mid", handler.Group.Transfer)
-		// 删除群组
-		groupsAPI.Post("/remove/:gid/:mid", handler.Group.Remove)
+		// 踢出群组
+		groupsAPI.Post("/fire/:gid/:mid", handler.Group.Fire)
 		// 退出群组
 		groupsAPI.Post("/quit/:gid", handler.Group.Quit)
 
 		// 修改群组资料
 		groupsAPI.Put("/:gid", handler.Group.Update)
+
+		// 删除群组
+		groupsAPI.Delete("/remove/:gid", handler.Group.Remove)
 	}
 }

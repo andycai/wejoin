@@ -157,14 +157,35 @@ func (us GroupSystem) Transfer(gid, uid int32) error {
 	return nil
 }
 
+// Fire 踢出群组
+func (us GroupSystem) Fire(gid int32, uid int32, mid int32) error {
+	// TODO: 如果mid是管理员才能踢人
+
+	gm := dao.Q.GroupMember
+	result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
+	if err == nil {
+		return result.Error
+	}
+
+	return err
+}
+
 // Remove 删除群组
 func (us GroupSystem) Remove(gid int32) error {
+	// TODO: 如果mid是群组才能删除
+
 	return nil
 }
 
 // Quit 退出群组
 func (us GroupSystem) Quit(gid, uid int32) error {
-	return nil
+	gm := dao.Q.GroupMember
+	result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
+	if err == nil {
+		return result.Error
+	}
+
+	return err
 }
 
 // Update 更新群组资料
