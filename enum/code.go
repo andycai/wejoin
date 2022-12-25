@@ -5,6 +5,14 @@ const (
 	SucGroupApply                    = 200
 	SucGroupApprove                  = 201
 	SucGroupRefuse                   = 202
+	SucGroupUpdateName               = 203
+	SucGroupUpdateNotice             = 204
+	SucGroupUpdateAddr               = 205
+	SucGroupQuit                     = 206
+	SucGroupRemove                   = 207
+	SucGroupFire                     = 208
+	SucGroupTransfer                 = 209
+	SucGroupPromote                  = 210
 	ErrParam                         = -100
 	ErrData                          = -101
 	ErrOp                            = -102
@@ -28,6 +36,11 @@ const (
 	ErrGroupApplyTwice               = -212
 	ErrGroupApply                    = -213
 	ErrGroupRefuse                   = -214
+	ErrGroupUpdateName               = -215
+	ErrGroupUpdateNotice             = -216
+	ErrGroupUpdateAddr               = -217
+	ErrGroupQuit                     = -218
+	ErrGroupFire                     = -219
 	ErrActivityGetData               = -300
 	ErrActivityCannotApplyNotInGroup = -301
 	ErrActivityUpdate                = -302

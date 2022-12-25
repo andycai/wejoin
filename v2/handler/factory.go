@@ -2,8 +2,6 @@ package handler
 
 import (
 	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/v2/comp"
-	"github.com/andycai/axe-fiber/v2/hub"
 	"github.com/spf13/cast"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,21 +14,7 @@ func IP(c *Ctx) string {
 	return c.IP()
 }
 
-// RetrieveBody 获取请求体的参数对象
-func RetrieveBody(c *Ctx) *comp.BodyObject {
-	body := hub.BodyPool.Get().(*comp.BodyObject)
-	body.Reset()
-	c.BodyParser(body)
-
-	return body
-}
-
-// RevertBody 放回对象池
-func RevertBody(obj *comp.BodyObject) {
-	hub.BodyPool.Put(obj)
-}
-
-func String(c *Ctx, key string, defaultValue ...string) string {
+func Str(c *Ctx, key string, defaultValue ...string) string {
 	return c.Params(key, defaultValue...)
 }
 

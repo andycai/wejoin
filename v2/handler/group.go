@@ -42,10 +42,8 @@ func (gh GroupHandler) GetGroupsByUserID(c *Ctx) error {
 
 // GetGroups 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
 func (gh GroupHandler) GetGroups(c *Ctx) error {
-	obj := RetrieveBody(c)
 	page := Int(c, "page")
 	num := Int(c, "num")
-	RevertBody(obj)
 
 	groups, err := system.Group.GetGroups(page, num)
 	if err != nil {
@@ -93,7 +91,8 @@ func (gh GroupHandler) Apply(c *Ctx) error {
 func (gh GroupHandler) Approve(c *Ctx) error {
 	gid := I32(c, "gid")
 	uid := I32(c, "uid")
-	err := system.Group.Approve(gid, uid)
+	mid := I32(c, "mid")
+	err := system.Group.Approve(gid, uid, mid)
 	if err != nil {
 		return Push(c, enum.ErrGroupApprove)
 	}
@@ -104,7 +103,8 @@ func (gh GroupHandler) Approve(c *Ctx) error {
 func (gh GroupHandler) Refuse(c *Ctx) error {
 	gid := I32(c, "gid")
 	uid := I32(c, "uid")
-	err := system.Group.Refuse(gid, uid)
+	mid := I32(c, "mid")
+	err := system.Group.Refuse(gid, uid, mid)
 	if err != nil {
 		return Push(c, enum.ErrGroupRefuse)
 	}
@@ -113,26 +113,104 @@ func (gh GroupHandler) Refuse(c *Ctx) error {
 }
 
 func (gh GroupHandler) Promote(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	mid := I32(c, "mid")
+	err := system.Group.Promote(gid, uid, mid)
+
+	if err != nil {
+		return Push(c, enum.ErrGroupPromote)
+	}
+
+	return Push(c, enum.SucGroupPromote)
 }
 
 func (gh GroupHandler) Transfer(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	mid := I32(c, "mid")
+	err := system.Group.Transfer(gid, uid, mid)
+
+	if err != nil {
+		return Push(c, enum.ErrGroupTransfer)
+	}
+
+	return Push(c, enum.SucGroupTransfer)
 }
 
 func (gh GroupHandler) Fire(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	mid := I32(c, "mid")
+	err := system.Group.Fire(gid, uid, mid)
+
+	if err != nil {
+		return Push(c, enum.ErrGroupFire)
+	}
+
+	return Push(c, enum.SucGroupFire)
 }
 
 func (gh GroupHandler) Remove(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	err := system.Group.Remove(gid, uid)
+
+	if err != nil {
+		return Push(c, enum.ErrGroupRemove)
+	}
+
+	return Push(c, enum.SucGroupRemove)
 }
 
 func (gh GroupHandler) Quit(c *Ctx) error {
-	return Ok(c, nil)
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	err := system.Group.Quit(gid, uid)
+
+	if err != nil {
+		return Push(c, enum.ErrGroupQuit)
+	}
+
+	return Push(c, enum.SucGroupQuit)
 }
 
 // put
-func (gh GroupHandler) Update(c *Ctx) error {
-	return Ok(c, nil)
+func (gh GroupHandler) UpdateName(c *Ctx) error {
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	name := Str(c, "name")
+	// c.Body()
+	err := system.Group.UpdateName(gid, uid, name)
+	if err != nil {
+		return Push(c, enum.ErrGroupUpdateName)
+	}
+
+	return Push(c, enum.SucGroupUpdateName)
+}
+
+func (gh GroupHandler) UpdateNotice(c *Ctx) error {
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	notice := Str(c, "notice")
+	// c.Body()
+	err := system.Group.UpdateNotice(gid, uid, notice)
+	if err != nil {
+		return Push(c, enum.ErrGroupUpdateNotice)
+	}
+
+	return Push(c, enum.SucGroupUpdateNotice)
+}
+
+func (gh GroupHandler) UpdateAddr(c *Ctx) error {
+	gid := I32(c, "gid")
+	uid := I32(c, "uid")
+	addr := Str(c, "addr")
+	// c.Body()
+	err := system.Group.UpdateAddr(gid, uid, addr)
+	if err != nil {
+		return Push(c, enum.ErrGroupUpdateAddr)
+	}
+
+	return Push(c, enum.SucGroupUpdateAddr)
 }

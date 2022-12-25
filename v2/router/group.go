@@ -41,7 +41,9 @@ func registerGroupRouter(app *fiber.App) {
 		groupsAPI.Post("/quit/:gid", handler.Group.Quit)
 
 		// 修改群组资料
-		groupsAPI.Put("/:gid", handler.Group.Update)
+		groupsAPI.Put("/edit/name/:gid", handler.Group.UpdateName)
+		groupsAPI.Put("/edit/notice/:gid", handler.Group.UpdateNotice)
+		groupsAPI.Put("/edit/addr/:gid", handler.Group.UpdateAddr)
 
 		// 删除群组
 		groupsAPI.Delete("/remove/:gid", handler.Group.Remove)
