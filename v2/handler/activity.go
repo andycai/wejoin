@@ -1,21 +1,32 @@
 package handler
 
+import (
+	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/v2/system"
+)
+
 type ActivityHandler struct{}
 
 var Activity = new(ActivityHandler)
 
-func (ah ActivityHandler) GetActivityById(c *Ctx) error {
-	// aid := I32(c, "aid")
-	// if !system.Activity.Exists(aid) {
-	// 	return Err(c, enum.ErrActivityNotFound)
-	// }
-	// act := system.Cache.Activity(aid)
+func (ah ActivityHandler) GetActivityByID(c *Ctx) error {
+	aid := I32(c, "aid")
+	info, err := system.Activity.GetInfo(aid)
+	if err != nil {
+		return Push(c, enum.ErrActivityNotFound)
+	}
 
-	return Ok(c, nil)
+	return Ok(c, info)
 }
 
-func (ah ActivityHandler) GetActivitiesByUserId(c *Ctx) error {
-	return Ok(c, nil)
+func (ah ActivityHandler) GetActivitiesByUserID(c *Ctx) error {
+	uid := I32(c, "uid")
+	activities, err := system.Activity.GetActivitiesByUserID(uid)
+	if err != nil {
+		return Push(c, enum.ErrActivityGetData)
+	}
+
+	return Ok(c, activities)
 }
 
 func (ah ActivityHandler) GetActivities(c *Ctx) error {

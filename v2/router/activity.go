@@ -15,7 +15,7 @@ func registerActivityRouter(app *fiber.App) {
 	actsAPI := app.Group("/v2/activities")
 	{
 		// 获取活动详细内容
-		actsAPI.Get("/:aid", handler.Activity.GetActivityById)
+		actsAPI.Get("/:aid", handler.Activity.GetActivityByID)
 		// 获取最近一段的活动
 		actsAPI.Get("/list/:page/:num", handler.Activity.GetActivities)
 		// TODO: 获取最近一段时间附近的活动
@@ -33,6 +33,6 @@ func registerActivityRouter(app *fiber.App) {
 		actsAPI.Put("/:aid}", handler.Activity.Update)
 
 		// 删除活动
-		actsAPI.Delete("/remove/:aid/:index", handler.Activity.Remove)
+		actsAPI.Delete("/remove/:aid", handler.Activity.Remove)
 	}
 }

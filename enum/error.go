@@ -12,6 +12,7 @@ const (
 	ErrorTextGroupMemberFull  = "群成员名额已满"
 	ErrorTextGroupNameExists  = "群的名字已经存在"
 	ErrorTextGroupManagerOp   = "只有群管理员才能操作"
+	ErrorTextActivityNotFound = "活动不存在"
 )
 
 var errorDict map[string]error
