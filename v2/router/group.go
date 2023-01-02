@@ -21,7 +21,7 @@ func registerGroupRouter(app *fiber.App) {
 		// 获取申请加入群组的列表
 		groupsAPI.Get("/applications/:gid", handler.Group.GetApplyList)
 		// 获取群组活动列表
-		groupsAPI.Get("/activities/:gid", handler.Group.GetActivitiesByGroupId)
+		groupsAPI.Get("/activities/:gid/:page/:num", handler.Group.GetActivitiesByGroupId)
 
 		// 创建群组
 		groupsAPI.Post("/create", handler.Group.Create)

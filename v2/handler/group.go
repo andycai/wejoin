@@ -53,6 +53,7 @@ func (gh GroupHandler) GetGroups(c *Ctx) error {
 	return Ok(c, groups)
 }
 
+// GetApplyList 返回申请加入群组用户列表
 func (gh GroupHandler) GetApplyList(c *Ctx) error {
 	gid := I32(c, "gid")
 	list, err := system.Group.GetApplyList(gid)
@@ -63,6 +64,7 @@ func (gh GroupHandler) GetApplyList(c *Ctx) error {
 	return Ok(c, list)
 }
 
+// GetActivitiesByGroupId 返回群组创建活动列表
 func (gh GroupHandler) GetActivitiesByGroupId(c *Ctx) error {
 	gid := I32(c, "gid")
 	list, err := system.Activity.GetActivitiesByGroupID(gid)

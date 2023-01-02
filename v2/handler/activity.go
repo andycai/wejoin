@@ -9,6 +9,7 @@ type ActivityHandler struct{}
 
 var Activity = new(ActivityHandler)
 
+// GetActivityByID 返回活动详情
 func (ah ActivityHandler) GetActivityByID(c *Ctx) error {
 	aid := I32(c, "aid")
 	info, err := system.Activity.GetInfo(aid)
@@ -19,6 +20,7 @@ func (ah ActivityHandler) GetActivityByID(c *Ctx) error {
 	return Ok(c, info)
 }
 
+// GetActivitiesByGroupID 返回用户参与的活动列表
 func (ah ActivityHandler) GetActivitiesByUserID(c *Ctx) error {
 	uid := I32(c, "uid")
 	activities, err := system.Activity.GetActivitiesByUserID(uid)
@@ -29,8 +31,28 @@ func (ah ActivityHandler) GetActivitiesByUserID(c *Ctx) error {
 	return Ok(c, activities)
 }
 
+// GetActivitiesByGroupID 返回群组创建的活动列表
+// func (ah ActivityHandler) GetActivitiesByGroupID(c *Ctx) error {
+// 	gid := I32(c, "gid")
+// 	activities, err := system.Activity.GetActivitiesByGroupID(gid)
+// 	if err != nil {
+// 		return Push(c, enum.ErrActivityGetData)
+// 	}
+
+// 	return Ok(c, activities)
+// }
+
+// GetActivities 返回活动列表
 func (ah ActivityHandler) GetActivities(c *Ctx) error {
-	return Ok(c, nil)
+	page := Int(c, "page")
+	num := Int(c, "num")
+
+	groups, err := system.Activity.GetActivities(page, num)
+	if err != nil {
+		return Push(c, enum.ErrGroupGetData)
+	}
+
+	return Ok(c, groups)
 }
 
 func (ah ActivityHandler) Create(c *Ctx) error {
@@ -53,6 +75,26 @@ func (ah ActivityHandler) Remove(c *Ctx) error {
 	return Ok(c, nil)
 }
 
-func (ah ActivityHandler) Update(c *Ctx) error {
+func (ah ActivityHandler) UpdateTitle(c *Ctx) error {
+	return Ok(c, nil)
+}
+
+func (ah ActivityHandler) UpdateContent(c *Ctx) error {
+	return Ok(c, nil)
+}
+
+func (ah ActivityHandler) UpdateAddr(c *Ctx) error {
+	return Ok(c, nil)
+}
+
+func (ah ActivityHandler) UpdateTime(c *Ctx) error {
+	return Ok(c, nil)
+}
+
+func (ah ActivityHandler) UpdateQuota(c *Ctx) error {
+	return Ok(c, nil)
+}
+
+func (ah ActivityHandler) UpdateFee(c *Ctx) error {
 	return Ok(c, nil)
 }

@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/library/math"
 	"github.com/andycai/axe-fiber/v2/comp"
 	"github.com/andycai/axe-fiber/v2/dao"
 )
@@ -27,6 +28,7 @@ func (as ActivitySystem) GetInfo(aid int32) (*comp.APIActivity, error) {
 func (us ActivitySystem) GetActivitiesByUserID(uid int32) ([]*comp.APIActivity, error) {
 	ids := make([]int32, 0)
 	u := dao.Q.ActivityUser
+	// TODO: 使用关联表方式
 	err := u.Select(u.ActivityID).Where(u.UserID.Eq(uid)).Scan(&ids)
 	if err != nil {
 		return nil, err
@@ -47,6 +49,23 @@ func (as ActivitySystem) GetActivitiesByGroupID(gid int32) ([]*comp.APIActivity,
 	a := dao.Q.Activity
 	list := make([]*comp.APIActivity, 0)
 	err := a.Where(a.GroupID.Eq(gid)).Scan(&list)
+	if err != nil {
+		return nil, err
+	}
+
+	return list, nil
+}
+
+// GetActivities 返回活动列表
+func (as ActivitySystem) GetActivities(page int, num int) ([]*comp.APIActivity, error) {
+	a := dao.Q.Activity
+	list := make([]*comp.APIActivity, 0)
+	max := math.Max[int]
+	page = max(page-1, 0)
+	if num <= 0 {
+		num = enum.DefaultActivityCount
+	}
+	err := a.Offset(page * num).Limit(num).Scan(&list)
 	if err != nil {
 		return nil, err
 	}

@@ -90,18 +90,18 @@ func (us GroupSystem) GetGroupsByUserID(uid int32) ([]*comp.APIGroup, error) {
 // GetGroups 返回最近的群组列表
 func (us GroupSystem) GetGroups(page int, num int) ([]*comp.APIGroup, error) {
 	g := dao.Q.Group
-	groups := make([]*comp.APIGroup, 0)
+	list := make([]*comp.APIGroup, 0)
 	max := math.Max[int]
 	page = max(page-1, 0)
 	if num <= 0 {
 		num = enum.DefaultGroupCount
 	}
-	err := g.Offset(page * num).Limit(num).Scan(&groups)
+	err := g.Offset(page * num).Limit(num).Scan(&list)
 	if err != nil {
 		return nil, err
 	}
 
-	return groups, nil
+	return list, nil
 }
 
 // GetApplyList 返回群组的申请入群列表
