@@ -11,12 +11,12 @@ import (
 
 type APIActivity struct {
 	ID        int32     `json:"id"`
-	Planner   int32     `json:"planner"`
+	UserID    int32     `json:"user_id"`
 	Kind      int32     `json:"kind"`       // 活动分类:1羽毛球,2篮球,3足球,4聚餐...
 	Type      int32     `json:"type"`       // 活动类型:1全局保护,2全局公开,3群组
 	Status    int32     `json:"status"`     // 活动状态:1进行中,2正常结算完成,3手动终止
 	Quota     int32     `json:"quota"`      // 名额
-	GroupId   int32     `json:"group_id"`   // 群组ID
+	GroupID   int32     `json:"group_id"`   // 群组ID
 	Ahead     int32     `json:"ahead"`      // 提前取消报名限制（小时）
 	FeeType   int32     `json:"fee_type"`   // 结算方式:1免费,2活动前,3活动后男女平均,4活动后男固定|女平摊,5活动后男平摊|女固定
 	FeeMale   int32     `json:"fee_male"`   // 男费用
@@ -31,7 +31,7 @@ type APIActivity struct {
 
 // IsPlanner 是否发起者
 func (a APIActivity) IsPlanner(uid int32) bool {
-	return uid == a.Planner
+	return uid == a.UserID
 }
 
 // Settle 结算

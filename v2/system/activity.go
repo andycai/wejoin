@@ -25,7 +25,7 @@ func (as ActivitySystem) GetInfo(aid int32) (*comp.APIActivity, error) {
 }
 
 // GetActivitiesByUserID 返回活动列表
-func (us ActivitySystem) GetActivitiesByUserID(uid int32) ([]*comp.APIActivity, error) {
+func (as ActivitySystem) GetActivitiesByUserID(uid int32) ([]*comp.APIActivity, error) {
 	ids := make([]int32, 0)
 	u := dao.Q.ActivityUser
 	// TODO: 使用关联表方式

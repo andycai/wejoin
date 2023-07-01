@@ -13,7 +13,7 @@ const TableNameActivity = "activity"
 // Activity mapped from table <activity>
 type Activity struct {
 	ID        int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                    // 活动ID
-	Planner   int32     `gorm:"column:planner;not null" json:"planner"`                               // 组织者ID
+	UserID   int32     `gorm:"column:user_id;not null" json:"user_id"`                               // 组织者ID
 	GroupID   int32     `gorm:"column:group_id;not null" json:"group_id"`                             // 群组ID
 	Kind      int32     `gorm:"column:kind;not null;default:1" json:"kind"`                           // 活动分类:1羽毛球,2篮球,3足球,4聚餐...
 	Type      int32     `gorm:"column:type;not null;default:1" json:"type"`                           // 活动类型:1全局保护,2全局公开,3群组

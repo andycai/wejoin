@@ -20,9 +20,11 @@ type User struct {
 	WxToken   string    `gorm:"column:wx_token;not null" json:"wx_token"`                             // 微信session_key
 	WxNick    string    `gorm:"column:wx_nick;not null" json:"wx_nick"`                               // 微信昵称
 	Nick      string    `gorm:"column:nick;not null" json:"nick"`                                     // 昵称
-	Sex       int32     `gorm:"column:sex;not null;default:1" json:"sex"`                             // 性别:1男,2女
+	Avatar    string    `gorm:"column:avatar" json:"avatar"`                                     // 昵称
+	Gender    int32     `gorm:"column:gender;not null;default:1" json:"gender"`                             // 性别:1男,2女
 	Phone     string    `gorm:"column:phone" json:"phone"`                                            // 手机号码
 	Email     string    `gorm:"column:email" json:"email"`                                            // 邮箱
+	Addr      string    `gorm:"column:addr" json:"addr"`                                     // 昵称
 	IP        string    `gorm:"column:ip;default:0" json:"ip"`                                        // ip地址
 	LoginAt   time.Time `gorm:"column:login_at" json:"login_at"`                                      // 登录时间
 	OfflineAt time.Time `gorm:"column:offline_at" json:"offline_at"`                                  // 离开时间

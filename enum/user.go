@@ -1,7 +1,7 @@
 package enum
 
 const (
-	TypeSexNone = iota
-	TypeSexMale
-	TypeSexFemale
+	TypeGenderNone   = iota
+	TypeGenderMale   // 男
+	TypeGenderFemale // 女
 )

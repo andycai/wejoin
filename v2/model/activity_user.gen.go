@@ -16,7 +16,7 @@ type ActivityUser struct {
 	ActivityID int32     `gorm:"column:activity_id;not null" json:"activity_id"`                       // 活动id
 	UserID     int32     `gorm:"column:user_id;not null" json:"user_id"`                               // 报名用户id
 	Alias_     string    `gorm:"column:alias" json:"alias"`                                            // 报名昵称
-	Self       int32     `gorm:"column:self;not null;default:1" json:"self"`                           // 是否带朋友
+	IsFriend   int32     `gorm:"column:is_friend;not null;default:1" json:"is_friend"`                           // 是否带朋友
 	CreateAt   time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
 	UpdateAt   time.Time `gorm:"column:update_at;not null;default:CURRENT_TIMESTAMP" json:"update_at"` // 修改时间
 	DeleteAt   time.Time `gorm:"column:delete_at" json:"delete_at"`                                    // 删除时间

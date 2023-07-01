@@ -18,7 +18,6 @@ type GroupMember struct {
 	Scores   int32     `gorm:"column:scores;not null" json:"scores"`               // 积分
 	Position int32     `gorm:"column:position;not null;default:1" json:"position"` // 群组职位
 	Alias_   string    `gorm:"column:alias" json:"alias"`
-	Avatar   string    `gorm:"column:avatar" json:"avatar"`
 	EnterAt  time.Time `gorm:"column:enter_at" json:"enter_at"`                                      // 进入群组时间
 	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
 	UpdateAt time.Time `gorm:"column:update_at;not null;default:CURRENT_TIMESTAMP" json:"update_at"` // 更新时间

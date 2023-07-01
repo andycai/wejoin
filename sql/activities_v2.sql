@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `activity`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '活动ID',
-  `planner` int(11) unsigned NOT NULL COMMENT '组织者ID',
+  `user_id` int(11) unsigned NOT NULL COMMENT '组织者ID',
   `group_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '群组ID',
   `kind` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '活动分类:1羽毛球,2篮球,3足球,4聚餐...',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '活动类型:1全局保护,2全局公开,3群组',
@@ -46,7 +46,7 @@ CREATE TABLE `activity` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_begin_end` (`begin_at`,`end_at`),
   UNIQUE KEY `idx_group_kind_type_status` (`group_id`,`kind`,`type`,`status`),
-  UNIQUE KEY `idx_planner_kind_type_status` (`planner`,`kind`,`type`,`status`)
+  UNIQUE KEY `idx_planner_kind_type_status` (`user_id`,`kind`,`type`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='活动表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -71,7 +71,7 @@ CREATE TABLE `activity_user` (
   `activity_id` int(11) unsigned NOT NULL COMMENT '活动id',
   `user_id` int(11) unsigned NOT NULL COMMENT '报名用户id',
   `alias` varchar(128) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '报名昵称',
-  `self` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否带朋友',
+  `is_friend` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否朋友',
   `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `delete_at` datetime DEFAULT NULL COMMENT '删除时间',
@@ -164,7 +164,6 @@ CREATE TABLE `group_member` (
   `scores` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
   `position` tinyint(4) NOT NULL DEFAULT '1' COMMENT '群组职位',
   `alias` varchar(128) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '群组中别名',
-  `avatar` varchar(128) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '头像',
   `enter_at` datetime DEFAULT NULL COMMENT '进入群组时间',
   `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -199,9 +198,11 @@ CREATE TABLE `user` (
   `wx_token` varchar(128) CHARACTER SET utf8mb4 NOT NULL COMMENT '微信session_key',
   `wx_nick` varchar(128) CHARACTER SET utf8mb4 NOT NULL COMMENT '微信昵称',
   `nick` varchar(128) CHARACTER SET utf8mb4 NOT NULL COMMENT '昵称',
-  `sex` tinyint(2) NOT NULL DEFAULT '1' COMMENT '性别:1男,2女',
+  `avatar` varchar(128) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '头像',
+  `gender` tinyint(2) NOT NULL DEFAULT '1' COMMENT '性别:1男,2女',
   `phone` varchar(11) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '手机号码',
   `email` varchar(128) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '邮箱',
+  `addr` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '住址',
   `ip` varchar(128) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT 'ip地址',
   `login_at` datetime DEFAULT NULL COMMENT '登录时间',
   `offline_at` datetime DEFAULT NULL COMMENT '离开时间',
