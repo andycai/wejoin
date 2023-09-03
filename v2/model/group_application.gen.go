@@ -12,12 +12,12 @@ const TableNameGroupApplication = "group_application"
 
 // GroupApplication mapped from table <group_application>
 type GroupApplication struct {
-	ID       int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                    // 申请id
-	UserID   int32     `gorm:"column:user_id;not null" json:"user_id"`                               // 用户id
-	GroupID  int32     `gorm:"column:group_id;not null" json:"group_id"`                             // 群组id
-	Deleted  int32     `gorm:"column:deleted;not null" json:"deleted"`                               // 是否删除
-	DeleteAt time.Time `gorm:"column:delete_at" json:"delete_at"`                                    // 删除id
-	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
+	ID       int32     `gorm:"column:id;primaryKey;autoIncrement:true;comment:申请id" json:"id"`                      // 申请id
+	UserID   int32     `gorm:"column:user_id;not null;comment:用户id" json:"user_id"`                                 // 用户id
+	GroupID  int32     `gorm:"column:group_id;not null;comment:群组id" json:"group_id"`                               // 群组id
+	Deleted  int32     `gorm:"column:deleted;not null;comment:是否删除" json:"deleted"`                                 // 是否删除
+	DeleteAt time.Time `gorm:"column:delete_at;comment:删除id" json:"delete_at"`                                      // 删除id
+	CreateAt time.Time `gorm:"column:create_at;not null;default:current_timestamp();comment:创建时间" json:"create_at"` // 创建时间
 }
 
 // TableName GroupApplication's table name

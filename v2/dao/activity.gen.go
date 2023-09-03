@@ -28,7 +28,7 @@ func newActivity(db *gorm.DB, opts ...gen.DOOption) activity {
 	tableName := _activity.activityDo.TableName()
 	_activity.ALL = field.NewAsterisk(tableName)
 	_activity.ID = field.NewInt32(tableName, "id")
-	_activity.Planner = field.NewInt32(tableName, "planner")
+	_activity.UserID = field.NewInt32(tableName, "user_id")
 	_activity.GroupID = field.NewInt32(tableName, "group_id")
 	_activity.Kind = field.NewInt32(tableName, "kind")
 	_activity.Type = field.NewInt32(tableName, "type")
@@ -58,7 +58,7 @@ type activity struct {
 
 	ALL       field.Asterisk
 	ID        field.Int32  // 活动ID
-	Planner   field.Int32  // 组织者ID
+	UserID    field.Int32  // 组织者ID
 	GroupID   field.Int32  // 群组ID
 	Kind      field.Int32  // 活动分类:1羽毛球,2篮球,3足球,4聚餐...
 	Type      field.Int32  // 活动类型:1全局保护,2全局公开,3群组
@@ -94,7 +94,7 @@ func (a activity) As(alias string) *activity {
 func (a *activity) updateTableName(table string) *activity {
 	a.ALL = field.NewAsterisk(table)
 	a.ID = field.NewInt32(table, "id")
-	a.Planner = field.NewInt32(table, "planner")
+	a.UserID = field.NewInt32(table, "user_id")
 	a.GroupID = field.NewInt32(table, "group_id")
 	a.Kind = field.NewInt32(table, "kind")
 	a.Type = field.NewInt32(table, "type")
@@ -119,12 +119,6 @@ func (a *activity) updateTableName(table string) *activity {
 	return a
 }
 
-func (a *activity) WithContext(ctx context.Context) *activityDo { return a.activityDo.WithContext(ctx) }
-
-func (a activity) TableName() string { return a.activityDo.TableName() }
-
-func (a activity) Alias() string { return a.activityDo.Alias() }
-
 func (a *activity) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := a.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -137,7 +131,7 @@ func (a *activity) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 func (a *activity) fillFieldMap() {
 	a.fieldMap = make(map[string]field.Expr, 20)
 	a.fieldMap["id"] = a.ID
-	a.fieldMap["planner"] = a.Planner
+	a.fieldMap["user_id"] = a.UserID
 	a.fieldMap["group_id"] = a.GroupID
 	a.fieldMap["kind"] = a.Kind
 	a.fieldMap["type"] = a.Type
@@ -170,99 +164,156 @@ func (a activity) replaceDB(db *gorm.DB) activity {
 
 type activityDo struct{ gen.DO }
 
-func (a activityDo) Debug() *activityDo {
+type IActivityDo interface {
+	gen.SubQuery
+	Debug() IActivityDo
+	WithContext(ctx context.Context) IActivityDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IActivityDo
+	WriteDB() IActivityDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IActivityDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IActivityDo
+	Not(conds ...gen.Condition) IActivityDo
+	Or(conds ...gen.Condition) IActivityDo
+	Select(conds ...field.Expr) IActivityDo
+	Where(conds ...gen.Condition) IActivityDo
+	Order(conds ...field.Expr) IActivityDo
+	Distinct(cols ...field.Expr) IActivityDo
+	Omit(cols ...field.Expr) IActivityDo
+	Join(table schema.Tabler, on ...field.Expr) IActivityDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IActivityDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IActivityDo
+	Group(cols ...field.Expr) IActivityDo
+	Having(conds ...gen.Condition) IActivityDo
+	Limit(limit int) IActivityDo
+	Offset(offset int) IActivityDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IActivityDo
+	Unscoped() IActivityDo
+	Create(values ...*model.Activity) error
+	CreateInBatches(values []*model.Activity, batchSize int) error
+	Save(values ...*model.Activity) error
+	First() (*model.Activity, error)
+	Take() (*model.Activity, error)
+	Last() (*model.Activity, error)
+	Find() ([]*model.Activity, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Activity, err error)
+	FindInBatches(result *[]*model.Activity, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Activity) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IActivityDo
+	Assign(attrs ...field.AssignExpr) IActivityDo
+	Joins(fields ...field.RelationField) IActivityDo
+	Preload(fields ...field.RelationField) IActivityDo
+	FirstOrInit() (*model.Activity, error)
+	FirstOrCreate() (*model.Activity, error)
+	FindByPage(offset int, limit int) (result []*model.Activity, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IActivityDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (a activityDo) Debug() IActivityDo {
 	return a.withDO(a.DO.Debug())
 }
 
-func (a activityDo) WithContext(ctx context.Context) *activityDo {
+func (a activityDo) WithContext(ctx context.Context) IActivityDo {
 	return a.withDO(a.DO.WithContext(ctx))
 }
 
-func (a activityDo) ReadDB() *activityDo {
+func (a activityDo) ReadDB() IActivityDo {
 	return a.Clauses(dbresolver.Read)
 }
 
-func (a activityDo) WriteDB() *activityDo {
+func (a activityDo) WriteDB() IActivityDo {
 	return a.Clauses(dbresolver.Write)
 }
 
-func (a activityDo) Session(config *gorm.Session) *activityDo {
+func (a activityDo) Session(config *gorm.Session) IActivityDo {
 	return a.withDO(a.DO.Session(config))
 }
 
-func (a activityDo) Clauses(conds ...clause.Expression) *activityDo {
+func (a activityDo) Clauses(conds ...clause.Expression) IActivityDo {
 	return a.withDO(a.DO.Clauses(conds...))
 }
 
-func (a activityDo) Returning(value interface{}, columns ...string) *activityDo {
+func (a activityDo) Returning(value interface{}, columns ...string) IActivityDo {
 	return a.withDO(a.DO.Returning(value, columns...))
 }
 
-func (a activityDo) Not(conds ...gen.Condition) *activityDo {
+func (a activityDo) Not(conds ...gen.Condition) IActivityDo {
 	return a.withDO(a.DO.Not(conds...))
 }
 
-func (a activityDo) Or(conds ...gen.Condition) *activityDo {
+func (a activityDo) Or(conds ...gen.Condition) IActivityDo {
 	return a.withDO(a.DO.Or(conds...))
 }
 
-func (a activityDo) Select(conds ...field.Expr) *activityDo {
+func (a activityDo) Select(conds ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.Select(conds...))
 }
 
-func (a activityDo) Where(conds ...gen.Condition) *activityDo {
+func (a activityDo) Where(conds ...gen.Condition) IActivityDo {
 	return a.withDO(a.DO.Where(conds...))
 }
 
-func (a activityDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *activityDo {
-	return a.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
-}
-
-func (a activityDo) Order(conds ...field.Expr) *activityDo {
+func (a activityDo) Order(conds ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.Order(conds...))
 }
 
-func (a activityDo) Distinct(cols ...field.Expr) *activityDo {
+func (a activityDo) Distinct(cols ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.Distinct(cols...))
 }
 
-func (a activityDo) Omit(cols ...field.Expr) *activityDo {
+func (a activityDo) Omit(cols ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.Omit(cols...))
 }
 
-func (a activityDo) Join(table schema.Tabler, on ...field.Expr) *activityDo {
+func (a activityDo) Join(table schema.Tabler, on ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.Join(table, on...))
 }
 
-func (a activityDo) LeftJoin(table schema.Tabler, on ...field.Expr) *activityDo {
+func (a activityDo) LeftJoin(table schema.Tabler, on ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.LeftJoin(table, on...))
 }
 
-func (a activityDo) RightJoin(table schema.Tabler, on ...field.Expr) *activityDo {
+func (a activityDo) RightJoin(table schema.Tabler, on ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.RightJoin(table, on...))
 }
 
-func (a activityDo) Group(cols ...field.Expr) *activityDo {
+func (a activityDo) Group(cols ...field.Expr) IActivityDo {
 	return a.withDO(a.DO.Group(cols...))
 }
 
-func (a activityDo) Having(conds ...gen.Condition) *activityDo {
+func (a activityDo) Having(conds ...gen.Condition) IActivityDo {
 	return a.withDO(a.DO.Having(conds...))
 }
 
-func (a activityDo) Limit(limit int) *activityDo {
+func (a activityDo) Limit(limit int) IActivityDo {
 	return a.withDO(a.DO.Limit(limit))
 }
 
-func (a activityDo) Offset(offset int) *activityDo {
+func (a activityDo) Offset(offset int) IActivityDo {
 	return a.withDO(a.DO.Offset(offset))
 }
 
-func (a activityDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *activityDo {
+func (a activityDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IActivityDo {
 	return a.withDO(a.DO.Scopes(funcs...))
 }
 
-func (a activityDo) Unscoped() *activityDo {
+func (a activityDo) Unscoped() IActivityDo {
 	return a.withDO(a.DO.Unscoped())
 }
 
@@ -328,22 +379,22 @@ func (a activityDo) FindInBatches(result *[]*model.Activity, batchSize int, fc f
 	return a.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (a activityDo) Attrs(attrs ...field.AssignExpr) *activityDo {
+func (a activityDo) Attrs(attrs ...field.AssignExpr) IActivityDo {
 	return a.withDO(a.DO.Attrs(attrs...))
 }
 
-func (a activityDo) Assign(attrs ...field.AssignExpr) *activityDo {
+func (a activityDo) Assign(attrs ...field.AssignExpr) IActivityDo {
 	return a.withDO(a.DO.Assign(attrs...))
 }
 
-func (a activityDo) Joins(fields ...field.RelationField) *activityDo {
+func (a activityDo) Joins(fields ...field.RelationField) IActivityDo {
 	for _, _f := range fields {
 		a = *a.withDO(a.DO.Joins(_f))
 	}
 	return &a
 }
 
-func (a activityDo) Preload(fields ...field.RelationField) *activityDo {
+func (a activityDo) Preload(fields ...field.RelationField) IActivityDo {
 	for _, _f := range fields {
 		a = *a.withDO(a.DO.Preload(_f))
 	}

@@ -33,7 +33,6 @@ func newGroupMember(db *gorm.DB, opts ...gen.DOOption) groupMember {
 	_groupMember.Scores = field.NewInt32(tableName, "scores")
 	_groupMember.Position = field.NewInt32(tableName, "position")
 	_groupMember.Alias_ = field.NewString(tableName, "alias")
-	_groupMember.Avatar = field.NewString(tableName, "avatar")
 	_groupMember.EnterAt = field.NewTime(tableName, "enter_at")
 	_groupMember.CreateAt = field.NewTime(tableName, "create_at")
 	_groupMember.UpdateAt = field.NewTime(tableName, "update_at")
@@ -48,17 +47,16 @@ type groupMember struct {
 	groupMemberDo
 
 	ALL      field.Asterisk
-	ID       field.Int32 // 成员id
-	GroupID  field.Int32 // 群组id
-	UserID   field.Int32 // 用户id
-	Scores   field.Int32 // 积分
-	Position field.Int32 // 群组职位
-	Alias_   field.String
-	Avatar   field.String
-	EnterAt  field.Time // 进入群组时间
-	CreateAt field.Time // 创建时间
-	UpdateAt field.Time // 更新时间
-	DeleteAt field.Time // 删除时间
+	ID       field.Int32  // 成员id
+	GroupID  field.Int32  // 群组id
+	UserID   field.Int32  // 用户id
+	Scores   field.Int32  // 积分
+	Position field.Int32  // 群组职位
+	Alias_   field.String // 群组中别名
+	EnterAt  field.Time   // 进入群组时间
+	CreateAt field.Time   // 创建时间
+	UpdateAt field.Time   // 更新时间
+	DeleteAt field.Time   // 删除时间
 
 	fieldMap map[string]field.Expr
 }
@@ -81,7 +79,6 @@ func (g *groupMember) updateTableName(table string) *groupMember {
 	g.Scores = field.NewInt32(table, "scores")
 	g.Position = field.NewInt32(table, "position")
 	g.Alias_ = field.NewString(table, "alias")
-	g.Avatar = field.NewString(table, "avatar")
 	g.EnterAt = field.NewTime(table, "enter_at")
 	g.CreateAt = field.NewTime(table, "create_at")
 	g.UpdateAt = field.NewTime(table, "update_at")
@@ -91,14 +88,6 @@ func (g *groupMember) updateTableName(table string) *groupMember {
 
 	return g
 }
-
-func (g *groupMember) WithContext(ctx context.Context) *groupMemberDo {
-	return g.groupMemberDo.WithContext(ctx)
-}
-
-func (g groupMember) TableName() string { return g.groupMemberDo.TableName() }
-
-func (g groupMember) Alias() string { return g.groupMemberDo.Alias() }
 
 func (g *groupMember) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -110,14 +99,13 @@ func (g *groupMember) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (g *groupMember) fillFieldMap() {
-	g.fieldMap = make(map[string]field.Expr, 11)
+	g.fieldMap = make(map[string]field.Expr, 10)
 	g.fieldMap["id"] = g.ID
 	g.fieldMap["group_id"] = g.GroupID
 	g.fieldMap["user_id"] = g.UserID
 	g.fieldMap["scores"] = g.Scores
 	g.fieldMap["position"] = g.Position
 	g.fieldMap["alias"] = g.Alias_
-	g.fieldMap["avatar"] = g.Avatar
 	g.fieldMap["enter_at"] = g.EnterAt
 	g.fieldMap["create_at"] = g.CreateAt
 	g.fieldMap["update_at"] = g.UpdateAt
@@ -136,99 +124,156 @@ func (g groupMember) replaceDB(db *gorm.DB) groupMember {
 
 type groupMemberDo struct{ gen.DO }
 
-func (g groupMemberDo) Debug() *groupMemberDo {
+type IGroupMemberDo interface {
+	gen.SubQuery
+	Debug() IGroupMemberDo
+	WithContext(ctx context.Context) IGroupMemberDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGroupMemberDo
+	WriteDB() IGroupMemberDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IGroupMemberDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGroupMemberDo
+	Not(conds ...gen.Condition) IGroupMemberDo
+	Or(conds ...gen.Condition) IGroupMemberDo
+	Select(conds ...field.Expr) IGroupMemberDo
+	Where(conds ...gen.Condition) IGroupMemberDo
+	Order(conds ...field.Expr) IGroupMemberDo
+	Distinct(cols ...field.Expr) IGroupMemberDo
+	Omit(cols ...field.Expr) IGroupMemberDo
+	Join(table schema.Tabler, on ...field.Expr) IGroupMemberDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGroupMemberDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGroupMemberDo
+	Group(cols ...field.Expr) IGroupMemberDo
+	Having(conds ...gen.Condition) IGroupMemberDo
+	Limit(limit int) IGroupMemberDo
+	Offset(offset int) IGroupMemberDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGroupMemberDo
+	Unscoped() IGroupMemberDo
+	Create(values ...*model.GroupMember) error
+	CreateInBatches(values []*model.GroupMember, batchSize int) error
+	Save(values ...*model.GroupMember) error
+	First() (*model.GroupMember, error)
+	Take() (*model.GroupMember, error)
+	Last() (*model.GroupMember, error)
+	Find() ([]*model.GroupMember, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GroupMember, err error)
+	FindInBatches(result *[]*model.GroupMember, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GroupMember) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGroupMemberDo
+	Assign(attrs ...field.AssignExpr) IGroupMemberDo
+	Joins(fields ...field.RelationField) IGroupMemberDo
+	Preload(fields ...field.RelationField) IGroupMemberDo
+	FirstOrInit() (*model.GroupMember, error)
+	FirstOrCreate() (*model.GroupMember, error)
+	FindByPage(offset int, limit int) (result []*model.GroupMember, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGroupMemberDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g groupMemberDo) Debug() IGroupMemberDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g groupMemberDo) WithContext(ctx context.Context) *groupMemberDo {
+func (g groupMemberDo) WithContext(ctx context.Context) IGroupMemberDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g groupMemberDo) ReadDB() *groupMemberDo {
+func (g groupMemberDo) ReadDB() IGroupMemberDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g groupMemberDo) WriteDB() *groupMemberDo {
+func (g groupMemberDo) WriteDB() IGroupMemberDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g groupMemberDo) Session(config *gorm.Session) *groupMemberDo {
+func (g groupMemberDo) Session(config *gorm.Session) IGroupMemberDo {
 	return g.withDO(g.DO.Session(config))
 }
 
-func (g groupMemberDo) Clauses(conds ...clause.Expression) *groupMemberDo {
+func (g groupMemberDo) Clauses(conds ...clause.Expression) IGroupMemberDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g groupMemberDo) Returning(value interface{}, columns ...string) *groupMemberDo {
+func (g groupMemberDo) Returning(value interface{}, columns ...string) IGroupMemberDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g groupMemberDo) Not(conds ...gen.Condition) *groupMemberDo {
+func (g groupMemberDo) Not(conds ...gen.Condition) IGroupMemberDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g groupMemberDo) Or(conds ...gen.Condition) *groupMemberDo {
+func (g groupMemberDo) Or(conds ...gen.Condition) IGroupMemberDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g groupMemberDo) Select(conds ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) Select(conds ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g groupMemberDo) Where(conds ...gen.Condition) *groupMemberDo {
+func (g groupMemberDo) Where(conds ...gen.Condition) IGroupMemberDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g groupMemberDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *groupMemberDo {
-	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
-}
-
-func (g groupMemberDo) Order(conds ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) Order(conds ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g groupMemberDo) Distinct(cols ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) Distinct(cols ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g groupMemberDo) Omit(cols ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) Omit(cols ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g groupMemberDo) Join(table schema.Tabler, on ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) Join(table schema.Tabler, on ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g groupMemberDo) LeftJoin(table schema.Tabler, on ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g groupMemberDo) RightJoin(table schema.Tabler, on ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) RightJoin(table schema.Tabler, on ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g groupMemberDo) Group(cols ...field.Expr) *groupMemberDo {
+func (g groupMemberDo) Group(cols ...field.Expr) IGroupMemberDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g groupMemberDo) Having(conds ...gen.Condition) *groupMemberDo {
+func (g groupMemberDo) Having(conds ...gen.Condition) IGroupMemberDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g groupMemberDo) Limit(limit int) *groupMemberDo {
+func (g groupMemberDo) Limit(limit int) IGroupMemberDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g groupMemberDo) Offset(offset int) *groupMemberDo {
+func (g groupMemberDo) Offset(offset int) IGroupMemberDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g groupMemberDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *groupMemberDo {
+func (g groupMemberDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGroupMemberDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g groupMemberDo) Unscoped() *groupMemberDo {
+func (g groupMemberDo) Unscoped() IGroupMemberDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -294,22 +339,22 @@ func (g groupMemberDo) FindInBatches(result *[]*model.GroupMember, batchSize int
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g groupMemberDo) Attrs(attrs ...field.AssignExpr) *groupMemberDo {
+func (g groupMemberDo) Attrs(attrs ...field.AssignExpr) IGroupMemberDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g groupMemberDo) Assign(attrs ...field.AssignExpr) *groupMemberDo {
+func (g groupMemberDo) Assign(attrs ...field.AssignExpr) IGroupMemberDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g groupMemberDo) Joins(fields ...field.RelationField) *groupMemberDo {
+func (g groupMemberDo) Joins(fields ...field.RelationField) IGroupMemberDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g groupMemberDo) Preload(fields ...field.RelationField) *groupMemberDo {
+func (g groupMemberDo) Preload(fields ...field.RelationField) IGroupMemberDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

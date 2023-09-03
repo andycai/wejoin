@@ -77,14 +77,6 @@ func (g *groupApplication) updateTableName(table string) *groupApplication {
 	return g
 }
 
-func (g *groupApplication) WithContext(ctx context.Context) *groupApplicationDo {
-	return g.groupApplicationDo.WithContext(ctx)
-}
-
-func (g groupApplication) TableName() string { return g.groupApplicationDo.TableName() }
-
-func (g groupApplication) Alias() string { return g.groupApplicationDo.Alias() }
-
 func (g *groupApplication) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -116,99 +108,156 @@ func (g groupApplication) replaceDB(db *gorm.DB) groupApplication {
 
 type groupApplicationDo struct{ gen.DO }
 
-func (g groupApplicationDo) Debug() *groupApplicationDo {
+type IGroupApplicationDo interface {
+	gen.SubQuery
+	Debug() IGroupApplicationDo
+	WithContext(ctx context.Context) IGroupApplicationDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGroupApplicationDo
+	WriteDB() IGroupApplicationDo
+	As(alias string) gen.Dao
+	Session(config *gorm.Session) IGroupApplicationDo
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGroupApplicationDo
+	Not(conds ...gen.Condition) IGroupApplicationDo
+	Or(conds ...gen.Condition) IGroupApplicationDo
+	Select(conds ...field.Expr) IGroupApplicationDo
+	Where(conds ...gen.Condition) IGroupApplicationDo
+	Order(conds ...field.Expr) IGroupApplicationDo
+	Distinct(cols ...field.Expr) IGroupApplicationDo
+	Omit(cols ...field.Expr) IGroupApplicationDo
+	Join(table schema.Tabler, on ...field.Expr) IGroupApplicationDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGroupApplicationDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGroupApplicationDo
+	Group(cols ...field.Expr) IGroupApplicationDo
+	Having(conds ...gen.Condition) IGroupApplicationDo
+	Limit(limit int) IGroupApplicationDo
+	Offset(offset int) IGroupApplicationDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGroupApplicationDo
+	Unscoped() IGroupApplicationDo
+	Create(values ...*model.GroupApplication) error
+	CreateInBatches(values []*model.GroupApplication, batchSize int) error
+	Save(values ...*model.GroupApplication) error
+	First() (*model.GroupApplication, error)
+	Take() (*model.GroupApplication, error)
+	Last() (*model.GroupApplication, error)
+	Find() ([]*model.GroupApplication, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GroupApplication, err error)
+	FindInBatches(result *[]*model.GroupApplication, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GroupApplication) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGroupApplicationDo
+	Assign(attrs ...field.AssignExpr) IGroupApplicationDo
+	Joins(fields ...field.RelationField) IGroupApplicationDo
+	Preload(fields ...field.RelationField) IGroupApplicationDo
+	FirstOrInit() (*model.GroupApplication, error)
+	FirstOrCreate() (*model.GroupApplication, error)
+	FindByPage(offset int, limit int) (result []*model.GroupApplication, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGroupApplicationDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g groupApplicationDo) Debug() IGroupApplicationDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g groupApplicationDo) WithContext(ctx context.Context) *groupApplicationDo {
+func (g groupApplicationDo) WithContext(ctx context.Context) IGroupApplicationDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g groupApplicationDo) ReadDB() *groupApplicationDo {
+func (g groupApplicationDo) ReadDB() IGroupApplicationDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g groupApplicationDo) WriteDB() *groupApplicationDo {
+func (g groupApplicationDo) WriteDB() IGroupApplicationDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g groupApplicationDo) Session(config *gorm.Session) *groupApplicationDo {
+func (g groupApplicationDo) Session(config *gorm.Session) IGroupApplicationDo {
 	return g.withDO(g.DO.Session(config))
 }
 
-func (g groupApplicationDo) Clauses(conds ...clause.Expression) *groupApplicationDo {
+func (g groupApplicationDo) Clauses(conds ...clause.Expression) IGroupApplicationDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g groupApplicationDo) Returning(value interface{}, columns ...string) *groupApplicationDo {
+func (g groupApplicationDo) Returning(value interface{}, columns ...string) IGroupApplicationDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g groupApplicationDo) Not(conds ...gen.Condition) *groupApplicationDo {
+func (g groupApplicationDo) Not(conds ...gen.Condition) IGroupApplicationDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g groupApplicationDo) Or(conds ...gen.Condition) *groupApplicationDo {
+func (g groupApplicationDo) Or(conds ...gen.Condition) IGroupApplicationDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g groupApplicationDo) Select(conds ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) Select(conds ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g groupApplicationDo) Where(conds ...gen.Condition) *groupApplicationDo {
+func (g groupApplicationDo) Where(conds ...gen.Condition) IGroupApplicationDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g groupApplicationDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *groupApplicationDo {
-	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
-}
-
-func (g groupApplicationDo) Order(conds ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) Order(conds ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g groupApplicationDo) Distinct(cols ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) Distinct(cols ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g groupApplicationDo) Omit(cols ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) Omit(cols ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g groupApplicationDo) Join(table schema.Tabler, on ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) Join(table schema.Tabler, on ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g groupApplicationDo) LeftJoin(table schema.Tabler, on ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g groupApplicationDo) RightJoin(table schema.Tabler, on ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) RightJoin(table schema.Tabler, on ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g groupApplicationDo) Group(cols ...field.Expr) *groupApplicationDo {
+func (g groupApplicationDo) Group(cols ...field.Expr) IGroupApplicationDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g groupApplicationDo) Having(conds ...gen.Condition) *groupApplicationDo {
+func (g groupApplicationDo) Having(conds ...gen.Condition) IGroupApplicationDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g groupApplicationDo) Limit(limit int) *groupApplicationDo {
+func (g groupApplicationDo) Limit(limit int) IGroupApplicationDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g groupApplicationDo) Offset(offset int) *groupApplicationDo {
+func (g groupApplicationDo) Offset(offset int) IGroupApplicationDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g groupApplicationDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *groupApplicationDo {
+func (g groupApplicationDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGroupApplicationDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g groupApplicationDo) Unscoped() *groupApplicationDo {
+func (g groupApplicationDo) Unscoped() IGroupApplicationDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -274,22 +323,22 @@ func (g groupApplicationDo) FindInBatches(result *[]*model.GroupApplication, bat
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g groupApplicationDo) Attrs(attrs ...field.AssignExpr) *groupApplicationDo {
+func (g groupApplicationDo) Attrs(attrs ...field.AssignExpr) IGroupApplicationDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g groupApplicationDo) Assign(attrs ...field.AssignExpr) *groupApplicationDo {
+func (g groupApplicationDo) Assign(attrs ...field.AssignExpr) IGroupApplicationDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g groupApplicationDo) Joins(fields ...field.RelationField) *groupApplicationDo {
+func (g groupApplicationDo) Joins(fields ...field.RelationField) IGroupApplicationDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g groupApplicationDo) Preload(fields ...field.RelationField) *groupApplicationDo {
+func (g groupApplicationDo) Preload(fields ...field.RelationField) IGroupApplicationDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}
