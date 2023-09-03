@@ -1,6 +1,6 @@
 # axe-fiber
 
- A program of activity organization using Fiber framework.
+一个活动组织的应用程序，使用 GoFiber、Gorm、MySQL等开发。
 
 ## Web 框架
 
@@ -8,7 +8,7 @@
 
 ## Golang
 
-1.16+
+1.18+
 
 ## 数据库
 
@@ -43,3 +43,10 @@
 - 报名活动
 - 取消报名
 - 带人参加活动，如小明+1，小明+2等
+
+## 比赛
+
+- 八人转
+- 混双转
+- 循环积分赛
+- 擂台赛等
