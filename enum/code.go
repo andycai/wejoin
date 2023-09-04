@@ -22,6 +22,7 @@ const (
 	ErrUserData                      = 10102
 	ErrUserUpdateData                = 10103
 	ErrUserNotFound                  = 10104
+	ErrUserEmailFormat               = 10105
 	ErrGroupManagerLimit             = 10200
 	ErrGroupGetData                  = 10201
 	ErrGroupApprove                  = 10202

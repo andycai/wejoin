@@ -21,6 +21,7 @@ var codeText = map[int]string{
 	ErrUserData:                      "获取用户数据失败！",
 	ErrUserUpdateData:                "更新用户数据失败！",
 	ErrUserNotFound:                  "用户不存在！",
+	ErrUserEmailFormat:               "邮件地址格式错误！",
 	ErrGroupManagerLimit:             "副群主数量超过限制，不能再委任！",
 	ErrGroupGetData:                  "获取群数据失败！",
 	ErrGroupApprove:                  "入群审批失败！",

@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/mail"
+
 	"github.com/andycai/axe-fiber/enum"
 	"github.com/andycai/axe-fiber/log"
 	"github.com/andycai/axe-fiber/v2/body"
@@ -85,9 +87,15 @@ func (uh UserHandler) ExitWx(c *Ctx) error {
 
 // Update 更新用户数据
 func (uh UserHandler) Update(c *Ctx) error {
+	// uid := I32(c, "uid")  校验是否味当前用户
 	u := new(body.User)
 	if err := c.BodyParser(u); err != nil {
 		return Push(c, enum.ErrParam)
+	}
+
+	// email 校验
+	if _, err := mail.ParseAddress(u.Email); err != nil {
+		return Push(c, enum.ErrUserEmailFormat)
 	}
 
 	if err := system.User.Update(u); err != nil {

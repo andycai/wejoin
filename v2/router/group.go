@@ -7,45 +7,44 @@ import (
 )
 
 func init() {
-	routerNoCheck = append(routerNoCheck, registerGroupRouter)
+	routerCheck = append(routerCheck, registerGroupRouter)
 }
 
-func registerGroupRouter(app *fiber.App) {
-	// v2 版本路由
-	groupsAPI := app.Group("/v2/groups")
+func registerGroupRouter(r fiber.Router) {
+	api := r.Group("/groups")
 	{
 		// 获取群组详细信息
-		groupsAPI.Get("/:gid", handler.Group.GetGroupByID)
+		api.Get("/:gid", handler.Group.GetGroupByID)
 		// 获取最近创建的群组
-		groupsAPI.Get("/list/:page/:num", handler.Group.GetGroups)
+		api.Get("/list/:page/:num", handler.Group.GetGroups)
 		// 获取申请加入群组的列表
-		groupsAPI.Get("/applications/:gid", handler.Group.GetApplyList)
+		api.Get("/applications/:gid", handler.Group.GetApplyList)
 		// 获取群组活动列表
-		groupsAPI.Get("/activities/:gid/:page/:num", handler.Group.GetActivitiesByGroupId)
+		api.Get("/activities/:gid/:page/:num", handler.Group.GetActivitiesByGroupId)
 
 		// 创建群组
-		groupsAPI.Post("/create", handler.Group.Create)
+		api.Post("/create", handler.Group.Create)
 		// 申请加入群组
-		groupsAPI.Post("/apply/:gid/:uid", handler.Group.Apply)
+		api.Post("/apply/:gid/:uid", handler.Group.Apply)
 		// 同意加入
-		groupsAPI.Post("/approve/:gid", handler.Group.Approve)
+		api.Post("/approve/:gid", handler.Group.Approve)
 		// 拒绝加入
-		groupsAPI.Post("/refuse/:gid", handler.Group.Refuse)
+		api.Post("/refuse/:gid", handler.Group.Refuse)
 		// 提升为管理员
-		groupsAPI.Post("/promote/:gid/:mid", handler.Group.Promote)
+		api.Post("/promote/:gid/:mid", handler.Group.Promote)
 		// 转让群主
-		groupsAPI.Post("/transfer/:gid/:mid", handler.Group.Transfer)
+		api.Post("/transfer/:gid/:mid", handler.Group.Transfer)
 		// 踢出群组
-		groupsAPI.Post("/fire/:gid/:mid", handler.Group.Fire)
+		api.Post("/fire/:gid/:mid", handler.Group.Fire)
 		// 退出群组
-		groupsAPI.Post("/quit/:gid", handler.Group.Quit)
+		api.Post("/quit/:gid", handler.Group.Quit)
 
 		// 修改群组资料
-		groupsAPI.Put("/edit/name/:gid", handler.Group.UpdateName)
-		groupsAPI.Put("/edit/notice/:gid", handler.Group.UpdateNotice)
-		groupsAPI.Put("/edit/addr/:gid", handler.Group.UpdateAddr)
+		api.Put("/edit/name/:gid", handler.Group.UpdateName)
+		api.Put("/edit/notice/:gid", handler.Group.UpdateNotice)
+		api.Put("/edit/addr/:gid", handler.Group.UpdateAddr)
 
 		// 删除群组
-		groupsAPI.Delete("/remove/:gid", handler.Group.Remove)
+		api.Delete("/remove/:gid", handler.Group.Remove)
 	}
 }

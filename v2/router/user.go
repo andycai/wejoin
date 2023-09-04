@@ -7,23 +7,26 @@ import (
 )
 
 func init() {
-	routerNoCheck = append(routerNoCheck, registerUserRouter)
+	routerCheck = append(routerCheck, registerUserCheckRouter)
+	routerNoCheck = append(routerNoCheck, registerUserNoCheckRouter)
 }
 
-func registerUserRouter(app *fiber.App) {
-	// v2 版本路由
+func registerUserNoCheckRouter(r fiber.Router) {
+	// 注册
+	r.Post("/register", handler.User.Register)
 	// 登录
-	app.Post("/v2/login", handler.User.Login)
+	r.Post("/login", handler.User.Login)
 	// 退出
-	app.Post("/v2/exit", handler.User.Exit)
+	r.Post("/exit", handler.User.Exit)
 	// 微信登录
-	app.Post("/v2/login_wx", handler.User.Login)
-	app.Post("/v2/exit_wx", handler.User.ExitWx)
+	r.Post("/login_wx", handler.User.Login)
+	r.Post("/exit_wx", handler.User.ExitWx)
+}
 
-	usersAPI := app.Group("/v2/users")
+func registerUserCheckRouter(r fiber.Router) {
+	api := r.Group("/users")
 	{
-		usersAPI.Get("/:uid", handler.User.GetUser)
-		usersAPI.Get("/groups/:uid", handler.Group.GetGroupsByUserID)
-		usersAPI.Get("/activities/:uid", handler.Activity.GetActivitiesByUserID)
+		api.Get("/:uid", handler.User.GetUser)
+		api.Put("/:uid", handler.User.Update)
 	}
 }

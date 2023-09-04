@@ -30,13 +30,13 @@ func (us UserSystem) GetInfo(uid int32) (*comp.APIUser, error) {
 }
 
 // Register 注册
-func (us UserSystem) Register(username, password, IP string) (error, int32) {
+func (us UserSystem) Register(username, password, ip string) (error, int32) {
 	u := dao.User
 	err := u.Create(&model.User{
 		Username: username,
 		Password: password,
 		Scores:   0,
-		IP:       IP,
+		IP:       ip,
 	})
 
 	return err, cast.ToInt32(u.ID)
