@@ -25,7 +25,7 @@ func getGroupMemberLimit(gid int32) int32 {
 
 // isGroupManager 是否管理员（包括群主）
 func isGroupManager(gid, uid int32) bool {
-	gm := dao.Q.GroupMember
+	gm := dao.GroupMember
 	member, err := gm.Where(gm.GroupID.Eq(gid), gm.UserID.Eq(uid)).Take()
 
 	return err == nil && member != nil && member.Position >= enum.PositionGroupManager
@@ -33,7 +33,7 @@ func isGroupManager(gid, uid int32) bool {
 
 // isGroupOwner 是否群主
 func isGroupOwner(gid, uid int32) bool {
-	gm := dao.Q.GroupMember
+	gm := dao.GroupMember
 	member, err := gm.Where(gm.GroupID.Eq(gid), gm.UserID.Eq(uid)).Take()
 
 	return err == nil && member != nil && member.Position == enum.PositionGroupOwner
@@ -41,7 +41,7 @@ func isGroupOwner(gid, uid int32) bool {
 
 // getGroup 返回群组
 func getGroup(gid int32) *model.Group {
-	g := dao.Q.Group
+	g := dao.Group
 	if group, err := g.Where(g.ID.Eq(gid)).Take(); err == nil {
 		return group
 	}
@@ -58,7 +58,7 @@ func absent(gid int32) bool {
 
 // GetInfo 返回群组信息
 func (us GroupSystem) GetInfo(gid int32) (*comp.APIGroup, error) {
-	g := dao.Q.Group
+	g := dao.Group
 	info := &comp.APIGroup{}
 	err := g.Where(g.ID.Eq(gid)).Scan(info)
 	if info.ID == 0 {
@@ -71,13 +71,13 @@ func (us GroupSystem) GetInfo(gid int32) (*comp.APIGroup, error) {
 // GetGroupsByUserID 返回群组列表
 func (us GroupSystem) GetGroupsByUserID(uid int32) ([]*comp.APIGroup, error) {
 	ids := make([]int32, 0)
-	m := dao.Q.GroupMember
+	m := dao.GroupMember
 	err := m.Select(m.GroupID).Where(m.UserID.Eq(uid)).Scan(&ids)
 	if err != nil {
 		return nil, err
 	}
 
-	g := dao.Q.Group
+	g := dao.Group
 	groups := make([]*comp.APIGroup, len(ids))
 	err = g.Where(g.ID.In(ids...)).Scan(&groups)
 	if err != nil {
@@ -89,7 +89,7 @@ func (us GroupSystem) GetGroupsByUserID(uid int32) ([]*comp.APIGroup, error) {
 
 // GetGroups 返回最近的群组列表
 func (us GroupSystem) GetGroups(page int, num int) ([]*comp.APIGroup, error) {
-	g := dao.Q.Group
+	g := dao.Group
 	list := make([]*comp.APIGroup, 0)
 	max := math.Max[int]
 	page = max(page-1, 0)
@@ -106,7 +106,7 @@ func (us GroupSystem) GetGroups(page int, num int) ([]*comp.APIGroup, error) {
 
 // GetApplyList 返回群组的申请入群列表
 func (us GroupSystem) GetApplyList(gid int32) ([]comp.APIGroupApplication, error) {
-	ga := dao.Q.GroupApplication
+	ga := dao.GroupApplication
 	list := make([]comp.APIGroupApplication, 0)
 	err := ga.Where(ga.GroupID.Eq(gid)).Scan(&list)
 	if err != nil {
@@ -118,7 +118,7 @@ func (us GroupSystem) GetApplyList(gid int32) ([]comp.APIGroupApplication, error
 
 // Create 创建群组
 func (us GroupSystem) Create(name, addr string) error {
-	g := dao.Q.Group
+	g := dao.Group
 
 	// 检查名字是否存在
 	count, err := g.Where(g.Name.Eq(name)).Count()
@@ -143,13 +143,13 @@ func (us GroupSystem) Apply(gid, uid int32) error {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	g := dao.Q.Group
+	g := dao.Group
 	_, err := g.Where(g.ID.Eq(gid)).Take()
 	if err != nil {
 		return err
 	}
 
-	ga := dao.Q.GroupApplication
+	ga := dao.GroupApplication
 	_, err = ga.Where(ga.GroupID.Eq(gid)).Where(ga.UserID.Eq(uid)).Take()
 
 	if err != nil {
@@ -170,7 +170,7 @@ func (us GroupSystem) Approve(gid, uid, mid int32) error {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	gm := dao.Q.GroupMember
+	gm := dao.GroupMember
 	count, err := gm.Where(gm.GroupID.Eq(gid)).Count()
 	if err != nil {
 		return err
@@ -179,14 +179,14 @@ func (us GroupSystem) Approve(gid, uid, mid int32) error {
 		return newErr(enum.ErrorTextGroupMemberFull)
 	}
 
-	ga := dao.Q.GroupApplication
+	ga := dao.GroupApplication
 	// 管理员才能操作
 	if isGroupManager(gid, mid) {
 		rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
 		if err == nil && rs != nil {
 			if rs.Deleted == 0 {
 				// 加入群组成员
-				gm := dao.Q.GroupMember
+				gm := dao.GroupMember
 				member := &model.GroupMember{}
 				member.GroupID = gid
 				member.UserID = uid
@@ -194,7 +194,6 @@ func (us GroupSystem) Approve(gid, uid, mid int32) error {
 				member.Scores = 0
 				member.EnterAt = time.Now()
 				member.Alias_ = ""
-				member.Avatar = ""
 				err := gm.Create(member)
 				if err != nil {
 					return err
@@ -216,7 +215,7 @@ func (us GroupSystem) Refuse(gid, uid, mid int32) error {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	ga := dao.Q.GroupApplication
+	ga := dao.GroupApplication
 	// 管理员才能操作
 	if isGroupManager(gid, mid) {
 		rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
@@ -236,7 +235,7 @@ func (us GroupSystem) Promote(gid, uid, mid int32) error {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	gm := dao.Q.GroupMember
+	gm := dao.GroupMember
 	// 群管理员数量已满
 	count, err := gm.Where(gm.GroupID.Eq(gid), gm.Position.Eq(enum.PositionGroupManager)).Count()
 	if err != nil {
@@ -265,7 +264,7 @@ func (us GroupSystem) Transfer(gid, uid, mid int32) error {
 	}
 
 	if isGroupOwner(gid, mid) {
-		gm := dao.Q.GroupMember
+		gm := dao.GroupMember
 		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupOwner)
 		if err == nil {
 			result, err := gm.Where(gm.UserID.Eq(mid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupMember)
@@ -288,7 +287,7 @@ func (us GroupSystem) Fire(gid, uid, mid int32) error {
 
 	// 管理员才能踢人
 	if isGroupManager(gid, mid) {
-		gm := dao.Q.GroupMember
+		gm := dao.GroupMember
 		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
 		if err == nil {
 			return err
@@ -308,7 +307,7 @@ func (us GroupSystem) Remove(gid, uid int32) error {
 
 	// 群主可以删除群组
 	if isGroupOwner(gid, uid) {
-		g := dao.Q.Group
+		g := dao.Group
 		result, err := g.Where(g.ID.Eq(gid)).Delete()
 		if err != nil {
 			return err
@@ -325,7 +324,7 @@ func (us GroupSystem) Quit(gid, uid int32) error {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	gm := dao.Q.GroupMember
+	gm := dao.GroupMember
 	result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
 	if err != nil {
 		return err
@@ -339,7 +338,7 @@ func (us GroupSystem) UpdateName(gid, uid int32, name string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
-	g := dao.Q.Group
+	g := dao.Group
 
 	if isGroupManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)
@@ -366,7 +365,7 @@ func (us GroupSystem) UpdateNotice(gid, uid int32, notice string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
-	g := dao.Q.Group
+	g := dao.Group
 
 	if isGroupManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)
@@ -385,7 +384,7 @@ func (us GroupSystem) UpdateAddr(gid, uid int32, addr string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
-	g := dao.Q.Group
+	g := dao.Group
 
 	if isGroupManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)

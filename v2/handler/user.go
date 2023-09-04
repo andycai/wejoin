@@ -2,6 +2,8 @@ package handler
 
 import (
 	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/log"
+	"github.com/andycai/axe-fiber/v2/body"
 	"github.com/andycai/axe-fiber/v2/system"
 )
 
@@ -36,6 +38,22 @@ func (uh UserHandler) GetUser(c *Ctx) error {
 	return pushUserInfo(c, id)
 }
 
+// Register 注册
+func (uh UserHandler) Register(c *Ctx) error {
+	username := Str(c, "username")
+	password := Str(c, "password")
+	confirmPassword := Str(c, "confirmPassword")
+	if password != confirmPassword {
+		return Push(c, enum.ErrTwoPasswordNotMatch)
+	}
+	err, uid := system.User.Register(username, password, IP(c))
+	log.Infof("register err: %v, uid: %d", err, uid)
+	if err != nil {
+		return Push(c, enum.ErrUserRegister)
+	}
+	return Ok(c, map[string]int32{"uid": uid})
+}
+
 // Login 登录
 func (uh UserHandler) Login(c *Ctx) error {
 	// ip := c.Context().RemoteIP().String()
@@ -55,15 +73,26 @@ func (uh UserHandler) Login(c *Ctx) error {
 	return pushUserInfo(c, id)
 }
 
-// 退出登录
+// Exit 退出登录
 func (uh UserHandler) Exit(c *Ctx) error {
 	return Ok(c, nil)
 }
 
+// ExitWx 退出微信登录
 func (uh UserHandler) ExitWx(c *Ctx) error {
 	return Ok(c, nil)
 }
 
-func (uh UserHandler) SaveData(c *Ctx) error {
+// Update 更新用户数据
+func (uh UserHandler) Update(c *Ctx) error {
+	u := new(body.User)
+	if err := c.BodyParser(u); err != nil {
+		return Push(c, enum.ErrParam)
+	}
+
+	if err := system.User.Update(u); err != nil {
+		return Push(c, enum.ErrUserUpdateData)
+	}
+
 	return Ok(c, nil)
 }

@@ -17,7 +17,7 @@ func main() {
 	log.Setup()
 	conf.ReadConf() // 读取配置
 	// mysql.ConnectMySQL() // 初始化数据库
-	dao.InitQuery(mysql.CreateDB())
+	dao.SetDefault(mysql.CreateDB())
 	middleware.Use(app) // 初始化中间件
 	router.Setup(app)   // 初始化路由
 	// system.Cache.InitIds() // 初始化数据表的 ID 到缓存

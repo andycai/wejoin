@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/v2/body"
 	"github.com/andycai/axe-fiber/v2/system"
 )
 
@@ -72,6 +73,17 @@ func (ah ActivityHandler) Cancel(c *Ctx) error {
 }
 
 func (ah ActivityHandler) Remove(c *Ctx) error {
+	activity := new(body.Activity)
+	if err := c.BodyParser(activity); err != nil {
+		return Push(c, enum.ErrParam)
+	}
+	if err := system.Activity.Update(activity); err != nil {
+		return Push(c, enum.ErrActivityUpdate)
+	}
+	return Ok(c, nil)
+}
+
+func (ah ActivityHandler) Update(c *Ctx) error {
 	return Ok(c, nil)
 }
 

@@ -9,7 +9,7 @@ import (
 
 type Ctx = fiber.Ctx
 
-// 获取远程IP
+// IP 获取远程 IP
 func IP(c *Ctx) string {
 	return c.IP()
 }
@@ -42,7 +42,7 @@ func I64(c *Ctx, key string, defaultValue ...string) int64 {
 	return cast.ToInt64(c.Params(key, defaultValue...))
 }
 
-// 正常响应
+// Ok 正常响应
 func Ok(c *Ctx, data interface{}) error {
 	return c.JSON(fiber.Map{
 		"code": enum.Success,
@@ -50,7 +50,7 @@ func Ok(c *Ctx, data interface{}) error {
 	})
 }
 
-// 推送响应
+// Push 推送响应
 func Push(c *Ctx, code int) error {
 	return c.JSON(fiber.Map{
 		"code": code,
@@ -58,7 +58,7 @@ func Push(c *Ctx, code int) error {
 	})
 }
 
-// 普通消息响应
+// Msg 普通消息响应
 func Msg(c *Ctx, code int, msg string) error {
 	return c.JSON(fiber.Map{
 		"code": code,
