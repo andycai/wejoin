@@ -25,6 +25,7 @@ type Activity struct {
 	Action    int32  `json:"action" xml:"action" form:"action"`
 }
 
+// ToModle 转换成 Model Activity
 func (a Activity) ToModel() model.Activity {
 	beginAt, _ := time.ParseInLocation("2006-01-02 15:04:05", a.BeginAt, time.Local)
 	endAt, _ := time.ParseInLocation("2006-01-02 15:04:05", a.EndAt, time.Local)

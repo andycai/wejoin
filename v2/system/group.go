@@ -360,6 +360,25 @@ func (us GroupSystem) UpdateName(gid, uid int32, name string) error {
 	return result.Error
 }
 
+// UpdateLogo 更新 Logo
+func (us GroupSystem) UpdateLogo(gid, uid int32, logo string) error {
+	if absent(gid) {
+		return newErr(enum.ErrorTextGroupNotFound)
+	}
+	g := dao.Group
+
+	if isGroupManager(gid, uid) {
+		return newErr(enum.ErrorTextGroupManagerOp)
+	}
+
+	result, err := g.Where(g.ID.Eq(gid)).Update(g.Logo, logo)
+	if err != nil {
+		return err
+	}
+
+	return result.Error
+}
+
 // UpdateNotice 更新公告
 func (us GroupSystem) UpdateNotice(gid, uid int32, notice string) error {
 	if absent(gid) {
