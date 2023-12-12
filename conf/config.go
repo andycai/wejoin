@@ -9,7 +9,7 @@ import (
 
 func ReadConf() {
 	viper.SetConfigName("conf")
-	viper.SetConfigType("toml")
+	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
 	// 读取配置
