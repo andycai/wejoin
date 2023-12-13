@@ -1,1 +1,110 @@
 package activity
+
+import (
+	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/v2/body"
+	"github.com/andycai/axe-fiber/v2/core"
+	"github.com/andycai/axe-fiber/v2/system"
+	"github.com/gofiber/fiber/v2"
+)
+
+// GetActivityByID 返回活动详情
+func GetActivityByID(c *fiber.Ctx) error {
+	aid := core.I32(c, "aid")
+	info, err := system.Activity.GetInfo(aid)
+	if err != nil {
+		return core.Push(c, enum.ErrActivityNotFound)
+	}
+
+	return core.Ok(c, info)
+}
+
+// GetActivitiesByGroupID 返回用户参与的活动列表
+func GetActivitiesByUserID(c *fiber.Ctx) error {
+	uid := core.I32(c, "uid")
+	activities, err := system.Activity.GetActivitiesByUserID(uid)
+	if err != nil {
+		return core.Push(c, enum.ErrActivityGetData)
+	}
+
+	return core.Ok(c, activities)
+}
+
+// GetActivitiesByGroupID 返回群组创建的活动列表
+// func GetActivitiesByGroupID(c *fiber.Ctx) error {
+// 	gid := I32(c, "gid")
+// 	activities, err := system.Activity.GetActivitiesByGroupID(gid)
+// 	if err != nil {
+// 		return Push(c, enum.ErrActivityGetData)
+// 	}
+
+// 	return Ok(c, activities)
+// }
+
+// GetActivities 返回活动列表
+func GetActivities(c *fiber.Ctx) error {
+	page := core.Int(c, "page")
+	num := core.Int(c, "num")
+
+	groups, err := system.Activity.GetActivities(page, num)
+	if err != nil {
+		return core.Push(c, enum.ErrGroupGetData)
+	}
+
+	return core.Ok(c, groups)
+}
+
+func Create(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func End(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func Apply(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func Cancel(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func Remove(c *fiber.Ctx) error {
+	activity := new(body.Activity)
+	if err := c.BodyParser(activity); err != nil {
+		return core.Push(c, enum.ErrParam)
+	}
+	if err := system.Activity.Update(activity); err != nil {
+		return core.Push(c, enum.ErrActivityUpdate)
+	}
+	return core.Ok(c, nil)
+}
+
+func Update(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func UpdateTitle(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func UpdateContent(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func UpdateAddr(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func UpdateTime(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func UpdateQuota(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func UpdateFee(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
