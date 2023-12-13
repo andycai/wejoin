@@ -4,14 +4,13 @@ import (
 	"github.com/andycai/axe-fiber/enum"
 	"github.com/andycai/axe-fiber/v2/body"
 	"github.com/andycai/axe-fiber/v2/core"
-	"github.com/andycai/axe-fiber/v2/system"
 	"github.com/gofiber/fiber/v2"
 )
 
 // GetActivityByID 返回活动详情
 func GetActivityByID(c *fiber.Ctx) error {
 	aid := core.I32(c, "aid")
-	info, err := system.Activity.GetInfo(aid)
+	info, err := Dao.GetInfo(aid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityNotFound)
 	}
@@ -22,7 +21,7 @@ func GetActivityByID(c *fiber.Ctx) error {
 // GetActivitiesByGroupID 返回用户参与的活动列表
 func GetActivitiesByUserID(c *fiber.Ctx) error {
 	uid := core.I32(c, "uid")
-	activities, err := system.Activity.GetActivitiesByUserID(uid)
+	activities, err := Dao.GetActivitiesByUserID(uid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityGetData)
 	}
@@ -33,7 +32,7 @@ func GetActivitiesByUserID(c *fiber.Ctx) error {
 // GetActivitiesByGroupID 返回群组创建的活动列表
 // func GetActivitiesByGroupID(c *fiber.Ctx) error {
 // 	gid := I32(c, "gid")
-// 	activities, err := system.Activity.GetActivitiesByGroupID(gid)
+// 	activities, err := Dao.GetActivitiesByGroupID(gid)
 // 	if err != nil {
 // 		return Push(c, enum.ErrActivityGetData)
 // 	}
@@ -46,7 +45,7 @@ func GetActivities(c *fiber.Ctx) error {
 	page := core.Int(c, "page")
 	num := core.Int(c, "num")
 
-	groups, err := system.Activity.GetActivities(page, num)
+	groups, err := Dao.GetActivities(page, num)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupGetData)
 	}
@@ -75,7 +74,7 @@ func Remove(c *fiber.Ctx) error {
 	if err := c.BodyParser(activity); err != nil {
 		return core.Push(c, enum.ErrParam)
 	}
-	if err := system.Activity.Update(activity); err != nil {
+	if err := Dao.Update(activity); err != nil {
 		return core.Push(c, enum.ErrActivityUpdate)
 	}
 	return core.Ok(c, nil)

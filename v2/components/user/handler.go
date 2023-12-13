@@ -7,13 +7,12 @@ import (
 	"github.com/andycai/axe-fiber/log"
 	"github.com/andycai/axe-fiber/v2/body"
 	"github.com/andycai/axe-fiber/v2/core"
-	"github.com/andycai/axe-fiber/v2/system"
 	"github.com/gofiber/fiber/v2"
 )
 
 // pushUserInfo 推送用户信息给前端
 func pushUserInfo(c *fiber.Ctx, id int32) error {
-	info, err := system.User.GetInfo(id)
+	info, err := Dao.GetInfo(id)
 	if err != nil {
 		return core.Push(c, enum.ErrUserNotFound)
 	}
@@ -44,7 +43,7 @@ func Register(c *fiber.Ctx) error {
 	if password != confirmPassword {
 		return core.Push(c, enum.ErrTwoPasswordNotMatch)
 	}
-	err, uid := system.User.Register(username, password, core.IP(c))
+	err, uid := Dao.Register(username, password, core.IP(c))
 	log.Infof("register err: %v, uid: %d", err, uid)
 	if err != nil {
 		return core.Push(c, enum.ErrUserRegister)
@@ -94,7 +93,7 @@ func Update(c *fiber.Ctx) error {
 		return core.Push(c, enum.ErrUserEmailFormat)
 	}
 
-	if err := system.User.Update(u); err != nil {
+	if err := Dao.Update(u); err != nil {
 		return core.Push(c, enum.ErrUserUpdateData)
 	}
 

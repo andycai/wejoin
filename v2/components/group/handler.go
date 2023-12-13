@@ -2,8 +2,8 @@ package group
 
 import (
 	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/v2/components/activity"
 	"github.com/andycai/axe-fiber/v2/core"
-	"github.com/andycai/axe-fiber/v2/system"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -63,7 +63,7 @@ func GetApplyList(c *fiber.Ctx) error {
 // GetActivitiesByGroupId 返回群组创建活动列表
 func GetActivitiesByGroupId(c *fiber.Ctx) error {
 	gid := core.I32(c, "gid")
-	list, err := system.Activity.GetActivitiesByGroupID(gid)
+	list, err := activity.Dao.GetActivitiesByGroupID(gid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityGetData)
 	}

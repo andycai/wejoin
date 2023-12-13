@@ -10,7 +10,11 @@ func AutoMigrate(dbs []*gorm.DB) {
 		db.AutoMigrate(
 			&model.User{},
 			&model.Group{},
+			&model.GroupApplication{},
+			&model.GroupMember{},
 			&model.Activity{},
+			&model.ActivityUser{},
+			&model.Match{},
 		)
 	}
 }
