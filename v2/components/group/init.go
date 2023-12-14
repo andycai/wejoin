@@ -1,7 +1,7 @@
 package group
 
 import (
-	"github.com/andycai/axe-fiber/v2/core"
+	"github.com/andycai/axe-fiber/core"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )

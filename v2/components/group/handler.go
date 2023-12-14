@@ -1,9 +1,9 @@
 package group
 
 import (
+	"github.com/andycai/axe-fiber/core"
 	"github.com/andycai/axe-fiber/enum"
 	"github.com/andycai/axe-fiber/v2/components/activity"
-	"github.com/andycai/axe-fiber/v2/core"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -4,10 +4,10 @@ import (
 	"path/filepath"
 
 	"github.com/andycai/axe-fiber/conf"
+	"github.com/andycai/axe-fiber/core"
 	"github.com/andycai/axe-fiber/library/authentication"
 	"github.com/andycai/axe-fiber/library/database"
 	"github.com/andycai/axe-fiber/log"
-	"github.com/andycai/axe-fiber/v2/core"
 	"github.com/andycai/axe-fiber/v2/middleware"
 	"gorm.io/gorm"
 
