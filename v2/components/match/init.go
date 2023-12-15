@@ -19,10 +19,9 @@ func initDB(dbs []*gorm.DB) {
 }
 
 func initNoCheckRouter(r fiber.Router) {
-	api := r.Group("/v2/matches")
+	api := r.Group("/v2")
 	{
-		// 获取群组详细信息
-		api.Get("/:gid", GetMatchByID)
+		api.Get("/matches/:gid", GetMatchByID)
 	}
 }
 
