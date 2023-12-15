@@ -36,8 +36,8 @@ func GetGroupsByUserID(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetGroups 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
-func GetGroups(c *fiber.Ctx) error {
+// GetGroupsByPage 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
+func GetGroupsByPage(c *fiber.Ctx) error {
 	page := core.Int(c, "page")
 	num := core.Int(c, "num")
 

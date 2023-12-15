@@ -17,6 +17,8 @@ var Dao = new(GroupDao)
 
 var newErr = enum.GetError
 
+//#region private methods
+
 // getGroupMemberLimit 暂时返回默认数量，以后会根据等级提升数量
 func getGroupMemberLimit(gid int32) int32 {
 	return enum.DefaultGroupMemmberCount
@@ -53,7 +55,7 @@ func absent(gid int32) bool {
 	return getGroup(gid) == nil
 }
 
-// end 私有方法
+//#endregion
 
 // GetInfo 返回群组信息
 func (gd GroupDao) GetInfo(gid int32) (*comp.APIGroup, error) {
