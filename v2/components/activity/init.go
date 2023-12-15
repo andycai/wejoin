@@ -21,26 +21,17 @@ func initDB(dbs []*gorm.DB) {
 func initNoCheckRouter(r fiber.Router) {
 	api := r.Group("/v2/activities")
 	{
-		// 获取活动详细内容
-		api.Get("/:aid", GetActivityByID)
-		// 获取最近一段的活动
-		api.Get("/list/:page/:num", GetActivities)
-		// TODO: 获取最近一段时间附近的活动
+		api.Get("/activities/:aid", GetActivityByID)
+		api.Get("/activities", GetActivitiesByPage)
 
-		// 创建活动
-		api.Post("/create", Create)
-		// 手动终止活动
-		api.Post("/end/:aid", End)
-		// 申请参加活动
-		api.Post("/apply/:aid", Apply)
-		// 取消参加活动
-		api.Post("/cancel/:aid", Cancel)
+		api.Post("/activities", Create)
+		api.Post("/activities/end", End)
+		api.Post("/activities/apply", Apply)
+		api.Post("/activities/cancel", Cancel)
 
-		// 修改活动内容
-		api.Put("/:aid}", Update)
+		api.Put("/activities/:aid", Update)
 
-		// 删除活动
-		api.Delete("/remove/:aid", Remove)
+		api.Delete("/activities/:aid", Remove)
 	}
 }
 

@@ -40,8 +40,8 @@ func GetActivitiesByUserID(c *fiber.Ctx) error {
 // 	return Ok(c, activities)
 // }
 
-// GetActivities 返回活动列表
-func GetActivities(c *fiber.Ctx) error {
+// GetActivitiesByPage 返回活动列表
+func GetActivitiesByPage(c *fiber.Ctx) error {
 	page := core.Int(c, "page")
 	num := core.Int(c, "num")
 
