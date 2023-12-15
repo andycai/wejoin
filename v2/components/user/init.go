@@ -19,10 +19,11 @@ func initDB(dbs []*gorm.DB) {
 }
 
 func initNoCheckRouter(r fiber.Router) {
-	api := r.Group("/v2/users")
+	api := r.Group("/v2")
 	{
-		api.Get("/:uid", GetUser)
-		api.Put("/:uid", Update)
+		api.Get("/users/:uid", GetUser)
+
+		api.Put("/users/:uid", Update)
 	}
 }
 
