@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/andycai/axe-fiber/v2/model"
+	"github.com/andycai/axe-fiber/model"
 	"gorm.io/gorm"
 )
 

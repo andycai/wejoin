@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/andycai/axe-fiber/v2/middleware"
+	"github.com/andycai/axe-fiber/api/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
