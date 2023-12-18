@@ -57,6 +57,31 @@ func absent(gid int32) bool {
 
 //#endregion
 
+// GetByID get the groups by id
+func (gd GroupDao) GetByID(gid uint) (*model.Group, error) {
+	groupVo := model.Group{}
+	db.Raw(SqlGroupByID, gid).Scan(&groupVo)
+
+	return &groupVo, nil
+}
+
+// GetByUserID get the group by user id
+func (gd GroupDao) GetByUserID(uid uint) ([]*model.Group, error) {
+	groups := make([]*model.Group, 0)
+	// db.Raw(SqlGroupByUserID, uid).Find(&groups)
+	db.Raw(SqlGroupByUserID, uid).Scan(&groups)
+
+	return groups, nil
+}
+
+// GetByPage get the groups by page
+func (gd GroupDao) GetByPage(page int, pageSize int) ([]*model.Group, error) {
+	groups := make([]*model.Group, 0)
+	db.Raw(SqlGroupByPage, pageSize, pageSize*(page-1)).Scan(&groups)
+
+	return groups, nil
+}
+
 // GetInfo 返回群组信息
 func (gd GroupDao) GetInfo(gid int32) (*comp.APIGroup, error) {
 	g := dao.Group
