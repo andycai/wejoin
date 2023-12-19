@@ -17,7 +17,7 @@ type UserDao struct {
 var Dao = new(UserDao)
 
 // GetInfo 获取用户信息
-func (us UserDao) GetInfo(uid int32) (*comp.APIUser, error) {
+func (us UserDao) GetInfo(uid uint) (*comp.APIUser, error) {
 	u := dao.User
 	info := &comp.APIUser{}
 	err := u.Where(u.ID.Eq(uid)).Scan(info)
@@ -29,7 +29,7 @@ func (us UserDao) GetInfo(uid int32) (*comp.APIUser, error) {
 }
 
 // Register 注册
-func (us UserDao) Register(username, password, ip string) (error, int32) {
+func (us UserDao) Register(username, password, ip string) (error, uint) {
 	u := dao.User
 	err := u.Create(&model.User{
 		Username: username,
@@ -82,7 +82,7 @@ func (us UserDao) Update(user *body.User) error {
 }
 
 // Exists 用户是否存在
-func (us UserDao) Exists(uid int32) bool {
+func (us UserDao) Exists(uid uint) bool {
 	u := dao.User
 	count, err := u.Where(u.ID.Eq(uid)).Count()
 	if err != nil {

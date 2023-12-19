@@ -11,7 +11,7 @@ import (
 )
 
 // pushUserInfo 推送用户信息给前端
-func pushUserInfo(c *fiber.Ctx, id int32) error {
+func pushUserInfo(c *fiber.Ctx, id uint) error {
 	info, err := Dao.GetInfo(id)
 	if err != nil {
 		return core.Push(c, enum.ErrUserNotFound)
@@ -25,7 +25,7 @@ func pushUserInfo(c *fiber.Ctx, id int32) error {
 // GetCurrentUser 获取当前用户信息
 func GetCurrentUser(c *fiber.Ctx) error {
 	// TODO: 应该从 session 中获取 uid
-	var id int32 = 1 // 登录获取的用户ID
+	var id uint = 1 // 登录获取的用户ID
 	return pushUserInfo(c, id)
 }
 
@@ -48,7 +48,7 @@ func Register(c *fiber.Ctx) error {
 	if err != nil {
 		return core.Push(c, enum.ErrUserRegister)
 	}
-	return core.Ok(c, map[string]int32{"uid": uid})
+	return core.Ok(c, map[string]uint{"uid": uid})
 }
 
 // Login 登录
@@ -66,7 +66,7 @@ func Login(c *fiber.Ctx) error {
 			})
 		}
 	*/
-	var id int32 = 1 // 登录获取的用户ID
+	var id uint = 1 // 登录获取的用户ID
 	return pushUserInfo(c, id)
 }
 

@@ -4,11 +4,10 @@ import (
 	"errors"
 	"time"
 
-	"github.com/andycai/axe-fiber/api/comp"
 	"github.com/andycai/axe-fiber/api/dao"
 	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/library/math"
 	"github.com/andycai/axe-fiber/model"
+	"gorm.io/gorm"
 )
 
 type GroupDao struct{}
@@ -19,40 +18,30 @@ var newErr = enum.GetError
 
 //#region private methods
 
-// getGroupMemberLimit 暂时返回默认数量，以后会根据等级提升数量
-func getGroupMemberLimit(gid int32) int32 {
+// getMemberLimit 暂时返回默认数量，以后会根据等级提升数量
+func getMemberLimit(gid uint) uint {
 	return enum.DefaultGroupMemmberCount
 }
 
-// isGroupManager 是否管理员（包括群主）
-func isGroupManager(gid, uid int32) bool {
+// isManager 是否管理员（包括群主）
+func isManager(gid, uid uint) bool {
 	gm := dao.GroupMember
 	member, err := gm.Where(gm.GroupID.Eq(gid), gm.UserID.Eq(uid)).Take()
 
 	return err == nil && member != nil && member.Position >= enum.PositionGroupManager
 }
 
-// isGroupOwner 是否群主
-func isGroupOwner(gid, uid int32) bool {
+// isOwner 是否群主
+func isOwner(gid, uid uint) bool {
 	gm := dao.GroupMember
 	member, err := gm.Where(gm.GroupID.Eq(gid), gm.UserID.Eq(uid)).Take()
 
 	return err == nil && member != nil && member.Position == enum.PositionGroupOwner
 }
 
-// getGroup 返回群组
-func getGroup(gid int32) *model.Group {
-	g := dao.Group
-	if group, err := g.Where(g.ID.Eq(gid)).Take(); err == nil {
-		return group
-	}
-
-	return nil
-}
-
-// absent 群组不存在
-func absent(gid int32) bool {
-	return getGroup(gid) == nil
+// absent group doesn't exist
+func absent(gid uint) bool {
+	return Dao.Exists(gid) != nil
 }
 
 //#endregion
@@ -82,89 +71,54 @@ func (gd GroupDao) GetByPage(page int, pageSize int) ([]*model.Group, error) {
 	return groups, nil
 }
 
-// GetInfo 返回群组信息
-func (gd GroupDao) GetInfo(gid int32) (*comp.APIGroup, error) {
-	g := dao.Group
-	info := &comp.APIGroup{}
-	err := g.Where(g.ID.Eq(gid)).Scan(info)
-	if info.ID == 0 {
-		err = newErr(enum.ErrorTextGroupNotFound)
-	}
-
-	return info, err
-}
-
-// GetGroupsByUserID 返回群组列表
-func (gd GroupDao) GetGroupsByUserID(uid int32) ([]*comp.APIGroup, error) {
-	ids := make([]int32, 0)
-	m := dao.GroupMember
-	err := m.Select(m.GroupID).Where(m.UserID.Eq(uid)).Scan(&ids)
-	if err != nil {
-		return nil, err
-	}
-
-	g := dao.Group
-	groups := make([]*comp.APIGroup, len(ids))
-	err = g.Where(g.ID.In(ids...)).Scan(&groups)
-	if err != nil {
-		return nil, err
-	}
-
-	return groups, nil
-}
-
-// GetGroups 返回最近的群组列表
-func (gd GroupDao) GetGroups(page int, num int) ([]*comp.APIGroup, error) {
-	g := dao.Group
-	list := make([]*comp.APIGroup, 0)
-	max := math.Max[int]
-	page = max(page-1, 0)
-	if num <= 0 {
-		num = enum.DefaultGroupCount
-	}
-	err := g.Offset(page * num).Limit(num).Scan(&list)
-	if err != nil {
-		return nil, err
-	}
-
-	return list, nil
-}
-
-// GetApplyList 返回群组的申请入群列表
-func (gd GroupDao) GetApplyList(gid int32) ([]comp.APIGroupApplication, error) {
-	ga := dao.GroupApplication
-	list := make([]comp.APIGroupApplication, 0)
-	err := ga.Where(ga.GroupID.Eq(gid)).Scan(&list)
-	if err != nil {
-		return nil, err
-	}
-
-	return list, nil
-}
-
-// Create 创建群组
-func (gd GroupDao) Create(name, addr string) error {
-	g := dao.Group
-
-	// 检查名字是否存在
-	count, err := g.Where(g.Name.Eq(name)).Count()
-	if err == nil && count > 0 {
+// Create create a new group
+func (gd GroupDao) Create(group *model.Group) error {
+	if gd.ExistsName(group.Name) != nil {
 		return newErr(enum.ErrorTextGroupNameExists)
 	}
 
-	group := model.Group{}
-	group.Name = name
-	group.Addr = addr
 	group.Level = 1
 	group.Scores = 0
-	group.Notice = "Welcome!"
-	err = g.Create(&group)
+	group.Notice = ""
+	err := db.Create(group).Error
+	if err != nil {
+		return err
+	}
 
 	return err
 }
 
+// Exists group exists or not
+func (gd GroupDao) Exists(gid uint) error {
+	err := db.Unscoped().Raw(SqlGroupByID, gid).First(&model.Group{}).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+	return nil
+}
+
+// ExistsName group name exists or not
+func (gd GroupDao) ExistsName(name string) error {
+	err := db.Unscoped().Raw(SqlGroupByName, name).First(&model.Group{}).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+	return nil
+}
+
+// GetApplictions return the applications of the group
+func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
+	applications := make([]model.GroupApplication, 0)
+	err := db.Raw(SqlGroupApplicationsByID).Scan(&applications).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return applications, nil
+}
+
 // Apply 申请加入群组
-func (gd GroupDao) Apply(gid, uid int32) error {
+func (gd GroupDao) Apply(gid, uid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
@@ -191,7 +145,7 @@ func (gd GroupDao) Apply(gid, uid int32) error {
 }
 
 // Approve 批准加入
-func (gd GroupDao) Approve(gid, uid, mid int32) error {
+func (gd GroupDao) Approve(gid, uid, mid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
@@ -201,13 +155,13 @@ func (gd GroupDao) Approve(gid, uid, mid int32) error {
 	if err != nil {
 		return err
 	}
-	if count >= int64(getGroupMemberLimit(gid)) {
+	if count >= int64(getMemberLimit(gid)) {
 		return newErr(enum.ErrorTextGroupMemberFull)
 	}
 
 	ga := dao.GroupApplication
 	// 管理员才能操作
-	if isGroupManager(gid, mid) {
+	if isManager(gid, mid) {
 		rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
 		if err == nil && rs != nil {
 			if rs.Deleted == 0 {
@@ -236,14 +190,14 @@ func (gd GroupDao) Approve(gid, uid, mid int32) error {
 }
 
 // Refuse 拒绝
-func (gd GroupDao) Refuse(gid, uid, mid int32) error {
+func (gd GroupDao) Refuse(gid, uid, mid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
 	ga := dao.GroupApplication
 	// 管理员才能操作
-	if isGroupManager(gid, mid) {
+	if isManager(gid, mid) {
 		rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
 		if err == nil && rs != nil {
 			//  更新申请状态
@@ -256,7 +210,7 @@ func (gd GroupDao) Refuse(gid, uid, mid int32) error {
 }
 
 // Promote 提升管理员
-func (gd GroupDao) Promote(gid, uid, mid int32) error {
+func (gd GroupDao) Promote(gid, uid, mid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
@@ -272,7 +226,7 @@ func (gd GroupDao) Promote(gid, uid, mid int32) error {
 	}
 
 	// 群组可以提升管理员
-	if isGroupOwner(gid, mid) {
+	if isOwner(gid, mid) {
 		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupManager)
 		if err != nil {
 			return err
@@ -284,12 +238,12 @@ func (gd GroupDao) Promote(gid, uid, mid int32) error {
 }
 
 // Transfer 转让群主
-func (gd GroupDao) Transfer(gid, uid, mid int32) error {
+func (gd GroupDao) Transfer(gid, uid, mid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	if isGroupOwner(gid, mid) {
+	if isOwner(gid, mid) {
 		gm := dao.GroupMember
 		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupOwner)
 		if err == nil {
@@ -306,13 +260,13 @@ func (gd GroupDao) Transfer(gid, uid, mid int32) error {
 }
 
 // Fire 踢出群组
-func (gd GroupDao) Fire(gid, uid, mid int32) error {
+func (gd GroupDao) Fire(gid, uid, mid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
 	// 管理员才能踢人
-	if isGroupManager(gid, mid) {
+	if isManager(gid, mid) {
 		gm := dao.GroupMember
 		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
 		if err == nil {
@@ -326,13 +280,13 @@ func (gd GroupDao) Fire(gid, uid, mid int32) error {
 }
 
 // Remove 删除群组
-func (gd GroupDao) Remove(gid, uid int32) error {
+func (gd GroupDao) Remove(gid, uid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
 	// 群主可以删除群组
-	if isGroupOwner(gid, uid) {
+	if isOwner(gid, uid) {
 		g := dao.Group
 		result, err := g.Where(g.ID.Eq(gid)).Delete()
 		if err != nil {
@@ -345,7 +299,7 @@ func (gd GroupDao) Remove(gid, uid int32) error {
 }
 
 // Quit 退出群组
-func (gd GroupDao) Quit(gid, uid int32) error {
+func (gd GroupDao) Quit(gid, uid uint) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
@@ -360,13 +314,13 @@ func (gd GroupDao) Quit(gid, uid int32) error {
 }
 
 // UpdateName 更新群名字
-func (gd GroupDao) UpdateName(gid, uid int32, name string) error {
+func (gd GroupDao) UpdateName(gid, uid uint, name string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 	g := dao.Group
 
-	if isGroupManager(gid, uid) {
+	if isManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)
 	}
 
@@ -387,13 +341,13 @@ func (gd GroupDao) UpdateName(gid, uid int32, name string) error {
 }
 
 // UpdateLogo 更新 Logo
-func (gd GroupDao) UpdateLogo(gid, uid int32, logo string) error {
+func (gd GroupDao) UpdateLogo(gid, uid uint, logo string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 	g := dao.Group
 
-	if isGroupManager(gid, uid) {
+	if isManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)
 	}
 
@@ -406,13 +360,13 @@ func (gd GroupDao) UpdateLogo(gid, uid int32, logo string) error {
 }
 
 // UpdateNotice 更新公告
-func (gd GroupDao) UpdateNotice(gid, uid int32, notice string) error {
+func (gd GroupDao) UpdateNotice(gid, uid uint, notice string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 	g := dao.Group
 
-	if isGroupManager(gid, uid) {
+	if isManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)
 	}
 
@@ -425,13 +379,13 @@ func (gd GroupDao) UpdateNotice(gid, uid int32, notice string) error {
 }
 
 // UpdateAddr 更新地址
-func (gd GroupDao) UpdateAddr(gid, uid int32, addr string) error {
+func (gd GroupDao) UpdateAddr(gid, uid uint, addr string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 	g := dao.Group
 
-	if isGroupManager(gid, uid) {
+	if isManager(gid, uid) {
 		return newErr(enum.ErrorTextGroupManagerOp)
 	}
 

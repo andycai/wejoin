@@ -16,7 +16,7 @@ var Dao = new(ActivityDao)
 var newErr = enum.GetError
 
 // GetInfo 返回活动信息
-func (as ActivityDao) GetInfo(aid int32) (*comp.APIActivity, error) {
+func (as ActivityDao) GetInfo(aid uint) (*comp.APIActivity, error) {
 	a := dao.Activity
 	info := &comp.APIActivity{}
 	err := a.Where(a.ID.Eq(aid)).Scan(info)
@@ -28,8 +28,8 @@ func (as ActivityDao) GetInfo(aid int32) (*comp.APIActivity, error) {
 }
 
 // GetActivitiesByUserID 返回活动列表
-func (as ActivityDao) GetActivitiesByUserID(uid int32) ([]*comp.APIActivity, error) {
-	ids := make([]int32, 0)
+func (as ActivityDao) GetActivitiesByUserID(uid uint) ([]*comp.APIActivity, error) {
+	ids := make([]uint, 0)
 	u := dao.ActivityUser
 	// TODO: 使用关联表方式
 	err := u.Select(u.ActivityID).Where(u.UserID.Eq(uid)).Scan(&ids)
@@ -48,7 +48,7 @@ func (as ActivityDao) GetActivitiesByUserID(uid int32) ([]*comp.APIActivity, err
 }
 
 // GetActivitiesByGroupID 返回群组创建的活动列表
-func (as ActivityDao) GetActivitiesByGroupID(gid int32) ([]*comp.APIActivity, error) {
+func (as ActivityDao) GetActivitiesByGroupID(gid uint) ([]*comp.APIActivity, error) {
 	a := dao.Activity
 	list := make([]*comp.APIActivity, 0)
 	err := a.Where(a.GroupID.Eq(gid)).Scan(&list)

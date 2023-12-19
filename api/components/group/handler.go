@@ -7,7 +7,7 @@ import (
 )
 
 // pushGroupInfo 推送群组信息给前端
-func pushGroupInfo(c *fiber.Ctx, id int32) error {
+func pushGroupInfo(c *fiber.Ctx, id uint) error {
 	info, err := Dao.GetInfo(id)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupNotFound)
