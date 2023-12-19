@@ -109,7 +109,7 @@ func (gd GroupDao) ExistsName(name string) error {
 // GetApplictions return the applications of the group
 func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
 	applications := make([]model.GroupApplication, 0)
-	err := db.Raw(SqlGroupApplicationsByID).Scan(&applications).Error
+	err := db.Raw(SqlGroupApplicationsByGroupID).Scan(&applications).Error
 	if err != nil {
 		return nil, err
 	}
@@ -117,31 +117,22 @@ func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
 	return applications, nil
 }
 
-// Apply 申请加入群组
-func (gd GroupDao) Apply(gid, uid uint) error {
-	if absent(gid) {
+// Apply apply for the group
+func (gd GroupDao) Apply(group *model.GroupApplication) error {
+	if absent(group.GroupID) {
 		return newErr(enum.ErrorTextGroupNotFound)
 	}
 
-	g := dao.Group
-	_, err := g.Where(g.ID.Eq(gid)).Take()
-	if err != nil {
+	groupVo := model.Group{}
+
+	err := db.Unscoped().Raw(SqlGroupApplicationsByGroupIDAndUserID, group.GroupID, group.UserID).First(&groupVo).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}
 
-	ga := dao.GroupApplication
-	_, err = ga.Where(ga.GroupID.Eq(gid)).Where(ga.UserID.Eq(uid)).Take()
+	err = db.Create(&group).Error
 
-	if err != nil {
-		groupApp := &model.GroupApplication{}
-		groupApp.GroupID = gid
-		groupApp.UserID = uid
-		err = ga.Omit(ga.Deleted, ga.DeleteAt).Create(groupApp)
-
-		return err
-	}
-
-	return errors.New("application exists")
+	return err
 }
 
 // Approve 批准加入
