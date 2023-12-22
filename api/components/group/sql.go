@@ -7,4 +7,5 @@ const (
 	SqlGroupByPage                         = "SELECT * FROM groups WHERE deleted_at IS NULL LIMIT ? OFFSET ?"
 	SqlGroupApplicationsByGroupID          = "SELECT * FROM group_application WHERE group_id = ? AND deleted_at IS NULL"
 	SqlGroupApplicationsByGroupIDAndUserID = "SELECT * FROM group_application WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"
+	SqlGroupMemberByGroupIDAndUserID       = "SELECT * FROM group_member WHERE user_id = ? AND group_id = ? AND deleted_at IS NULL"
 )

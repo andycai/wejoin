@@ -1,12 +1,12 @@
 package enum
 
 const (
-	PositionGroupMember       = iota // 普通成员
-	PositionGroupPlaceholder1        // 占位
-	PositionGroupPlaceholder2        // 占位
-	PositionGroupPlaceholder3        // 占位
-	PositionGroupManager             // 群管理员
-	PositionGroupOwner               // 群主
+	PositionGroupMember       = iota // normal member
+	PositionGroupOwner               // owner
+	PositionGroupManager             // manager
+	PositionGroupPlaceholder1        // holder
+	PositionGroupPlaceholder2        // holder
+	PositionGroupPlaceholder3        // holder
 )
 
 // DefaultGroupMemmberCount 默认成员数量

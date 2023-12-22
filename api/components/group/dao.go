@@ -25,16 +25,16 @@ func getMemberLimit(gid uint) uint {
 
 // isManager 是否管理员（包括群主）
 func isManager(gid, uid uint) bool {
-	gm := dao.GroupMember
-	member, err := gm.Where(gm.GroupID.Eq(gid), gm.UserID.Eq(uid)).Take()
+	member := &model.GroupMember{}
+	err := db.Raw(SqlGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
 
-	return err == nil && member != nil && member.Position >= enum.PositionGroupManager
+	return err == nil && member != nil && member.Position >= enum.PositionGroupOwner
 }
 
 // isOwner 是否群主
 func isOwner(gid, uid uint) bool {
-	gm := dao.GroupMember
-	member, err := gm.Where(gm.GroupID.Eq(gid), gm.UserID.Eq(uid)).Take()
+	member := &model.GroupMember{}
+	err := db.Raw(SqlGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
 
 	return err == nil && member != nil && member.Position == enum.PositionGroupOwner
 }
