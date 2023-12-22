@@ -1,11 +1,13 @@
 package group
 
 const (
-	SqlGroupByID                           = "SELECT * FROM groups WHERE id = ? AND deleted_at IS NULL"
-	SqlGroupByName                         = "SELECT * FROM groups WHERE name = ? AND deleted_at IS NULL"
-	SqlGroupByUserID                       = "SELECT * FROM groups WHERE user_id = ? AND deleted_at IS NULL"
-	SqlGroupByPage                         = "SELECT * FROM groups WHERE deleted_at IS NULL LIMIT ? OFFSET ?"
-	SqlGroupApplicationsByGroupID          = "SELECT * FROM group_application WHERE group_id = ? AND deleted_at IS NULL"
-	SqlGroupApplicationsByGroupIDAndUserID = "SELECT * FROM group_application WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"
-	SqlGroupMemberByGroupIDAndUserID       = "SELECT * FROM group_member WHERE user_id = ? AND group_id = ? AND deleted_at IS NULL"
+	SqlQueryGroupByID                           = "SELECT * FROM groups WHERE id = ? AND deleted_at IS NULL"
+	SqlQueryGroupByName                         = "SELECT * FROM groups WHERE name = ? AND deleted_at IS NULL"
+	SqlQueryGroupByUserID                       = "SELECT * FROM groups WHERE user_id = ? AND deleted_at IS NULL"
+	SqlQueryGroupByPage                         = "SELECT * FROM groups WHERE deleted_at IS NULL LIMIT ? OFFSET ?"
+	SqlQueryGroupApplicationsByGroupID          = "SELECT * FROM group_application WHERE group_id = ? AND deleted_at IS NULL"
+	SqlQueryGroupApplicationsByGroupIDAndUserID = "SELECT * FROM group_application WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"
+	SqlDeleteGroupApplicationByGroupIDAndUserID = "DELETE FROM group_application WHERE group_id = ? AND user_id = ?"
+	SqlQueryGroupMemberByGroupID                = "SELECT * FROM group_member WHERE group_id = ? AND deleted_at IS NULL"
+	SqlQueryGroupMemberByGroupIDAndUserID       = "SELECT * FROM group_member WHERE user_id = ? AND group_id = ? AND deleted_at IS NULL"
 )

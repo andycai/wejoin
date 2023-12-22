@@ -23,25 +23,69 @@ func getMemberLimit(gid uint) uint {
 	return enum.DefaultGroupMemmberCount
 }
 
-// isManager 是否管理员（包括群主）
-func isManager(gid, uid uint) bool {
+// isManager is manager of group or not(including owner)
+func isManager(gid, uid uint) (err error) {
 	member := &model.GroupMember{}
-	err := db.Raw(SqlGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
+	err = db.Raw(SqlQueryGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
 
-	return err == nil && member != nil && member.Position >= enum.PositionGroupOwner
+	if err != nil {
+		return
+	}
+
+	if member == nil || member.Position >= enum.PositionGroupOwner {
+		err = newErr(enum.ErrorTextGroupManagerOp)
+	}
+
+	return
 }
 
-// isOwner 是否群主
-func isOwner(gid, uid uint) bool {
+// isOwner is owner of group or not
+func isOwner(gid, uid uint) (err error) {
 	member := &model.GroupMember{}
-	err := db.Raw(SqlGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
+	err = db.Raw(SqlQueryGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
 
-	return err == nil && member != nil && member.Position == enum.PositionGroupOwner
+	if err != nil {
+		return
+	}
+
+	if member == nil || member.Position != enum.PositionGroupOwner {
+		err = newErr(enum.ErrorTextGroupManagerOp)
+	}
+
+	return
 }
 
-// absent group doesn't exist
-func absent(gid uint) bool {
-	return Dao.Exists(gid) != nil
+// existsGroup exists group or not
+func existsGroup(gid uint) (err error) {
+	err = db.Raw(SqlQueryGroupByID, gid).First(&model.Group{}).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return
+	}
+	return nil
+}
+
+// existsApplication exists application or not
+func existsApplication(gid, uid uint) (err error) {
+	ga := model.GroupApplication{}
+	err = db.Raw(SqlQueryGroupApplicationsByGroupIDAndUserID, gid, uid).First(&ga).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return
+	}
+	return
+}
+
+// canJoin can join the group or not
+func canJoin(gid uint) (err error) {
+	var count int64
+	err = db.Raw(SqlQueryGroupMemberByGroupID).Count(&count).Error
+	if err != nil {
+		return
+	}
+
+	if count >= int64(getMemberLimit(gid)) {
+		err = newErr(enum.ErrorTextGroupMemberFull)
+	}
+	return
 }
 
 //#endregion
@@ -49,7 +93,7 @@ func absent(gid uint) bool {
 // GetByID get the groups by id
 func (gd GroupDao) GetByID(gid uint) (*model.Group, error) {
 	groupVo := model.Group{}
-	db.Raw(SqlGroupByID, gid).Scan(&groupVo)
+	db.Raw(SqlQueryGroupByID, gid).Scan(&groupVo)
 
 	return &groupVo, nil
 }
@@ -58,7 +102,7 @@ func (gd GroupDao) GetByID(gid uint) (*model.Group, error) {
 func (gd GroupDao) GetByUserID(uid uint) ([]*model.Group, error) {
 	groups := make([]*model.Group, 0)
 	// db.Raw(SqlGroupByUserID, uid).Find(&groups)
-	db.Raw(SqlGroupByUserID, uid).Scan(&groups)
+	db.Raw(SqlQueryGroupByUserID, uid).Scan(&groups)
 
 	return groups, nil
 }
@@ -66,7 +110,7 @@ func (gd GroupDao) GetByUserID(uid uint) ([]*model.Group, error) {
 // GetByPage get the groups by page
 func (gd GroupDao) GetByPage(page int, pageSize int) ([]*model.Group, error) {
 	groups := make([]*model.Group, 0)
-	db.Raw(SqlGroupByPage, pageSize, pageSize*(page-1)).Scan(&groups)
+	db.Raw(SqlQueryGroupByPage, pageSize, pageSize*(page-1)).Scan(&groups)
 
 	return groups, nil
 }
@@ -90,7 +134,7 @@ func (gd GroupDao) Create(group *model.Group) error {
 
 // Exists group exists or not
 func (gd GroupDao) Exists(gid uint) error {
-	err := db.Unscoped().Raw(SqlGroupByID, gid).First(&model.Group{}).Error
+	err := db.Unscoped().Raw(SqlQueryGroupByID, gid).First(&model.Group{}).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}
@@ -99,7 +143,7 @@ func (gd GroupDao) Exists(gid uint) error {
 
 // ExistsName group name exists or not
 func (gd GroupDao) ExistsName(name string) error {
-	err := db.Unscoped().Raw(SqlGroupByName, name).First(&model.Group{}).Error
+	err := db.Unscoped().Raw(SqlQueryGroupByName, name).First(&model.Group{}).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}
@@ -109,7 +153,7 @@ func (gd GroupDao) ExistsName(name string) error {
 // GetApplictions return the applications of the group
 func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
 	applications := make([]model.GroupApplication, 0)
-	err := db.Raw(SqlGroupApplicationsByGroupID).Scan(&applications).Error
+	err := db.Raw(SqlQueryGroupApplicationsByGroupID).Scan(&applications).Error
 	if err != nil {
 		return nil, err
 	}
@@ -119,14 +163,18 @@ func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
 
 // Apply apply for the group
 func (gd GroupDao) Apply(group *model.GroupApplication) error {
-	if absent(group.GroupID) {
-		return newErr(enum.ErrorTextGroupNotFound)
+	err := existsGroup(group.GroupID)
+	if err != nil {
+		return err
 	}
 
-	groupVo := model.Group{}
+	err = canJoin(group.GroupID)
+	if err != nil {
+		return err
+	}
 
-	err := db.Unscoped().Raw(SqlGroupApplicationsByGroupIDAndUserID, group.GroupID, group.UserID).First(&groupVo).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	err = existsApplication(group.GroupID, group.UserID)
+	if err == nil {
 		return err
 	}
 
@@ -135,49 +183,48 @@ func (gd GroupDao) Apply(group *model.GroupApplication) error {
 	return err
 }
 
-// Approve 批准加入
+// Approve approve the application
 func (gd GroupDao) Approve(gid, uid, mid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-
-	gm := dao.GroupMember
-	count, err := gm.Where(gm.GroupID.Eq(gid)).Count()
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
-	if count >= int64(getMemberLimit(gid)) {
-		return newErr(enum.ErrorTextGroupMemberFull)
+
+	err = canJoin(gid)
+	if err != nil {
+		return err
 	}
 
-	ga := dao.GroupApplication
 	// 管理员才能操作
-	if isManager(gid, mid) {
-		rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
-		if err == nil && rs != nil {
-			if rs.Deleted == 0 {
-				// 加入群组成员
-				gm := dao.GroupMember
-				member := &model.GroupMember{}
-				member.GroupID = gid
-				member.UserID = uid
-				member.Position = enum.PositionGroupMember
-				member.Scores = 0
-				member.EnterAt = time.Now()
-				member.Alias_ = ""
-				err := gm.Create(member)
-				if err != nil {
-					return err
-				}
-
-				//  更新申请状态
-				_, err = ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Update(ga.Deleted, 1)
-				return err
-			}
-		}
+	err = isManager(gid, mid)
+	if err != nil {
+		return err
 	}
 
-	return newErr(enum.ErrorTextGroupManagerOp)
+	err = existsApplication(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	// DOTO 事务创建成员和删除申请
+
+	// 加入群组成员
+	member := model.GroupMember{}
+	member.GroupID = gid
+	member.UserID = uid
+	member.Position = enum.PositionGroupMember
+	member.Scores = 0
+	member.EnterAt = time.Now()
+	member.Nick = ""
+	err = db.Create(&member).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, uid).Error
+
+	// return newErr(enum.ErrorTextGroupManagerOp)
+	return err
 }
 
 // Refuse 拒绝
