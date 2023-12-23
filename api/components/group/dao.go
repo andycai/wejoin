@@ -410,12 +410,27 @@ func (gd GroupDao) Remove(gid, uid uint) error {
 	tx := db.Begin()
 
 	// delete the applications
+	err = db.Raw(SqlDeleteGroupApplicationByGroupID, gid).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
 	// delete the members
+	err = db.Raw(SqlDeleteGroupMemberByGroupID, gid).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
-	// delete the activities
+	// TODO delete the activities
 
 	// delete the group
+	err = db.Raw(SqlDeleteGroupnByID, gid).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
 	tx.Commit()
 
