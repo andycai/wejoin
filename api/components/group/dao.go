@@ -18,12 +18,17 @@ var newErr = enum.GetError
 
 //#region private methods
 
-// getMemberLimit 暂时返回默认数量，以后会根据等级提升数量
+// getMemberLimit return the maximum number of members
 func getMemberLimit(gid uint) uint {
 	return enum.DefaultGroupMemmberCount
 }
 
-// isManager is manager of group or not(including owner)
+// getManagerLimit return the maximum number of managers
+func getManagerLimit(gid uint) uint {
+	return enum.DefaultGroupManagerCount
+}
+
+// isManager is the manager of the group or not(including the owner)
 func isManager(gid, uid uint) (err error) {
 	member := &model.GroupMember{}
 	err = db.Raw(SqlQueryGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
@@ -39,7 +44,7 @@ func isManager(gid, uid uint) (err error) {
 	return
 }
 
-// isOwner is owner of group or not
+// isOwner is the owner of the group or not
 func isOwner(gid, uid uint) (err error) {
 	member := &model.GroupMember{}
 	err = db.Raw(SqlQueryGroupMemberByGroupIDAndUserID, uid, gid).Take(member).Error
@@ -55,9 +60,18 @@ func isOwner(gid, uid uint) (err error) {
 	return
 }
 
-// existsGroup exists group or not
+// existsGroup exists the group or not
 func existsGroup(gid uint) (err error) {
 	err = db.Raw(SqlQueryGroupByID, gid).First(&model.Group{}).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return
+	}
+	return nil
+}
+
+// existsMember exists the member of the group or not
+func existsMember(gid, uid uint) (err error) {
+	err = db.Raw(SqlQueryGroupMemberByGroupIDAndUserID, gid, uid).First(&model.GroupMember{}).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return
 	}
@@ -77,13 +91,27 @@ func existsApplication(gid, uid uint) (err error) {
 // canJoin can join the group or not
 func canJoin(gid uint) (err error) {
 	var count int64
-	err = db.Raw(SqlQueryGroupMemberByGroupID).Count(&count).Error
+	err = db.Raw(SqlQueryGroupMemberByGroupID, gid).Count(&count).Error
 	if err != nil {
 		return
 	}
 
 	if count >= int64(getMemberLimit(gid)) {
 		err = newErr(enum.ErrorTextGroupMemberFull)
+	}
+	return
+}
+
+// canPromote can promote the member or not
+func canPromote(gid uint) (err error) {
+	var count int64
+	err = db.Raw(SqlQueryGroupMemberByGroupIDAndPosition, gid, enum.PositionGroupMember).Count(&count).Error
+	if err != nil {
+		return
+	}
+
+	if count >= int64(getManagerLimit(gid)) {
+		err = newErr(enum.ErrorTextGroupManagerFull)
 	}
 	return
 }
@@ -195,84 +223,95 @@ func (gd GroupDao) Approve(gid, uid, mid uint) error {
 		return err
 	}
 
-	// 管理员才能操作
-	err = isManager(gid, mid)
+	err = existsApplication(gid, mid)
 	if err != nil {
 		return err
 	}
 
-	err = existsApplication(gid, uid)
+	err = isManager(gid, uid)
 	if err != nil {
 		return err
 	}
 
-	// DOTO 事务创建成员和删除申请
+	// 事务：创建成员和删除申请
+	tx := db.Begin()
 
 	// 加入群组成员
 	member := model.GroupMember{}
 	member.GroupID = gid
-	member.UserID = uid
+	member.UserID = mid
 	member.Position = enum.PositionGroupMember
 	member.Scores = 0
 	member.EnterAt = time.Now()
 	member.Nick = ""
-	err = db.Create(&member).Error
+	err = tx.Create(&member).Error
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	err = db.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, uid).Error
+	err = tx.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, mid).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
 
-	// return newErr(enum.ErrorTextGroupManagerOp)
 	return err
 }
 
-// Refuse 拒绝
+// Refuse refuse the application of the user
 func (gd GroupDao) Refuse(gid, uid, mid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-
-	ga := dao.GroupApplication
-	// 管理员才能操作
-	if isManager(gid, mid) {
-		rs, err := ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Take()
-		if err == nil && rs != nil {
-			//  更新申请状态
-			_, err = ga.Where(ga.GroupID.Eq(gid), ga.UserID.Eq(uid)).Update(ga.Deleted, 1)
-		}
-		return err
-	}
-
-	return newErr(enum.ErrorTextGroupManagerOp)
-}
-
-// Promote 提升管理员
-func (gd GroupDao) Promote(gid, uid, mid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-
-	gm := dao.GroupMember
-	// 群管理员数量已满
-	count, err := gm.Where(gm.GroupID.Eq(gid), gm.Position.Eq(enum.PositionGroupManager)).Count()
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
-	if count >= enum.DefaultGroupManagerCount {
-		return newErr(enum.ErrorTextGroupManagerFull)
+
+	err = existsApplication(gid, mid)
+	if err != nil {
+		return err
 	}
 
-	// 群组可以提升管理员
-	if isOwner(gid, mid) {
-		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupManager)
-		if err != nil {
-			return err
-		}
-		return result.Error
+	err = isManager(gid, uid)
+	if err != nil {
+		return err
 	}
 
-	return newErr(enum.ErrorTextGroupPromote)
+	err = db.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, mid).Error
+
+	return err
+}
+
+// Promote promote the member to the manager
+func (gd GroupDao) Promote(gid, uid, mid uint) error {
+	err := existsGroup(gid)
+	if err != nil {
+		return err
+	}
+
+	err = existsMember(gid, mid)
+	if err != nil {
+		return err
+	}
+
+	err = canPromote(gid)
+	if err != nil {
+		return err
+	}
+
+	err = isManager(gid, mid)
+	if err == nil {
+		return newErr(enum.ErrorTextGroupAlreadyManager)
+	}
+
+	err = isOwner(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	err = db.Raw(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupManager, gid, mid).Error
+
+	return err
 }
 
 // Transfer 转让群主
