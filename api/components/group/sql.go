@@ -8,6 +8,7 @@ const (
 	SqlQueryGroupApplicationsByGroupID             = "SELECT * FROM group_application WHERE group_id = ? AND deleted_at IS NULL"
 	SqlQueryGroupApplicationsByGroupIDAndUserID    = "SELECT * FROM group_application WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"
 	SqlDeleteGroupApplicationByGroupIDAndUserID    = "DELETE FROM group_application WHERE group_id = ? AND user_id = ?"
+	SqlDeleteGroupApplicationByGroupID             = "DELETE FROM group_application WHERE group_id = ? AND user_id = ?"
 	SqlQueryGroupMemberByGroupID                   = "SELECT * FROM group_member WHERE group_id = ? AND deleted_at IS NULL"
 	SqlQueryGroupMemberByGroupIDAndPosition        = "SELECT * FROM group_member WHERE group_id = ? AND position > ? AND deleted_at IS NULL"
 	SqlQueryGroupMemberByGroupIDAndUserID          = "SELECT * FROM group_member WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"

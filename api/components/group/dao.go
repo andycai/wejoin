@@ -190,23 +190,43 @@ func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
 }
 
 // Apply apply for the group
-func (gd GroupDao) Apply(group *model.GroupApplication) error {
-	err := existsGroup(group.GroupID)
+func (gd GroupDao) Apply(gid, uid uint) error {
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
 
-	err = canJoin(group.GroupID)
+	err = canJoin(gid)
 	if err != nil {
 		return err
 	}
 
-	err = existsApplication(group.GroupID, group.UserID)
+	err = existsApplication(gid, uid)
 	if err == nil {
 		return err
 	}
 
-	err = db.Create(&group).Error
+	groupApplication := model.GroupApplication{}
+	groupApplication.GroupID = gid
+	groupApplication.UserID = uid
+	err = db.Create(&groupApplication).Error
+
+	return err
+}
+
+// Cancel cancel the application of the group
+func (gd GroupDao) Cancel(gid, uid uint) error {
+	err := existsGroup(gid)
+	if err != nil {
+		return err
+	}
+
+	err = existsApplication(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	err = db.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, uid).Error
 
 	return err
 }
@@ -373,26 +393,36 @@ func (gd GroupDao) Fire(gid, uid, mid uint) error {
 	return err
 }
 
-// Remove 删除群组
+// Remove remove the group
 func (gd GroupDao) Remove(gid, uid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
+	err := existsGroup(gid)
+	if err != nil {
+		return err
 	}
 
-	// 群主可以删除群组
-	if isOwner(gid, uid) {
-		g := dao.Group
-		result, err := g.Where(g.ID.Eq(gid)).Delete()
-		if err != nil {
-			return err
-		}
-		return result.Error
+	err = isOwner(gid, uid)
+	if err != nil {
+		return err
 	}
 
-	return newErr(enum.ErrorTextGroupRemove)
+	// transaction
+
+	tx := db.Begin()
+
+	// delete the applications
+
+	// delete the members
+
+	// delete the activities
+
+	// delete the group
+
+	tx.Commit()
+
+	return nil
 }
 
-// Quit 退出群组
+// Quit quit the group
 func (gd GroupDao) Quit(gid, uid uint) error {
 	err := existsGroup(gid)
 	if err != nil {
