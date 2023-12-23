@@ -394,17 +394,19 @@ func (gd GroupDao) Remove(gid, uid uint) error {
 
 // Quit 退出群组
 func (gd GroupDao) Quit(gid, uid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-
-	gm := dao.GroupMember
-	result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
 
-	return result.Error
+	err = isOwner(gid, uid)
+	if err == nil {
+		return newErr(enum.ErrorTextGroupOwnerCannotQuit)
+	}
+
+	err = db.Raw(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
+
+	return err
 }
 
 // UpdateName 更新群名字
