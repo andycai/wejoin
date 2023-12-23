@@ -257,7 +257,7 @@ func (gd GroupDao) Approve(gid, uid, mid uint) error {
 	}
 	tx.Commit()
 
-	return err
+	return nil
 }
 
 // Refuse refuse the application of the user
@@ -314,26 +314,41 @@ func (gd GroupDao) Promote(gid, uid, mid uint) error {
 	return err
 }
 
-// Transfer 转让群主
+// Transfer transfer the owner to the other member
 func (gd GroupDao) Transfer(gid, uid, mid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
+	err := existsGroup(gid)
+	if err != nil {
+		return err
 	}
 
-	if isOwner(gid, mid) {
-		gm := dao.GroupMember
-		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupOwner)
-		if err == nil {
-			result, err := gm.Where(gm.UserID.Eq(mid), gm.GroupID.Eq(gid)).Update(gm.Position, enum.PositionGroupMember)
-			if err != nil {
-				return err
-			}
-			return result.Error
-		}
-		return result.Error
+	err = existsMember(gid, mid)
+	if err != nil {
+		return err
 	}
 
-	return newErr(enum.ErrorTextGroupTransfer)
+	err = isOwner(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	// transaction
+	tx := db.Begin()
+
+	err = tx.Raw(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupMember, gid, uid).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Raw(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupOwner, gid, mid).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
 }
 
 // Fire 踢出群组
