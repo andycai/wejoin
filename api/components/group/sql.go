@@ -12,4 +12,5 @@ const (
 	SqlQueryGroupMemberByGroupIDAndPosition        = "SELECT * FROM group_member WHERE group_id = ? AND position > ? AND deleted_at IS NULL"
 	SqlQueryGroupMemberByGroupIDAndUserID          = "SELECT * FROM group_member WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"
 	SqlUpdateGroupMemberPositionByGroupIDAndUserID = "UPDATE group_member SET position = ? WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL"
+	SqlDeleteGroupMemberByGroupIDAndUserID         = "DELETE FROM group_member WHERE group_id = ? AND user_id = ?"
 )

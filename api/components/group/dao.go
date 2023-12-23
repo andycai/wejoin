@@ -351,24 +351,26 @@ func (gd GroupDao) Transfer(gid, uid, mid uint) error {
 	return nil
 }
 
-// Fire 踢出群组
+// Fire kick the member out of the group
 func (gd GroupDao) Fire(gid, uid, mid uint) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
+	err := existsGroup(gid)
+	if err != nil {
+		return err
 	}
 
-	// 管理员才能踢人
-	if isManager(gid, mid) {
-		gm := dao.GroupMember
-		result, err := gm.Where(gm.UserID.Eq(uid), gm.GroupID.Eq(gid)).Delete()
-		if err == nil {
-			return err
-		}
-
-		return result.Error
+	err = existsMember(gid, mid)
+	if err != nil {
+		return err
 	}
 
-	return newErr(enum.ErrorTextGroupFireMember)
+	err = isManager(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	err = db.Raw(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
+
+	return err
 }
 
 // Remove 删除群组
