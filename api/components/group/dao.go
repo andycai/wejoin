@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/andycai/axe-fiber/api/components/activity"
-	"github.com/andycai/axe-fiber/api/dao"
 	"github.com/andycai/axe-fiber/enum"
 	"github.com/andycai/axe-fiber/model"
 	"gorm.io/gorm"
@@ -518,21 +517,19 @@ func (gd GroupDao) UpdateNotice(gid, uid uint, notice string) error {
 	return err
 }
 
-// UpdateAddr 更新地址
+// UpdateAddr update the address of the group
 func (gd GroupDao) UpdateAddr(gid, uid uint, addr string) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-	g := dao.Group
-
-	if isManager(gid, uid) {
-		return newErr(enum.ErrorTextGroupManagerOp)
-	}
-
-	result, err := g.Where(g.ID.Eq(gid)).Update(g.Addr, addr)
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
 
-	return result.Error
+	err = isManager(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	err = db.Exec(SqlUpdateGroupAddrByID, addr, gid).Error
+
+	return err
 }

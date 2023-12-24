@@ -9,6 +9,7 @@ const (
 	SqlUpdateGroupNameByID   = "UPDATE groups SET name = ? WHERE id = ?"
 	SqlUpdateGroupLogoByID   = "UPDATE groups SET logo = ? WHERE id = ?"
 	SqlUpdateGroupNoticeByID = "UPDATE groups SET notice = ? WHERE id = ?"
+	SqlUpdateGroupAddrByID   = "UPDATE groups SET addr = ? WHERE id = ?"
 	SqlDeleteGroupnByID      = "DELETE FROM group WHERE id = ?"
 )
 
