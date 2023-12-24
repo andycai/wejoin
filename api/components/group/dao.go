@@ -136,7 +136,7 @@ func (gd GroupDao) GetByUserID(uid uint) ([]*model.Group, error) {
 }
 
 // GetByPage get the groups by page
-func (gd GroupDao) GetByPage(page int, pageSize int) ([]*model.Group, error) {
+func (gd GroupDao) GetByPage(page uint, pageSize uint) ([]*model.Group, error) {
 	groups := make([]*model.Group, 0)
 	db.Raw(SqlQueryGroupByPage, pageSize, pageSize*(page-1)).Scan(&groups)
 
@@ -178,8 +178,8 @@ func (gd GroupDao) ExistsName(name string) error {
 	return nil
 }
 
-// GetApplictions return the applications of the group
-func (gd GroupDao) GetApplictions(gid uint) ([]model.GroupApplication, error) {
+// GetApplictionsByGroupID return the applications of the group
+func (gd GroupDao) GetApplictionsByGroupID(gid uint) ([]model.GroupApplication, error) {
 	applications := make([]model.GroupApplication, 0)
 	err := db.Raw(SqlQueryGroupApplicationsByGroupID).Scan(&applications).Error
 	if err != nil {

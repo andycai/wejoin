@@ -3,12 +3,13 @@ package group
 import (
 	"github.com/andycai/axe-fiber/core"
 	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/axe-fiber/model"
 	"github.com/gofiber/fiber/v2"
 )
 
 // pushGroupInfo 推送群组信息给前端
-func pushGroupInfo(c *fiber.Ctx, id uint) error {
-	info, err := Dao.GetInfo(id)
+func pushGroupInfo(c *fiber.Ctx, gid uint) error {
+	info, err := Dao.GetByID(gid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupNotFound)
 	}
@@ -20,14 +21,14 @@ func pushGroupInfo(c *fiber.Ctx, id uint) error {
 
 // GetGroupsById 获取单个群组信息
 func GetGroupByID(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
+	gid := core.Uint(c, "gid")
 	return pushGroupInfo(c, gid)
 }
 
 // GetGroupsByUserID 获取当前登录用户的群组列表
 func GetGroupsByUserID(c *fiber.Ctx) error {
-	uid := core.I32(c, "uid")
-	groups, err := Dao.GetGroupsByUserID(uid)
+	uid := core.Uint(c, "uid")
+	groups, err := Dao.GetByUserID(uid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupGetData)
 	}
@@ -37,10 +38,10 @@ func GetGroupsByUserID(c *fiber.Ctx) error {
 
 // GetGroupsByPage 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
 func GetGroupsByPage(c *fiber.Ctx) error {
-	page := core.Int(c, "page")
-	num := core.Int(c, "num")
+	page := core.Uint(c, "page")
+	pageSize := core.Uint(c, "pageSize")
 
-	groups, err := Dao.GetGroups(page, num)
+	groups, err := Dao.GetByPage(page, pageSize)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupGetData)
 	}
@@ -48,10 +49,10 @@ func GetGroupsByPage(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetApplyList 返回申请加入群组用户列表
-func GetApplyList(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	list, err := Dao.GetApplyList(gid)
+// GetApplicationByGroupID 返回申请加入群组用户列表
+func GetApplicationByGroupID(c *fiber.Ctx) error {
+	gid := core.Uint(c, "gid")
+	list, err := Dao.GetApplictionsByGroupID(gid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupApplicationListNotFound)
 	}
@@ -60,12 +61,16 @@ func GetApplyList(c *fiber.Ctx) error {
 }
 
 func Create(c *fiber.Ctx) error {
+	// TODO
+	Dao.Create(&model.Group{
+		//
+	})
 	return core.Ok(c, nil)
 }
 
 func Apply(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
 	err := Dao.Apply(gid, uid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupApply)
@@ -75,9 +80,9 @@ func Apply(c *fiber.Ctx) error {
 }
 
 func Approve(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
-	mid := core.I32(c, "mid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
+	mid := core.Uint(c, "mid")
 	err := Dao.Approve(gid, uid, mid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupApprove)
@@ -87,9 +92,9 @@ func Approve(c *fiber.Ctx) error {
 }
 
 func Refuse(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
-	mid := core.I32(c, "mid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
+	mid := core.Uint(c, "mid")
 	err := Dao.Refuse(gid, uid, mid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupRefuse)
@@ -99,9 +104,9 @@ func Refuse(c *fiber.Ctx) error {
 }
 
 func Promote(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
-	mid := core.I32(c, "mid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
+	mid := core.Uint(c, "mid")
 	err := Dao.Promote(gid, uid, mid)
 
 	if err != nil {
@@ -112,9 +117,9 @@ func Promote(c *fiber.Ctx) error {
 }
 
 func Transfer(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
-	mid := core.I32(c, "mid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
+	mid := core.Uint(c, "mid")
 	err := Dao.Transfer(gid, uid, mid)
 
 	if err != nil {
@@ -125,9 +130,9 @@ func Transfer(c *fiber.Ctx) error {
 }
 
 func Fire(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
-	mid := core.I32(c, "mid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
+	mid := core.Uint(c, "mid")
 	err := Dao.Fire(gid, uid, mid)
 
 	if err != nil {
@@ -138,8 +143,8 @@ func Fire(c *fiber.Ctx) error {
 }
 
 func Remove(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
 	err := Dao.Remove(gid, uid)
 
 	if err != nil {
@@ -150,8 +155,8 @@ func Remove(c *fiber.Ctx) error {
 }
 
 func Quit(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
 	err := Dao.Quit(gid, uid)
 
 	if err != nil {
@@ -163,8 +168,8 @@ func Quit(c *fiber.Ctx) error {
 
 // put
 func UpdateName(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
 	name := core.Str(c, "name")
 	// c.Body()
 	err := Dao.UpdateName(gid, uid, name)
@@ -176,8 +181,8 @@ func UpdateName(c *fiber.Ctx) error {
 }
 
 func UpdateNotice(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
 	notice := core.Str(c, "notice")
 	// c.Body()
 	err := Dao.UpdateNotice(gid, uid, notice)
@@ -189,8 +194,8 @@ func UpdateNotice(c *fiber.Ctx) error {
 }
 
 func UpdateAddr(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	uid := core.I32(c, "uid")
+	gid := core.Uint(c, "gid")
+	uid := core.Uint(c, "uid")
 	addr := core.Str(c, "addr")
 	// c.Body()
 	err := Dao.UpdateAddr(gid, uid, addr)

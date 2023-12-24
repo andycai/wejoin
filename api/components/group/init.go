@@ -65,7 +65,7 @@ func initNoCheckRouter(r fiber.Router) {
 		// query: ?page=2
 		api.Get("/groups/:gid", GetGroupByID)
 		api.Get("/groups", GetGroupsByPage)
-		api.Get("/groups/applications/:gid", GetApplyList)
+		api.Get("/groups/applications/:gid", GetApplicationByGroupID)
 
 		// json body
 		api.Post("/groups", Create)
