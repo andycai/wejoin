@@ -446,12 +446,17 @@ func (gd GroupDao) Quit(gid, uid uint) error {
 		return err
 	}
 
+	err = existsMember(gid, uid)
+	if err != nil {
+		return err
+	}
+
 	err = isOwner(gid, uid)
 	if err == nil {
 		return newErr(enum.ErrorTextGroupOwnerCannotQuit)
 	}
 
-	err = db.Raw(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
+	err = db.Exec(SqlDeleteGroupMemberByGroupIDAndUserID, gid, uid).Error
 
 	return err
 }
