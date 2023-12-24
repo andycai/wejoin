@@ -1,10 +1,7 @@
 package user
 
 import (
-	"errors"
-
 	"github.com/andycai/axe-fiber/api/body"
-	"github.com/andycai/axe-fiber/api/comp"
 	"github.com/andycai/axe-fiber/api/dao"
 	"github.com/andycai/axe-fiber/enum/action"
 	"github.com/andycai/axe-fiber/model"
@@ -17,15 +14,11 @@ type UserDao struct {
 var Dao = new(UserDao)
 
 // GetInfo 获取用户信息
-func (us UserDao) GetInfo(uid uint) (*comp.APIUser, error) {
-	u := dao.User
-	info := &comp.APIUser{}
-	err := u.Where(u.ID.Eq(uid)).Scan(info)
-	if info.ID == 0 {
-		err = errors.New("not found user data")
-	}
+func (us UserDao) GetByID(uid uint) (*model.User, error) {
+	userVo := model.User{}
+	err := db.Raw(SqlQueryUserByID, uid).Scan(&userVo).Error
 
-	return info, err
+	return &userVo, err
 }
 
 // Register 注册
