@@ -1,8 +1,8 @@
 package comp
 
 import (
-	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/util/slice"
+	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/util/slice"
 )
 
 type APIGroup struct {

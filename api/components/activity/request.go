@@ -1,7 +1,7 @@
 package activity
 
 import (
-	"github.com/andycai/axe-fiber/model"
+	"github.com/andycai/wejoin/model"
 	"github.com/gofiber/fiber/v2"
 )
 

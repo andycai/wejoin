@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/andycai/axe-fiber/library/authentication"
+	"github.com/andycai/wejoin/library/authentication"
 	"github.com/gofiber/fiber/v2"
 )
 

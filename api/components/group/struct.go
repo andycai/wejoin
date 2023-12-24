@@ -1,6 +1,6 @@
 package group
 
-import "github.com/andycai/axe-fiber/model"
+import "github.com/andycai/wejoin/model"
 
 type Result struct {
 	Group       model.Group

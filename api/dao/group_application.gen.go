@@ -12,7 +12,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"github.com/andycai/axe-fiber/model"
+	"github.com/andycai/wejoin/model"
 )
 
 func newGroupApplication(db *gorm.DB, opts ...gen.DOOption) groupApplication {

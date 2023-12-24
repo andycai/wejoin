@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/library/utils"
+	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/library/utils"
 	"github.com/spf13/cast"
 	"golang.org/x/crypto/bcrypt"
 

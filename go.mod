@@ -1,4 +1,4 @@
-module github.com/andycai/axe-fiber
+module github.com/andycai/wejoin
 
 go 1.18
 

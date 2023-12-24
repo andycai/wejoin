@@ -3,7 +3,7 @@ package body
 import (
 	"time"
 
-	"github.com/andycai/axe-fiber/model"
+	"github.com/andycai/wejoin/model"
 )
 
 type Activity struct {

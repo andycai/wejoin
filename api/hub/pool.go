@@ -3,7 +3,7 @@ package hub
 import (
 	"sync"
 
-	"github.com/andycai/axe-fiber/api/comp"
+	"github.com/andycai/wejoin/api/comp"
 )
 
 var BodyPool = &sync.Pool{

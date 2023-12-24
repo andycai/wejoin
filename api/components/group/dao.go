@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/andycai/axe-fiber/api/components/activity"
-	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/model"
+	"github.com/andycai/wejoin/api/components/activity"
+	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/model"
 	"gorm.io/gorm"
 )
 

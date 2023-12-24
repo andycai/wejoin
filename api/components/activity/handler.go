@@ -1,9 +1,9 @@
 package activity
 
 import (
-	"github.com/andycai/axe-fiber/api/body"
-	"github.com/andycai/axe-fiber/core"
-	"github.com/andycai/axe-fiber/enum"
+	"github.com/andycai/wejoin/api/body"
+	"github.com/andycai/wejoin/core"
+	"github.com/andycai/wejoin/enum"
 	"github.com/gofiber/fiber/v2"
 )
 

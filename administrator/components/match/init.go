@@ -1,7 +1,7 @@
 package match
 
 import (
-	"github.com/andycai/axe-fiber/core"
+	"github.com/andycai/wejoin/core"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )

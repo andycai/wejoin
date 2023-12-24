@@ -3,7 +3,7 @@ package hub
 import (
 	"time"
 
-	cache2 "github.com/andycai/axe-fiber/library/cache"
+	cache2 "github.com/andycai/wejoin/library/cache"
 )
 
 // LocalUserCache 用户缓存

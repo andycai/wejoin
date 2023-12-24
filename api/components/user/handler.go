@@ -3,10 +3,10 @@ package user
 import (
 	"net/mail"
 
-	"github.com/andycai/axe-fiber/api/body"
-	"github.com/andycai/axe-fiber/core"
-	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/log"
+	"github.com/andycai/wejoin/api/body"
+	"github.com/andycai/wejoin/core"
+	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/log"
 	"github.com/gofiber/fiber/v2"
 )
 

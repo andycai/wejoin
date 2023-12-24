@@ -1,11 +1,11 @@
 package activity
 
 import (
-	"github.com/andycai/axe-fiber/api/body"
-	"github.com/andycai/axe-fiber/api/comp"
-	"github.com/andycai/axe-fiber/api/dao"
-	"github.com/andycai/axe-fiber/enum"
-	"github.com/andycai/axe-fiber/library/math"
+	"github.com/andycai/wejoin/api/body"
+	"github.com/andycai/wejoin/api/comp"
+	"github.com/andycai/wejoin/api/dao"
+	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/library/math"
 )
 
 type ActivityDao struct {

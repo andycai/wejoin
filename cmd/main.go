@@ -3,12 +3,12 @@ package main
 import (
 	"path/filepath"
 
-	"github.com/andycai/axe-fiber/api/middleware"
-	"github.com/andycai/axe-fiber/conf"
-	"github.com/andycai/axe-fiber/core"
-	"github.com/andycai/axe-fiber/library/authentication"
-	"github.com/andycai/axe-fiber/library/database"
-	"github.com/andycai/axe-fiber/log"
+	"github.com/andycai/wejoin/api/middleware"
+	"github.com/andycai/wejoin/conf"
+	"github.com/andycai/wejoin/core"
+	"github.com/andycai/wejoin/library/authentication"
+	"github.com/andycai/wejoin/library/database"
+	"github.com/andycai/wejoin/log"
 	"gorm.io/gorm"
 
 	"github.com/gofiber/fiber/v2"
