@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/andycai/axe-fiber/api/components/activity"
 	"github.com/andycai/axe-fiber/api/dao"
 	"github.com/andycai/axe-fiber/enum"
 	"github.com/andycai/axe-fiber/model"
@@ -226,7 +227,7 @@ func (gd GroupDao) Cancel(gid, uid uint) error {
 		return err
 	}
 
-	err = db.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, uid).Error
+	err = db.Exec(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, uid).Error
 
 	return err
 }
@@ -270,7 +271,7 @@ func (gd GroupDao) Approve(gid, uid, mid uint) error {
 		return err
 	}
 
-	err = tx.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, mid).Error
+	err = tx.Exec(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, mid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -297,7 +298,7 @@ func (gd GroupDao) Refuse(gid, uid, mid uint) error {
 		return err
 	}
 
-	err = db.Raw(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, mid).Error
+	err = db.Exec(SqlDeleteGroupApplicationByGroupIDAndUserID, gid, mid).Error
 
 	return err
 }
@@ -329,7 +330,7 @@ func (gd GroupDao) Promote(gid, uid, mid uint) error {
 		return err
 	}
 
-	err = db.Raw(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupManager, gid, mid).Error
+	err = db.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupManager, gid, mid).Error
 
 	return err
 }
@@ -354,13 +355,13 @@ func (gd GroupDao) Transfer(gid, uid, mid uint) error {
 	// transaction
 	tx := db.Begin()
 
-	err = tx.Raw(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupMember, gid, uid).Error
+	err = tx.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupMember, gid, uid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	err = tx.Raw(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupOwner, gid, mid).Error
+	err = tx.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupOwner, gid, mid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -388,7 +389,7 @@ func (gd GroupDao) Fire(gid, uid, mid uint) error {
 		return err
 	}
 
-	err = db.Raw(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
+	err = db.Exec(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
 
 	return err
 }
@@ -410,23 +411,24 @@ func (gd GroupDao) Remove(gid, uid uint) error {
 	tx := db.Begin()
 
 	// delete the applications
-	err = db.Raw(SqlDeleteGroupApplicationByGroupID, gid).Error
+	err = db.Exec(SqlDeleteGroupApplicationByGroupID, gid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	// delete the members
-	err = db.Raw(SqlDeleteGroupMemberByGroupID, gid).Error
+	err = tx.Exec(SqlDeleteGroupMemberByGroupID, gid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	// TODO delete the activities
+	err = tx.Exec(activity.SqlDeleteActivitiesByGroupID, gid).Error
 
 	// delete the group
-	err = db.Raw(SqlDeleteGroupnByID, gid).Error
+	err = tx.Exec(SqlDeleteGroupnByID, gid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
