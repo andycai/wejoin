@@ -6,6 +6,7 @@ const (
 	SqlQueryGroupByName   = "SELECT * FROM groups WHERE name = ? AND deleted_at IS NULL"
 	SqlQueryGroupByUserID = "SELECT * FROM groups WHERE user_id = ? AND deleted_at IS NULL"
 	SqlQueryGroupByPage   = "SELECT * FROM groups WHERE deleted_at IS NULL LIMIT ? OFFSET ?"
+	SqlUpdateGroupByID    = "UPDATE groups SET name = ? WHERE id = ?"
 	SqlDeleteGroupnByID   = "DELETE FROM group WHERE id = ?"
 )
 

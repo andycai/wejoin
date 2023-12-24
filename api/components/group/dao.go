@@ -461,34 +461,30 @@ func (gd GroupDao) Quit(gid, uid uint) error {
 	return err
 }
 
-// UpdateName 更新群名字
+// UpdateName update the name of the group
 func (gd GroupDao) UpdateName(gid, uid uint, name string) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-	g := dao.Group
-
-	if isManager(gid, uid) {
-		return newErr(enum.ErrorTextGroupManagerOp)
-	}
-
-	// TODO: 改名次数限制
-
-	// 是否存在名称
-	count, err := g.Where(g.Name.Eq(name), g.ID.Neq(gid)).Count()
-	if err == nil && count > 0 {
-		return newErr(enum.ErrorTextGroupNameExists)
-	}
-
-	result, err := g.Where(g.ID.Eq(gid)).Update(g.Name, name)
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
 
-	return result.Error
+	err = isManager(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	// TODO: 改名次数限制
+
+	if gd.ExistsName(name) != nil {
+		return newErr(enum.ErrorTextGroupNameExists)
+	}
+
+	err = db.Exec(SqlUpdateGroupByID, name, gid).Error
+
+	return err
 }
 
-// UpdateLogo 更新 Logo
+// UpdateLogo update the logo of the group
 func (gd GroupDao) UpdateLogo(gid, uid uint, logo string) error {
 	if absent(gid) {
 		return newErr(enum.ErrorTextGroupNotFound)
