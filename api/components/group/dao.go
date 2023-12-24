@@ -501,23 +501,21 @@ func (gd GroupDao) UpdateLogo(gid, uid uint, logo string) error {
 	return err
 }
 
-// UpdateNotice 更新公告
+// UpdateNotice update the logo of the group
 func (gd GroupDao) UpdateNotice(gid, uid uint, notice string) error {
-	if absent(gid) {
-		return newErr(enum.ErrorTextGroupNotFound)
-	}
-	g := dao.Group
-
-	if isManager(gid, uid) {
-		return newErr(enum.ErrorTextGroupManagerOp)
-	}
-
-	result, err := g.Where(g.ID.Eq(gid)).Update(g.Notice, notice)
+	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
 
-	return result.Error
+	err = isManager(gid, uid)
+	if err != nil {
+		return err
+	}
+
+	err = db.Exec(SqlUpdateGroupLogoByID, notice, gid).Error
+
+	return err
 }
 
 // UpdateAddr 更新地址
