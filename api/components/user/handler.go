@@ -12,7 +12,7 @@ import (
 
 // pushUserInfo 推送用户信息给前端
 func pushUserInfo(c *fiber.Ctx, id uint) error {
-	info, err := Dao.GetInfo(id)
+	info, err := Dao.GetByID(id)
 	if err != nil {
 		return core.Push(c, enum.ErrUserNotFound)
 	}
@@ -31,7 +31,7 @@ func GetCurrentUser(c *fiber.Ctx) error {
 
 // GetUser 获取用户信息
 func GetUser(c *fiber.Ctx) error {
-	id := core.I32(c, "uid")
+	id := core.Uint(c, "uid")
 	return pushUserInfo(c, id)
 }
 

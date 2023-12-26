@@ -4,8 +4,6 @@ import (
 	"errors"
 
 	"github.com/andycai/wejoin/api/body"
-	"github.com/andycai/wejoin/api/dao"
-	"github.com/andycai/wejoin/core"
 	"github.com/andycai/wejoin/model"
 	"gorm.io/gorm"
 )
@@ -25,15 +23,15 @@ func (us UserDao) GetByID(uid uint) (*model.User, error) {
 
 // Register register
 func (us UserDao) Register(username, password, ip string) (error, uint) {
-	u := dao.User
-	err := u.Create(&model.User{
+	userVo := model.User{
 		Username: username,
 		Password: password,
 		Scores:   0,
 		IP:       ip,
-	})
+	}
+	err := db.Create(&userVo).Error
 
-	return err, core.Uint(u.ID)
+	return err, userVo.ID
 }
 
 // Login login
