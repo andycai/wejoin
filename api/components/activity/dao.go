@@ -6,6 +6,7 @@ import (
 	"github.com/andycai/wejoin/api/dao"
 	"github.com/andycai/wejoin/enum"
 	"github.com/andycai/wejoin/library/math"
+	"github.com/andycai/wejoin/model"
 )
 
 type ActivityDao struct {
@@ -15,36 +16,20 @@ var Dao = new(ActivityDao)
 
 var newErr = enum.GetError
 
-// GetInfo 返回活动信息
-func (as ActivityDao) GetInfo(aid uint) (*comp.APIActivity, error) {
-	a := dao.Activity
-	info := &comp.APIActivity{}
-	err := a.Where(a.ID.Eq(aid)).Scan(info)
-	if info.ID == 0 {
-		err = newErr(enum.ErrorTextActivityNotFound)
-	}
+// GetByID get the activity by the activity id
+func (as ActivityDao) GetByID(aid uint) (*model.Activity, error) {
+	activityVo := model.Activity{}
+	db.Raw(SqlQueryActivityByID, aid).Scan(&activityVo)
 
-	return info, err
+	return &activityVo, nil
 }
 
-// GetActivitiesByUserID 返回活动列表
-func (as ActivityDao) GetActivitiesByUserID(uid uint) ([]*comp.APIActivity, error) {
-	ids := make([]uint, 0)
-	u := dao.ActivityUser
-	// TODO: 使用关联表方式
-	err := u.Select(u.ActivityID).Where(u.UserID.Eq(uid)).Scan(&ids)
-	if err != nil {
-		return nil, err
-	}
+// GetByUserID get the activities by user id
+func (as ActivityDao) GetByUserID(uid uint) ([]*model.Activity, error) {
+	activitsies := make([]*model.Activity, 0)
+	db.Raw(SqlQueryActivitiesByUserID, uid).Scan(&activitsies))
 
-	a := dao.Activity
-	activities := make([]*comp.APIActivity, len(ids))
-	err = a.Where(a.ID.In(ids...)).Scan(&activities)
-	if err != nil {
-		return nil, err
-	}
-
-	return activities, nil
+	return activitsies, nil
 }
 
 // GetActivitiesByGroupID 返回群组创建的活动列表
