@@ -118,7 +118,7 @@ func canPromote(gid uint) (err error) {
 
 //#endregion
 
-// GetByID get the groups by id
+// GetByID get the group by the group id
 func (gd GroupDao) GetByID(gid uint) (*model.Group, error) {
 	groupVo := model.Group{}
 	db.Raw(SqlQueryGroupByID, gid).Scan(&groupVo)
@@ -126,7 +126,7 @@ func (gd GroupDao) GetByID(gid uint) (*model.Group, error) {
 	return &groupVo, nil
 }
 
-// GetByUserID get the group by user id
+// GetByUserID get the groups by user id
 func (gd GroupDao) GetByUserID(uid uint) ([]*model.Group, error) {
 	groups := make([]*model.Group, 0)
 	// db.Raw(SqlGroupByUserID, uid).Find(&groups)
