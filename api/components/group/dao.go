@@ -81,7 +81,7 @@ func existsMember(gid, uid uint) (err error) {
 // existsApplication exists application or not
 func existsApplication(gid, uid uint) (err error) {
 	ga := model.GroupApplication{}
-	err = db.Raw(SqlQueryGroupApplicationsByGroupIDAndUserID, gid, uid).First(&ga).Error
+	err = db.Raw(SqlQueryGroupApplicationByGroupIDAndUserID, gid, uid).First(&ga).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return
 	}

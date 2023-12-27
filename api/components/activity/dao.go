@@ -24,28 +24,32 @@ func (as ActivityDao) GetByID(aid uint) (*model.Activity, error) {
 	return &activityVo, nil
 }
 
-// GetByUserID get the activities by user id
-func (as ActivityDao) GetByUserID(uid uint) ([]*model.Activity, error) {
+// GetByOrganizerUserID get the activities by organizer user id
+func (as ActivityDao) GetByOrganizerUserID(uid uint) ([]*model.Activity, error) {
 	activitsies := make([]*model.Activity, 0)
-	db.Raw(SqlQueryActivitiesByUserID, uid).Scan(&activitsies))
+	db.Raw(SqlQueryActivitiesByOrganizerUserID, uid).Scan(&activitsies)
 
 	return activitsies, nil
 }
 
-// GetActivitiesByGroupID 返回群组创建的活动列表
-func (as ActivityDao) GetActivitiesByGroupID(gid uint) ([]*comp.APIActivity, error) {
-	a := dao.Activity
-	list := make([]*comp.APIActivity, 0)
-	err := a.Where(a.GroupID.Eq(gid)).Scan(&list)
-	if err != nil {
-		return nil, err
-	}
+// GetByUserID get the activities by user id
+func (as ActivityDao) GetByUserID(uid uint) ([]*model.Activity, error) {
+	activitsies := make([]*model.Activity, 0)
+	db.Raw(SqlQueryActivitiesByUserID, uid).Scan(&activitsies)
 
-	return list, nil
+	return activitsies, nil
 }
 
-// GetActivities 返回活动列表
-func (as ActivityDao) GetActivities(page int, num int) ([]*comp.APIActivity, error) {
+// GetByGroupID get the activities by group id
+func (as ActivityDao) GetByGroupID(gid uint) ([]*model.Activity, error) {
+	activitsies := make([]*model.Activity, 0)
+	db.Raw(SqlQueryActivitiesByGroupID, gid).Scan(&activitsies)
+
+	return activitsies, nil
+}
+
+// GetByPage get the activities by page
+func (as ActivityDao) GetByPage(page int, num int) ([]*model.Activity, error) {
 	a := dao.Activity
 	list := make([]*comp.APIActivity, 0)
 	max := math.Max[int]
