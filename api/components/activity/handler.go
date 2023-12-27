@@ -17,10 +17,21 @@ func GetByID(c *fiber.Ctx) error {
 	return core.Ok(c, info)
 }
 
-// GetByUserID 返回用户参与的活动列表
+// GetByUserID get the activities of the user
 func GetByUserID(c *fiber.Ctx) error {
 	uid := core.Uint(c, "uid")
 	activities, err := Dao.GetByUserID(uid)
+	if err != nil {
+		return core.Push(c, enum.ErrActivityGetData)
+	}
+
+	return core.Ok(c, activities)
+}
+
+// GetByOrganizerUserID get the activities of the organizer
+func GetByOrganizerUserID(c *fiber.Ctx) error {
+	uid := core.Uint(c, "uid")
+	activities, err := Dao.GetByOrganizerUserID(uid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityGetData)
 	}
