@@ -1,8 +1,6 @@
 package activity
 
 import (
-	"github.com/andycai/wejoin/api/body"
-	"github.com/andycai/wejoin/api/dao"
 	"github.com/andycai/wejoin/enum"
 	"github.com/andycai/wejoin/model"
 )
@@ -54,10 +52,9 @@ func (as ActivityDao) GetByPage(page int, pageSize int) ([]*model.Activity, erro
 	return activities, nil
 }
 
-// Update 更新活动信息
-func (as ActivityDao) Update(activity *body.Activity) error {
-	a := dao.Activity
-	_, err := a.Where(a.ID.Eq(activity.ID)).Updates(activity.ToModel())
+// Update update the activity details
+func (as ActivityDao) Update(activity *model.Activity) error {
+	err := db.Model(activity).Select("title", "description", "ahead", "begin_at", "end_at").Updates(activity).Error
 
 	return err
 }
