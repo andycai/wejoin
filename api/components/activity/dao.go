@@ -2,10 +2,8 @@ package activity
 
 import (
 	"github.com/andycai/wejoin/api/body"
-	"github.com/andycai/wejoin/api/comp"
 	"github.com/andycai/wejoin/api/dao"
 	"github.com/andycai/wejoin/enum"
-	"github.com/andycai/wejoin/library/math"
 	"github.com/andycai/wejoin/model"
 )
 
@@ -49,20 +47,11 @@ func (as ActivityDao) GetByGroupID(gid uint) ([]*model.Activity, error) {
 }
 
 // GetByPage get the activities by page
-func (as ActivityDao) GetByPage(page int, num int) ([]*model.Activity, error) {
-	a := dao.Activity
-	list := make([]*comp.APIActivity, 0)
-	max := math.Max[int]
-	page = max(page-1, 0)
-	if num <= 0 {
-		num = enum.DefaultActivityCount
-	}
-	err := a.Offset(page * num).Limit(num).Scan(&list)
-	if err != nil {
-		return nil, err
-	}
+func (as ActivityDao) GetByPage(page int, pageSize int) ([]*model.Activity, error) {
+	activities := make([]*model.Activity, 0)
+	db.Raw(SqlQueryActivitiesByPage, page, pageSize*(page-1)).Scan(&activities)
 
-	return list, nil
+	return activities, nil
 }
 
 // Update 更新活动信息
