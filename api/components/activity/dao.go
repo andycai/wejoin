@@ -52,6 +52,13 @@ func (as ActivityDao) GetByPage(page int, pageSize int) ([]*model.Activity, erro
 	return activities, nil
 }
 
+// Create create a new activity
+func (as ActivityDao) Create(activity *model.Activity) error {
+	err := db.Create(activity).Error
+
+	return err
+}
+
 // Update update the activity details
 func (as ActivityDao) Update(activity *model.Activity) error {
 	err := db.Model(activity).Select("title", "description", "ahead", "begin_at", "end_at").Updates(activity).Error

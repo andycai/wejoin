@@ -153,9 +153,6 @@ func (gd GroupDao) Create(group *model.Group) error {
 	group.Scores = 0
 	group.Notice = ""
 	err := db.Create(group).Error
-	if err != nil {
-		return err
-	}
 
 	return err
 }
