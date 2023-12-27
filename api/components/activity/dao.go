@@ -45,7 +45,7 @@ func (as ActivityDao) GetByGroupID(gid uint) ([]*model.Activity, error) {
 }
 
 // GetByPage get the activities by page
-func (as ActivityDao) GetByPage(page int, pageSize int) ([]*model.Activity, error) {
+func (as ActivityDao) GetByPage(page uint, pageSize uint) ([]*model.Activity, error) {
 	activities := make([]*model.Activity, 0)
 	db.Raw(SqlQueryActivitiesByPage, page, pageSize*(page-1)).Scan(&activities)
 

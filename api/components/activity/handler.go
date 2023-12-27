@@ -1,16 +1,15 @@
 package activity
 
 import (
-	"github.com/andycai/wejoin/api/body"
 	"github.com/andycai/wejoin/core"
 	"github.com/andycai/wejoin/enum"
 	"github.com/gofiber/fiber/v2"
 )
 
-// GetActivityByID 返回活动详情
-func GetActivityByID(c *fiber.Ctx) error {
-	aid := core.I32(c, "aid")
-	info, err := Dao.GetInfo(aid)
+// GetByID 返回活动详情
+func GetByID(c *fiber.Ctx) error {
+	aid := core.Uint(c, "aid")
+	info, err := Dao.GetByID(aid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityNotFound)
 	}
@@ -18,10 +17,10 @@ func GetActivityByID(c *fiber.Ctx) error {
 	return core.Ok(c, info)
 }
 
-// GetActivitiesByGroupID 返回用户参与的活动列表
-func GetActivitiesByUserID(c *fiber.Ctx) error {
-	uid := core.I32(c, "uid")
-	activities, err := Dao.GetActivitiesByUserID(uid)
+// GetByUserID 返回用户参与的活动列表
+func GetByUserID(c *fiber.Ctx) error {
+	uid := core.Uint(c, "uid")
+	activities, err := Dao.GetByUserID(uid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityGetData)
 	}
@@ -40,12 +39,12 @@ func GetActivitiesByUserID(c *fiber.Ctx) error {
 // 	return Ok(c, activities)
 // }
 
-// GetActivitiesByPage 返回活动列表
-func GetActivitiesByPage(c *fiber.Ctx) error {
-	page := core.Int(c, "page")
-	num := core.Int(c, "num")
+// GetByPage 返回活动列表
+func GetByPage(c *fiber.Ctx) error {
+	page := core.Uint(c, "page")
+	pageSize := core.Uint(c, "pageSize")
 
-	groups, err := Dao.GetActivities(page, num)
+	groups, err := Dao.GetByPage(page, pageSize)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupGetData)
 	}
@@ -53,10 +52,10 @@ func GetActivitiesByPage(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetActivitiesByGroupId 返回群组创建活动列表
-func GetActivitiesByGroupId(c *fiber.Ctx) error {
-	gid := core.I32(c, "gid")
-	list, err := Dao.GetActivitiesByGroupID(gid)
+// GetByGroupID 返回群组创建活动列表
+func GetByGroupID(c *fiber.Ctx) error {
+	gid := core.Uint(c, "gid")
+	list, err := Dao.GetByGroupID(gid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityGetData)
 	}
@@ -81,13 +80,13 @@ func Cancel(c *fiber.Ctx) error {
 }
 
 func Remove(c *fiber.Ctx) error {
-	activity := new(body.Activity)
-	if err := c.BodyParser(activity); err != nil {
-		return core.Push(c, enum.ErrParam)
-	}
-	if err := Dao.Update(activity); err != nil {
-		return core.Push(c, enum.ErrActivityUpdate)
-	}
+	// activity := new(body.Activity)
+	// if err := c.BodyParser(activity); err != nil {
+	// 	return core.Push(c, enum.ErrParam)
+	// }
+	// if err := Dao.Update(activity); err != nil {
+	// 	return core.Push(c, enum.ErrActivityUpdate)
+	// }
 	return core.Ok(c, nil)
 }
 
