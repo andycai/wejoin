@@ -16,6 +16,9 @@ const (
 											   FROM activity_user 
 											   WHERE user_id = ? AND deleted_at IS NULL) AND deleted_at IS NULL 
 											   ORDER BY id DESC`
+	SqlQueryActivitiesByUserID2 = `SELECT activities.* 
+								   FROM activities, activity_user
+								   WHERE activities.user_id = activity_user.user_id AND activity_user.user_id = ? AND activities.deleted_at IS NULL AND activity_user.deleted_at IS NULL`
 	SqlQueryActivitiesByGroupID = `SELECT * 
 								   FROM activities
 								   WHERE group_id = ? AND deleted_at IS NULL
