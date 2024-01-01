@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GetByID 返回活动详情
+// GetByID get the activity by ID
 func GetByID(c *fiber.Ctx) error {
 	aid := core.Uint(c, "aid")
 	info, err := Dao.GetByID(aid)
@@ -50,7 +50,7 @@ func GetByOrganizerUserID(c *fiber.Ctx) error {
 // 	return Ok(c, activities)
 // }
 
-// GetByPage 返回活动列表
+// GetByPage get the activities by page
 func GetByPage(c *fiber.Ctx) error {
 	page := core.Uint(c, "page")
 	pageSize := core.Uint(c, "pageSize")
@@ -63,7 +63,7 @@ func GetByPage(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetByGroupID 返回群组创建活动列表
+// GetByGroupID get the activities by the group ID
 func GetByGroupID(c *fiber.Ctx) error {
 	gid := core.Uint(c, "gid")
 	list, err := Dao.GetByGroupID(gid)
