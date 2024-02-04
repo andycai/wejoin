@@ -6,9 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const TableNameActivity = "activity"
-
-// Activity mapped from table <activity>
 type Activity struct {
 	gorm.Model
 	UserID      uint      `gorm:"column:user_id;not null;comment:组织者ID" json:"user_id"`                                                      // 组织者ID
@@ -27,9 +24,4 @@ type Activity struct {
 	Ahead       uint      `gorm:"column:ahead;not null;comment:可提前取消时间(小时)" json:"ahead"`                                                    // 可提前取消时间(小时)
 	BeginAt     time.Time `gorm:"column:begin_at;not null;comment:开始时间" json:"begin_at"`                                                     // 开始时间
 	EndAt       time.Time `gorm:"column:end_at;not null;comment:结束时间" json:"end_at"`                                                         // 结束时间
-}
-
-// TableName Activity's table name
-func (*Activity) TableName() string {
-	return TableNameActivity
 }

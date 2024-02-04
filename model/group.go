@@ -4,8 +4,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const TableNameGroup = "group"
-
 // Group mapped from table <group>
 type Group struct {
 	gorm.Model
@@ -15,9 +13,4 @@ type Group struct {
 	Logo   string `gorm:"column:logo;comment:群组LOGO" json:"logo"`                    // 群组LOGO
 	Notice string `gorm:"column:notice;comment:群组公告" json:"notice"`                  // 群组公告
 	Addr   string `gorm:"column:addr;comment:群组总部地址" json:"addr"`                    // 群组总部地址
-}
-
-// TableName Group's table name
-func (*Group) TableName() string {
-	return TableNameGroup
 }

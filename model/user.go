@@ -6,8 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const TableNameUser = "user"
-
 // User mapped from table <user>
 type User struct {
 	gorm.Model
@@ -26,9 +24,4 @@ type User struct {
 	IP       string    `gorm:"column:ip;default:0;comment:ip地址" json:"ip"`                           // ip地址
 	LoginAt  time.Time `gorm:"column:login_at;comment:登录时间" json:"login_at"`                         // 登录时间
 	LogoutAt time.Time `gorm:"column:logout_at;comment:登出时间" json:"logout_at"`                       // 时间
-}
-
-// TableName User's table name
-func (*User) TableName() string {
-	return TableNameUser
 }
