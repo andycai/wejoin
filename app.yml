@@ -1,12 +1,12 @@
 app:
-  name: "axe-fiber"
+  name: "wejoin"
   version: 1 # 0=debug 1=release
   lang: "en"
   zoneoffset: 8 # timezone offset, east 8
   static: "static"
   cacheDir: "./cache/"
 httpserver:
-  addr: ":8888"
+  addr: ":6666"
 log:
   dir: "./log/"
 db:

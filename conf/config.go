@@ -8,7 +8,7 @@ import (
 )
 
 func ReadConf() {
-	viper.SetConfigName("conf")
+	viper.SetConfigName("app")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
