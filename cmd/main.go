@@ -3,6 +3,8 @@ package main
 import (
 	"path/filepath"
 
+	_ "github.com/andycai/wejoin/administrator/components"
+	_ "github.com/andycai/wejoin/api/components"
 	"github.com/andycai/wejoin/api/middleware"
 	"github.com/andycai/wejoin/conf"
 	"github.com/andycai/wejoin/core"

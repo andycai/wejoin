@@ -11,7 +11,7 @@ const (
 	SqlQueryGroupByUserID = `SELECT * 
 							 FROM groups 
 							 WHERE id IN (SELECT group_id 
-										  FROM group_member 
+										  FROM group_members 
 										  WHERE user_id = ? AND deleted_at IS NULL) AND deleted_at IS NULL 
 										  ORDER BY id DESC`
 	SqlQueryGroupByPage = `SELECT * 
@@ -58,21 +58,21 @@ const (
 // group member
 const (
 	SqlQueryGroupMemberByGroupID = `SELECT * 
-									FROM group_member 
+									FROM group_members 
 									WHERE group_id = ? AND deleted_at IS NULL`
 	SqlQueryGroupMemberByGroupIDAndPosition = `SELECT * 
-											   FROM group_member 
+											   FROM group_members 
 											   WHERE group_id = ? AND position > ? AND deleted_at IS NULL`
 	SqlQueryGroupMemberByGroupIDAndUserID = `SELECT * 
-											 FROM group_member 
+											 FROM group_members 
 											 WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL`
-	SqlUpdateGroupMemberPositionByGroupIDAndUserID = `UPDATE group_member 
+	SqlUpdateGroupMemberPositionByGroupIDAndUserID = `UPDATE group_members 
 													  SET position = ? 
 													  WHERE group_id = ? AND user_id = ? AND deleted_at IS NULL`
 	SqlDeleteGroupMemberByGroupID = `DELETE 
-									 FROM group_member 
+									 FROM group_members 
 									 WHERE group_id = ?`
 	SqlDeleteGroupMemberByGroupIDAndUserID = `DELETE 
-											  FROM group_member 
+											  FROM group_members 
 											  WHERE group_id = ? AND user_id = ?`
 )
