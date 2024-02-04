@@ -6,7 +6,7 @@ app:
   static: "static"
   cacheDir: "./cache/"
 httpserver:
-  addr: ":6666"
+  addr: ":3000"
 log:
   dir: "./log/"
 db:
