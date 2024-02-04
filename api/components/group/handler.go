@@ -38,8 +38,8 @@ func GetGroupsByUserID(c *fiber.Ctx) error {
 
 // GetGroupsByPage 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
 func GetGroupsByPage(c *fiber.Ctx) error {
-	page := core.Uint(c, "page")
-	pageSize := core.Uint(c, "pageSize")
+	page := c.QueryInt("page", 1)
+	pageSize := c.QueryInt("pageSize", enum.PAGE_SIZE)
 
 	groups, err := Dao.GetByPage(page, pageSize)
 	if err != nil {

@@ -136,7 +136,7 @@ func (gd GroupDao) GetByUserID(uid uint) ([]*model.Group, error) {
 }
 
 // GetByPage get the groups by page
-func (gd GroupDao) GetByPage(page uint, pageSize uint) ([]*model.Group, error) {
+func (gd GroupDao) GetByPage(page int, pageSize int) ([]*model.Group, error) {
 	groups := make([]*model.Group, 0)
 	db.Raw(SqlQueryGroupByPage, pageSize, pageSize*(page-1)).Scan(&groups)
 
