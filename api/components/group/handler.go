@@ -168,11 +168,11 @@ func Quit(c *fiber.Ctx) error {
 
 // put
 func UpdateName(c *fiber.Ctx) error {
-	gid := core.Uint(c, "id")
-	uid := core.Uint(c, "uid")
-	name := core.Str(c, "name")
-	// c.Body()
-	err := Dao.UpdateName(gid, uid, name)
+	var r RequestUpdate
+	if err := c.BodyParser(&r); err != nil {
+		return err
+	}
+	err := Dao.UpdateName(r.ID, r.Uid, r.Name)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateName)
 	}
