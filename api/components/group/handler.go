@@ -143,9 +143,11 @@ func Fire(c *fiber.Ctx) error {
 }
 
 func Remove(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	err := Dao.Remove(gid, uid)
+	var r RequestUpdate
+	if err := c.BodyParser(&r); err != nil {
+		return err
+	}
+	err := Dao.Remove(r.ID, r.Uid)
 
 	if err != nil {
 		return core.Push(c, enum.ErrGroupRemove)
