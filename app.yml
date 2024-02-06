@@ -12,7 +12,7 @@ log:
 db:
   type: "sqlite"
   # dsn: "devel:i18n@tcp(127.0.0.1:3306)/werite_db?timeout=5s&readTimeout=5s&writeTimeout=5s&parseTime=true&loc=Local&charset=utf8,utf8mb4"
-  dsn: "./axe.db"
+  dsn: "./wejoin.db"
   active: 32
   idle: 30
   idletimeout: 14400
