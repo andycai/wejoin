@@ -70,6 +70,7 @@ func initNoCheckRouter(r fiber.Router) {
 		// json body
 		api.Post("/groups", Create)
 		api.Post("/groups/apply", Apply)
+		api.Post("/groups/cancel", Cancel)
 		api.Post("/groups/approve", Approve)
 		api.Post("/groups/refuse", Refuse)
 		api.Post("/groups/promote", Promote)

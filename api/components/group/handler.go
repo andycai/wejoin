@@ -81,6 +81,19 @@ func Apply(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupApply)
 }
 
+func Cancel(c *fiber.Ctx) error {
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Cancel(r.ID, r.Uid)
+	if err != nil {
+		return core.Push(c, enum.ErrGroupCancel)
+	}
+
+	return core.Push(c, enum.SucGroupCancel)
+}
+
 func Approve(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {

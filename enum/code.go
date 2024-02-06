@@ -13,6 +13,7 @@ const (
 	SucGroupFire                     = 208
 	SucGroupTransfer                 = 209
 	SucGroupPromote                  = 210
+	SucGroupCancel                   = 211
 	ErrParam                         = 10000
 	ErrData                          = 10001
 	ErrOp                            = 10002
@@ -43,6 +44,7 @@ const (
 	ErrGroupUpdateAddr               = 10217
 	ErrGroupQuit                     = 10218
 	ErrGroupFire                     = 10219
+	ErrGroupCancel                   = 10220
 	ErrActivityGetData               = 10300
 	ErrActivityCannotApplyNotInGroup = 10301
 	ErrActivityUpdate                = 10302

@@ -41,6 +41,8 @@ var codeText = map[int]string{
 	ErrGroupUpdateNotice:             "更新群组公告失败！",
 	ErrGroupUpdateAddr:               "更新群组地址失败！",
 	ErrGroupQuit:                     "退出群组失败！",
+	ErrGroupFire:                     "踢出群组失败！",
+	ErrGroupCancel:                   "取消申请群组失败！",
 	ErrActivityGetData:               "获取活动数据失败！",
 	ErrActivityCannotApplyNotInGroup: "你不是群组成员不能报名或取消报名群组活动！",
 	ErrActivityUpdate:                "更新活动信息失败！",
