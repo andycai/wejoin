@@ -52,8 +52,8 @@ func GetByOrganizerUserID(c *fiber.Ctx) error {
 
 // GetByPage get the activities by page
 func GetByPage(c *fiber.Ctx) error {
-	page := c.QueryInt("page")
-	pageSize := c.QueryInt("page_size")
+	page := c.QueryInt("page", 1)
+	pageSize := c.QueryInt("page_size", enum.PAGE_SIZE)
 
 	groups, err := Dao.GetByPage(page, pageSize)
 	if err != nil {
