@@ -3,7 +3,6 @@ package group
 import (
 	"github.com/andycai/wejoin/core"
 	"github.com/andycai/wejoin/enum"
-	"github.com/andycai/wejoin/model"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -61,17 +60,20 @@ func GetApplicationByGroupID(c *fiber.Ctx) error {
 }
 
 func Create(c *fiber.Ctx) error {
-	// TODO
-	Dao.Create(&model.Group{
-		//
-	})
+	groupVo, err := BindCreate(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	Dao.Create(groupVo)
 	return core.Ok(c, nil)
 }
 
 func Apply(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	err := Dao.Apply(gid, uid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Apply(r.ID, r.Uid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupApply)
 	}
@@ -92,10 +94,11 @@ func Approve(c *fiber.Ctx) error {
 }
 
 func Refuse(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	mid := core.Uint(c, "mid")
-	err := Dao.Refuse(gid, uid, mid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Refuse(r.ID, r.Uid, r.Mid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupRefuse)
 	}
@@ -104,10 +107,11 @@ func Refuse(c *fiber.Ctx) error {
 }
 
 func Promote(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	mid := core.Uint(c, "mid")
-	err := Dao.Promote(gid, uid, mid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Promote(r.ID, r.Uid, r.Mid)
 
 	if err != nil {
 		return core.Push(c, enum.ErrGroupPromote)
@@ -117,10 +121,11 @@ func Promote(c *fiber.Ctx) error {
 }
 
 func Transfer(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	mid := core.Uint(c, "mid")
-	err := Dao.Transfer(gid, uid, mid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Transfer(r.ID, r.Uid, r.Mid)
 
 	if err != nil {
 		return core.Push(c, enum.ErrGroupTransfer)
@@ -130,10 +135,11 @@ func Transfer(c *fiber.Ctx) error {
 }
 
 func Fire(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	mid := core.Uint(c, "mid")
-	err := Dao.Fire(gid, uid, mid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Fire(r.ID, r.Uid, r.Mid)
 
 	if err != nil {
 		return core.Push(c, enum.ErrGroupFire)
