@@ -81,7 +81,7 @@ func initNoCheckRouter(r fiber.Router) {
 		api.Put("/groups/name", UpdateName)
 		api.Put("/groups/logo", UpdateLogo)
 		api.Put("/groups/notice", UpdateNotice)
-		api.Put("/groups/addr", UpdateAddr)
+		api.Put("/groups/address", UpdateAddress)
 
 		api.Delete("/groups/:gid", Remove)
 	}

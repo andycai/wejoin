@@ -206,12 +206,12 @@ func UpdateNotice(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupUpdateNotice)
 }
 
-func UpdateAddr(c *fiber.Ctx) error {
-	gid := core.Uint(c, "id")
-	uid := core.Uint(c, "uid")
-	addr := core.Str(c, "addr")
-	// c.Body()
-	err := Dao.UpdateAddress(gid, uid, addr)
+func UpdateAddress(c *fiber.Ctx) error {
+	var r RequestUpdate
+	if err := c.BodyParser(&r); err != nil {
+		return err
+	}
+	err := Dao.UpdateAddress(r.ID, r.Uid, r.Address)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateAddr)
 	}
