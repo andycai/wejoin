@@ -8,7 +8,7 @@ import (
 
 // GetByID get the activity by ID
 func GetByID(c *fiber.Ctx) error {
-	aid := core.Uint(c, "aid")
+	aid := core.Uint(c, "id")
 	info, err := Dao.GetByID(aid)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityNotFound)

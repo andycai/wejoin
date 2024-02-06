@@ -21,8 +21,8 @@ func initDB(dbs []*gorm.DB) {
 func initNoCheckRouter(r fiber.Router) {
 	api := r.Group("/v2")
 	{
-		api.Get("/activities/:aid", GetByID)
-		api.Get("/activities/page", GetByPage)
+		api.Get("/activities/:id", GetByID)
+		api.Get("/activities", GetByPage)
 		api.Get("/activities/group", GetByGroupID)
 		api.Get("/activities/user", GetByUserID)
 		api.Get("/activities/organizer", GetByOrganizerUserID)
