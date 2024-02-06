@@ -172,11 +172,11 @@ func Quit(c *fiber.Ctx) error {
 
 // put
 func UpdateName(c *fiber.Ctx) error {
-	var r RequestUpdate
-	if err := c.BodyParser(&r); err != nil {
-		return err
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
 	}
-	err := Dao.UpdateName(r.ID, r.Uid, r.Name)
+	err = Dao.UpdateName(r.ID, r.Uid, r.Name)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateName)
 	}
@@ -185,11 +185,11 @@ func UpdateName(c *fiber.Ctx) error {
 }
 
 func UpdateLogo(c *fiber.Ctx) error {
-	var r RequestUpdate
-	if err := c.BodyParser(&r); err != nil {
-		return err
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
 	}
-	err := Dao.UpdateLogo(r.ID, r.Uid, r.Logo)
+	err = Dao.UpdateLogo(r.ID, r.Uid, r.Logo)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateName)
 	}
@@ -198,11 +198,11 @@ func UpdateLogo(c *fiber.Ctx) error {
 }
 
 func UpdateNotice(c *fiber.Ctx) error {
-	var r RequestUpdate
-	if err := c.BodyParser(&r); err != nil {
-		return err
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
 	}
-	err := Dao.UpdateNotice(r.ID, r.Uid, r.Notice)
+	err = Dao.UpdateNotice(r.ID, r.Uid, r.Notice)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateNotice)
 	}
@@ -211,11 +211,11 @@ func UpdateNotice(c *fiber.Ctx) error {
 }
 
 func UpdateAddress(c *fiber.Ctx) error {
-	var r RequestUpdate
-	if err := c.BodyParser(&r); err != nil {
-		return err
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
 	}
-	err := Dao.UpdateAddress(r.ID, r.Uid, r.Address)
+	err = Dao.UpdateAddress(r.ID, r.Uid, r.Address)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateAddr)
 	}
