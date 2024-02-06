@@ -194,11 +194,11 @@ func UpdateLogo(c *fiber.Ctx) error {
 }
 
 func UpdateNotice(c *fiber.Ctx) error {
-	gid := core.Uint(c, "id")
-	uid := core.Uint(c, "uid")
-	notice := core.Str(c, "notice")
-	// c.Body()
-	err := Dao.UpdateNotice(gid, uid, notice)
+	var r RequestUpdate
+	if err := c.BodyParser(&r); err != nil {
+		return err
+	}
+	err := Dao.UpdateNotice(r.ID, r.Uid, r.Notice)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateNotice)
 	}
