@@ -23,9 +23,9 @@ func initNoCheckRouter(r fiber.Router) {
 	{
 		api.Get("/activities/:id", GetByID)
 		api.Get("/activities", GetByPage)
-		api.Get("/activities/group", GetByGroupID)
-		api.Get("/activities/user", GetByUserID)
-		api.Get("/activities/organizer", GetByOrganizerUserID)
+		api.Get("/activities/group/:gid", GetByGroupID)
+		api.Get("/activities/user/:uid", GetByUserID)
+		api.Get("/activities/organizer/:uid", GetByOrganizerUserID)
 
 		api.Post("/activities", Create)
 		api.Post("/activities/end", End)

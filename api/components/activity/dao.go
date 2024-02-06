@@ -1,7 +1,6 @@
 package activity
 
 import (
-	"github.com/andycai/wejoin/enum"
 	"github.com/andycai/wejoin/model"
 )
 
@@ -10,7 +9,7 @@ type ActivityDao struct {
 
 var Dao = new(ActivityDao)
 
-var newErr = enum.GetError
+// var newErr = enum.GetError
 
 // GetByID get the activity by the activity id
 func (as ActivityDao) GetByID(aid uint) (*model.Activity, error) {

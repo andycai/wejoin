@@ -6,10 +6,8 @@ const (
 							WHERE id = ? AND deleted_at IS NULL`
 	SqlQueryActivitiesByOrganizerUserID = `SELECT * 
 											FROM activities 
-											WHERE id IN (SELECT activity_id 
-														FROM activity_users 
-														WHERE user_id = ? AND deleted_at IS NULL) AND deleted_at IS NULL 
-														ORDER BY id DESC`
+											WHERE user_id = ? AND deleted_at IS NULL 
+											ORDER BY id DESC`
 	SqlQueryActivitiesByUserID = `SELECT * 
 								  FROM activities
 								  WHERE id IN (SELECT activity_id 
