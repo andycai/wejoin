@@ -63,9 +63,9 @@ func initNoCheckRouter(r fiber.Router) {
 	api := r.Group("/v2")
 	{
 		// query: ?page=2
-		api.Get("/groups/:gid", GetGroupByID)
+		api.Get("/groups/:id", GetGroupByID)
 		api.Get("/groups", GetGroupsByPage)
-		api.Get("/groups/applications/:gid", GetApplicationByGroupID)
+		api.Get("/groups/applications/:id", GetApplicationByGroupID)
 
 		// json body
 		api.Post("/groups", Create)
@@ -78,9 +78,10 @@ func initNoCheckRouter(r fiber.Router) {
 		api.Post("/groups/quit", Quit)
 
 		// json body and url param
-		api.Put("/groups/name/:gid", UpdateName)
-		api.Put("/groups/notice/:gid", UpdateNotice)
-		api.Put("/groups/addr/:gid", UpdateAddr)
+		api.Put("/groups/name", UpdateName)
+		api.Put("/groups/logo", UpdateLogo)
+		api.Put("/groups/notice", UpdateNotice)
+		api.Put("/groups/addr", UpdateAddr)
 
 		api.Delete("/groups/:gid", Remove)
 	}

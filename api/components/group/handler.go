@@ -21,7 +21,7 @@ func pushGroupInfo(c *fiber.Ctx, gid uint) error {
 
 // GetGroupsById 获取单个群组信息
 func GetGroupByID(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
+	gid := core.Uint(c, "id")
 	return pushGroupInfo(c, gid)
 }
 
@@ -51,7 +51,7 @@ func GetGroupsByPage(c *fiber.Ctx) error {
 
 // GetApplicationByGroupID 返回申请加入群组用户列表
 func GetApplicationByGroupID(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
+	gid := core.Uint(c, "id")
 	list, err := Dao.GetApplictionsByGroupID(gid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupApplicationListNotFound)
@@ -168,7 +168,7 @@ func Quit(c *fiber.Ctx) error {
 
 // put
 func UpdateName(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
+	gid := core.Uint(c, "id")
 	uid := core.Uint(c, "uid")
 	name := core.Str(c, "name")
 	// c.Body()
@@ -180,8 +180,21 @@ func UpdateName(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupUpdateName)
 }
 
+func UpdateLogo(c *fiber.Ctx) error {
+	var r RequestUpdate
+	if err := c.BodyParser(&r); err != nil {
+		return err
+	}
+	err := Dao.UpdateLogo(r.ID, r.Uid, r.Logo)
+	if err != nil {
+		return core.Push(c, enum.ErrGroupUpdateName)
+	}
+
+	return core.Push(c, enum.SucGroupUpdateName)
+}
+
 func UpdateNotice(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
+	gid := core.Uint(c, "id")
 	uid := core.Uint(c, "uid")
 	notice := core.Str(c, "notice")
 	// c.Body()
@@ -194,11 +207,11 @@ func UpdateNotice(c *fiber.Ctx) error {
 }
 
 func UpdateAddr(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
+	gid := core.Uint(c, "id")
 	uid := core.Uint(c, "uid")
 	addr := core.Str(c, "addr")
 	// c.Body()
-	err := Dao.UpdateAddr(gid, uid, addr)
+	err := Dao.UpdateAddress(gid, uid, addr)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupUpdateAddr)
 	}

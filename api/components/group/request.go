@@ -1,21 +1,29 @@
 package group
 
 import (
+	"github.com/andycai/wejoin/core"
 	"github.com/andycai/wejoin/model"
 	"github.com/gofiber/fiber/v2"
 )
 
-type requestCreate struct {
-	ID          uint   `json:"id"`
-	Slug        string `json:"slug"`
-	Title       string `json:"title" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	Body        string `json:"body" validate:"required"`
-	Action      string `json:"action" form:"action"`
-	CategoryID  uint   `json:"category_id" form:"category_id"`
-	PublishedAt string `json:"published_at" form:"published_at" validate:"required"`
+type RequestUpdate struct {
+	ID      uint   `json:"id"`
+	Uid     uint   `json:"uid"`
+	Name    string `json:"name" form:"name" validate:"required"`
+	Logo    string `json:"logo" form:"logo" validate:"required"`
+	Notice  string `json:"notice" form:"notice" validate:"required"`
+	Address string `json:"address" form:"address" validate:"required"`
 }
 
-func Bind(c *fiber.Ctx, user *model.User) error {
+func Bind(c *fiber.Ctx, user *model.Group) error {
+	var r RequestUpdate
+	if err := c.BodyParser(&r); err != nil {
+		return err
+	}
+
+	if err := core.Validate(r); err != nil {
+		return err
+	}
+
 	return nil
 }

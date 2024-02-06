@@ -514,8 +514,8 @@ func (gd GroupDao) UpdateNotice(gid, uid uint, notice string) error {
 	return err
 }
 
-// UpdateAddr update the address of the group
-func (gd GroupDao) UpdateAddr(gid, uid uint, addr string) error {
+// UpdateAddress update the address of the group
+func (gd GroupDao) UpdateAddress(gid, uid uint, addr string) error {
 	err := existsGroup(gid)
 	if err != nil {
 		return err
