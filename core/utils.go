@@ -70,6 +70,12 @@ func Push(c *fiber.Ctx, code int) error {
 	})
 }
 
+func Err(c *fiber.Ctx, err error) error {
+	return c.JSON(fiber.Map{
+		"error": err.Error(),
+	})
+}
+
 // Msg push common response
 func Msg(c *fiber.Ctx, code int, msg string) error {
 	return c.JSON(fiber.Map{

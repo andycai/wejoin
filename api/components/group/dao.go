@@ -436,23 +436,23 @@ func (gd GroupDao) Remove(gid, uid uint) error {
 }
 
 // Quit quit the group
-func (gd GroupDao) Quit(gid, uid uint) error {
+func (gd GroupDao) Quit(gid, mid uint) error {
 	err := existsGroup(gid)
 	if err != nil {
 		return err
 	}
 
-	err = existsMember(gid, uid)
+	err = existsMember(gid, mid)
 	if err != nil {
 		return err
 	}
 
-	err = isOwner(gid, uid)
+	err = isOwner(gid, mid)
 	if err == nil {
 		return newErr(enum.ErrorTextGroupOwnerCannotQuit)
 	}
 
-	err = db.Exec(SqlDeleteGroupMemberByGroupIDAndUserID, gid, uid).Error
+	err = db.Exec(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
 
 	return err
 }

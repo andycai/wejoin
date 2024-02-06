@@ -157,10 +157,12 @@ func Remove(c *fiber.Ctx) error {
 }
 
 func Quit(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	err := Dao.Quit(gid, uid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
 
+	err = Dao.Quit(r.ID, r.Mid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupQuit)
 	}
