@@ -82,10 +82,11 @@ func Apply(c *fiber.Ctx) error {
 }
 
 func Approve(c *fiber.Ctx) error {
-	gid := core.Uint(c, "gid")
-	uid := core.Uint(c, "uid")
-	mid := core.Uint(c, "mid")
-	err := Dao.Approve(gid, uid, mid)
+	r, err := Bind(c)
+	if err != nil {
+		return core.Err(c, err)
+	}
+	err = Dao.Approve(r.ID, r.Uid, r.Mid)
 	if err != nil {
 		return core.Push(c, enum.ErrGroupApprove)
 	}
