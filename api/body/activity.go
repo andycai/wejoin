@@ -41,7 +41,7 @@ func (a Activity) ToModel() model.Activity {
 		FeeType:     a.FeeType,
 		FeeMale:     a.FeeMale,
 		FeeFemale:   a.FeeFemale,
-		Addr:        a.Addr,
+		Address:     a.Addr,
 		Ahead:       a.Ahead,
 		BeginAt:     beginAt,
 		EndAt:       endAt,

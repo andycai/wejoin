@@ -75,6 +75,15 @@ func GetByGroupID(c *fiber.Ctx) error {
 }
 
 func Create(c *fiber.Ctx) error {
+	activity, err := BindCreate(c)
+	if err != nil {
+		return core.Push(c, enum.ErrActivityCreate)
+	}
+
+	if err := Dao.Create(activity); err != nil {
+		return core.Push(c, enum.ErrActivityCreate)
+	}
+
 	return core.Ok(c, nil)
 }
 

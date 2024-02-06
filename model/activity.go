@@ -20,7 +20,7 @@ type Activity struct {
 	FeeType     uint      `gorm:"column:fee_type;not null;default:1;comment:结算方式:1免费,2活动前,3活动后男女平均,4活动后男固定|女平摊,5活动后男平摊|女固定" json:"fee_type"` // 结算方式:1免费,2活动前,3活动后男女平均,4活动后男固定|女平摊,5活动后男平摊|女固定
 	FeeMale     uint      `gorm:"column:fee_male;not null;comment:男费用,单位:分" json:"fee_male"`                                                 // 男费用,单位:分
 	FeeFemale   uint      `gorm:"column:fee_female;not null;comment:女费用,单位:分" json:"fee_female"`                                             // 女费用,单位:分
-	Addr        string    `gorm:"column:addr;comment:活动地址" json:"addr"`                                                                      // 活动地址
+	Address     string    `gorm:"column:address;comment:活动地址" json:"address"`                                                                // 活动地址
 	Ahead       uint      `gorm:"column:ahead;not null;comment:可提前取消时间(小时)" json:"ahead"`                                                    // 可提前取消时间(小时)
 	BeginAt     time.Time `gorm:"column:begin_at;not null;comment:开始时间" json:"begin_at"`                                                     // 开始时间
 	EndAt       time.Time `gorm:"column:end_at;not null;comment:结束时间" json:"end_at"`                                                         // 结束时间
