@@ -63,28 +63,28 @@ func initNoCheckRouter(r fiber.Router) {
 	api := r.Group("/v2")
 	{
 		// query: ?page=2
-		api.Get("/groups/:id", GetGroupByID)
-		api.Get("/groups", GetGroupsByPage)
-		api.Get("/groups/applications/:id", GetApplicationByGroupID)
+		api.Get("/groups/:id", handleGetGroupByID)
+		api.Get("/groups", handleGetGroupsByPage)
+		api.Get("/groups/applications/:id", handleGetApplicationByGroupID)
 
 		// json body
-		api.Post("/groups", Create)
-		api.Post("/groups/apply", Apply)
-		api.Post("/groups/cancel", Cancel)
-		api.Post("/groups/approve", Approve)
-		api.Post("/groups/refuse", Refuse)
-		api.Post("/groups/promote", Promote)
-		api.Post("/groups/transfer", Transfer)
-		api.Post("/groups/fire", Fire)
-		api.Post("/groups/quit", Quit)
+		api.Post("/groups", handleCreate)
+		api.Post("/groups/apply", handleApply)
+		api.Post("/groups/cancel", handleCancel)
+		api.Post("/groups/approve", handleApprove)
+		api.Post("/groups/refuse", handleRefuse)
+		api.Post("/groups/promote", handlePromote)
+		api.Post("/groups/transfer", handleTransfer)
+		api.Post("/groups/fire", handleFire)
+		api.Post("/groups/quit", handleQuit)
 
 		// json body and url param
-		api.Put("/groups/name", UpdateName)
-		api.Put("/groups/logo", UpdateLogo)
-		api.Put("/groups/notice", UpdateNotice)
-		api.Put("/groups/address", UpdateAddress)
+		api.Put("/groups/name", handleUpdateName)
+		api.Put("/groups/logo", handleUpdateLogo)
+		api.Put("/groups/notice", handleUpdateNotice)
+		api.Put("/groups/address", handleUpdateAddress)
 
-		api.Delete("/groups", Remove)
+		api.Delete("/groups", handleRemove)
 	}
 }
 

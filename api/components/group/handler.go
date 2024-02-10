@@ -19,7 +19,7 @@ func pushGroupInfo(c *fiber.Ctx, gid uint) error {
 // 私有方法 end
 
 // GetGroupsById 获取单个群组信息
-func GetGroupByID(c *fiber.Ctx) error {
+func handleGetGroupByID(c *fiber.Ctx) error {
 	gid := core.Uint(c, "id")
 	return pushGroupInfo(c, gid)
 }
@@ -35,8 +35,8 @@ func GetGroupsByUserID(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetGroupsByPage 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
-func GetGroupsByPage(c *fiber.Ctx) error {
+// handleGetGroupsByPage 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
+func handleGetGroupsByPage(c *fiber.Ctx) error {
 	page := c.QueryInt("page", 1)
 	pageSize := c.QueryInt("pageSize", enum.PAGE_SIZE)
 
@@ -48,8 +48,8 @@ func GetGroupsByPage(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetApplicationByGroupID 返回申请加入群组用户列表
-func GetApplicationByGroupID(c *fiber.Ctx) error {
+// handleGetApplicationByGroupID 返回申请加入群组用户列表
+func handleGetApplicationByGroupID(c *fiber.Ctx) error {
 	gid := core.Uint(c, "id")
 	list, err := Dao.GetApplictionsByGroupID(gid)
 	if err != nil {
@@ -59,7 +59,7 @@ func GetApplicationByGroupID(c *fiber.Ctx) error {
 	return core.Ok(c, list)
 }
 
-func Create(c *fiber.Ctx) error {
+func handleCreate(c *fiber.Ctx) error {
 	groupVo, err := BindCreate(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -68,7 +68,7 @@ func Create(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 
-func Apply(c *fiber.Ctx) error {
+func handleApply(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -81,7 +81,7 @@ func Apply(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupApply)
 }
 
-func Cancel(c *fiber.Ctx) error {
+func handleCancel(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -94,7 +94,7 @@ func Cancel(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupCancel)
 }
 
-func Approve(c *fiber.Ctx) error {
+func handleApprove(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -107,7 +107,7 @@ func Approve(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupApprove)
 }
 
-func Refuse(c *fiber.Ctx) error {
+func handleRefuse(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -120,7 +120,7 @@ func Refuse(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupRefuse)
 }
 
-func Promote(c *fiber.Ctx) error {
+func handlePromote(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -134,7 +134,7 @@ func Promote(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupPromote)
 }
 
-func Transfer(c *fiber.Ctx) error {
+func handleTransfer(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -148,7 +148,7 @@ func Transfer(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupTransfer)
 }
 
-func Fire(c *fiber.Ctx) error {
+func handleFire(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -162,7 +162,7 @@ func Fire(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupFire)
 }
 
-func Remove(c *fiber.Ctx) error {
+func handleRemove(c *fiber.Ctx) error {
 	var r RequestUpdate
 	if err := c.BodyParser(&r); err != nil {
 		return err
@@ -176,7 +176,7 @@ func Remove(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupRemove)
 }
 
-func Quit(c *fiber.Ctx) error {
+func handleQuit(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -191,7 +191,7 @@ func Quit(c *fiber.Ctx) error {
 }
 
 // put
-func UpdateName(c *fiber.Ctx) error {
+func handleUpdateName(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -204,7 +204,7 @@ func UpdateName(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupUpdateName)
 }
 
-func UpdateLogo(c *fiber.Ctx) error {
+func handleUpdateLogo(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -217,7 +217,7 @@ func UpdateLogo(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupUpdateName)
 }
 
-func UpdateNotice(c *fiber.Ctx) error {
+func handleUpdateNotice(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)
@@ -230,7 +230,7 @@ func UpdateNotice(c *fiber.Ctx) error {
 	return core.Push(c, enum.SucGroupUpdateNotice)
 }
 
-func UpdateAddress(c *fiber.Ctx) error {
+func handleUpdateAddress(c *fiber.Ctx) error {
 	r, err := Bind(c)
 	if err != nil {
 		return core.Err(c, err)

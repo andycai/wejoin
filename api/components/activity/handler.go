@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GetByID get the activity by ID
-func GetByID(c *fiber.Ctx) error {
+// handleGetByID get the activity by ID
+func handleGetByID(c *fiber.Ctx) error {
 	aid := core.Uint(c, "id")
 	info, err := Dao.GetByID(aid)
 	if err != nil {
@@ -17,8 +17,8 @@ func GetByID(c *fiber.Ctx) error {
 	return core.Ok(c, info)
 }
 
-// GetByUserID get the activities of the user
-func GetByUserID(c *fiber.Ctx) error {
+// handleGetByUserID get the activities of the user
+func handleGetByUserID(c *fiber.Ctx) error {
 	uid := core.Uint(c, "uid")
 	activities, err := Dao.GetByUserID(uid)
 	if err != nil {
@@ -28,8 +28,8 @@ func GetByUserID(c *fiber.Ctx) error {
 	return core.Ok(c, activities)
 }
 
-// GetByOrganizerUserID get the activities of the organizer
-func GetByOrganizerUserID(c *fiber.Ctx) error {
+// handleGetByOrganizerUserID get the activities of the organizer
+func handleGetByOrganizerUserID(c *fiber.Ctx) error {
 	uid := core.Uint(c, "uid")
 	activities, err := Dao.GetByOrganizerUserID(uid)
 	if err != nil {
@@ -50,8 +50,8 @@ func GetByOrganizerUserID(c *fiber.Ctx) error {
 // 	return Ok(c, activities)
 // }
 
-// GetByPage get the activities by page
-func GetByPage(c *fiber.Ctx) error {
+// handleGetByPage get the activities by page
+func handleGetByPage(c *fiber.Ctx) error {
 	page := c.QueryInt("page", 1)
 	pageSize := c.QueryInt("page_size", enum.PAGE_SIZE)
 
@@ -63,8 +63,8 @@ func GetByPage(c *fiber.Ctx) error {
 	return core.Ok(c, groups)
 }
 
-// GetByGroupID get the activities by the group ID
-func GetByGroupID(c *fiber.Ctx) error {
+// handleGetByGroupID get the activities by the group ID
+func handleGetByGroupID(c *fiber.Ctx) error {
 	gid := core.Uint(c, "gid")
 	list, err := Dao.GetByGroupID(gid)
 	if err != nil {
@@ -74,7 +74,7 @@ func GetByGroupID(c *fiber.Ctx) error {
 	return core.Ok(c, list)
 }
 
-func Create(c *fiber.Ctx) error {
+func handleCreate(c *fiber.Ctx) error {
 	activity, err := BindCreate(c)
 	if err != nil {
 		return core.Push(c, enum.ErrActivityCreate)
@@ -87,19 +87,23 @@ func Create(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 
-func End(c *fiber.Ctx) error {
+func handleComplete(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 
-func Apply(c *fiber.Ctx) error {
+func handleEnd(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 
-func Cancel(c *fiber.Ctx) error {
+func handleApply(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 
-func Remove(c *fiber.Ctx) error {
+func handleCancel(c *fiber.Ctx) error {
+	return core.Ok(c, nil)
+}
+
+func handleRemove(c *fiber.Ctx) error {
 	// activity := new(body.Activity)
 	// if err := c.BodyParser(activity); err != nil {
 	// 	return core.Push(c, enum.ErrParam)
@@ -110,7 +114,7 @@ func Remove(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 
-func Update(c *fiber.Ctx) error {
+func handleUpdate(c *fiber.Ctx) error {
 	return core.Ok(c, nil)
 }
 

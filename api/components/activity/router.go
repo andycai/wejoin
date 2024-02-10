@@ -21,20 +21,21 @@ func initDB(dbs []*gorm.DB) {
 func initNoCheckRouter(r fiber.Router) {
 	api := r.Group("/v2")
 	{
-		api.Get("/activities/:id", GetByID)
-		api.Get("/activities", GetByPage)
-		api.Get("/activities/group/:gid", GetByGroupID)
-		api.Get("/activities/user/:uid", GetByUserID)
-		api.Get("/activities/organizer/:uid", GetByOrganizerUserID)
+		api.Get("/activities/:id", handleGetByID)
+		api.Get("/activities", handleGetByPage)
+		api.Get("/activities/group/:gid", handleGetByGroupID)
+		api.Get("/activities/user/:uid", handleGetByUserID)
+		api.Get("/activities/organizer/:uid", handleGetByOrganizerUserID)
 
-		api.Post("/activities", Create)
-		api.Post("/activities/end", End)
-		api.Post("/activities/apply", Apply)
-		api.Post("/activities/cancel", Cancel)
+		api.Post("/activities", handleCreate)
+		api.Post("/activities/complete", handleComplete)
+		api.Post("/activities/end", handleEnd)
+		api.Post("/activities/apply", handleApply)
+		api.Post("/activities/cancel", handleCancel)
 
-		api.Put("/activities/:aid", Update)
+		api.Put("/activities/:aid", handleUpdate)
 
-		api.Delete("/activities/:aid", Remove)
+		api.Delete("/activities/:aid", handleRemove)
 	}
 }
 
