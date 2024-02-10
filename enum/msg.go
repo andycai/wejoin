@@ -56,6 +56,7 @@ var codeText = map[int]string{
 	ErrActivityCannotCancel:          "取消报名的时间已过，不能取消报名！",
 	ErrActivityHasBegun:              "活动已经开始，不能报名！",
 	ErrActivityNotFound:              "活动不存在！",
+	ErrActivityUserCreate:            "参与活动失败！",
 }
 
 func CodeText(code int) string {

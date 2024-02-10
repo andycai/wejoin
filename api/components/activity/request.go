@@ -26,6 +26,14 @@ type RequestCreate struct {
 	EndAt       string `json:"end_at" form:"end_at" validate:"required,datetime=2006-01-02 15:04:05"`
 }
 
+// RequestCreateActivityUser
+type RequestCreateActivityUser struct {
+	ActivityID uint   `json:"activity_id" form:"activity_id" validate:"required,numeric,min=1,max=999999999"`
+	UserID     uint   `json:"user_id" form:"user_id" validate:"required,numeric,min=1,max=999999999"`
+	Nick       string `json:"nick" form:"nick" validate:"required"`
+	IsFriend   uint8  `json:"is_friend" form:"is_friend" validate:"required,numeric,min=0,max=1"`
+}
+
 func BindCreate(c *fiber.Ctx) (*model.Activity, error) {
 	var r RequestCreate
 	if err := c.BodyParser(&r); err != nil {
@@ -56,6 +64,27 @@ func BindCreate(c *fiber.Ctx) (*model.Activity, error) {
 	}
 
 	return activity, nil
+}
+
+// BindCreateActivityUser
+func BindCreateActivityUser(c *fiber.Ctx) (*model.ActivityUser, error) {
+	var r RequestCreateActivityUser
+	if err := c.BodyParser(&r); err != nil {
+		return nil, err
+	}
+
+	if err := core.Validate(&r); err != nil {
+		return nil, err
+	}
+
+	activityUser := &model.ActivityUser{
+		ActivityID: r.ActivityID,
+		UserID:     r.UserID,
+		Nick:       r.Nick,
+		IsFriend:   r.IsFriend,
+	}
+
+	return activityUser, nil
 }
 
 func BindUpdate(c *fiber.Ctx, activity *model.Activity) error {

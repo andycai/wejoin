@@ -64,3 +64,17 @@ func (as ActivityDao) Update(activity *model.Activity) error {
 
 	return err
 }
+
+// Delete delete the activity by activity id
+func (as ActivityDao) Delete(aid uint) error {
+	err := db.Delete(&model.Activity{}, aid).Error
+
+	return err
+}
+
+// CreateActivityUser create activity user record
+func (as ActivityDao) CreateActivityUser(activityUser *model.ActivityUser) error {
+	err := db.Create(activityUser).Error
+
+	return err
+}

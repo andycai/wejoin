@@ -58,4 +58,5 @@ const (
 	ErrActivityCannotCancel          = 10310
 	ErrActivityHasBegun              = 10311
 	ErrActivityNotFound              = 10312
+	ErrActivityApply                 = 10313
 )

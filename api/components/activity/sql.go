@@ -41,6 +41,7 @@ const (
 	SqlQueryActivityUserByActivityIDAndUserID = `SELECT * 
 												 FROM activity_users 
 												 WHERE activity_id = ? AND user_id = ? AND deleted_at IS NULL`
+	SqlInsertActivityUser     = `INSERT INTO activity_users (activity_id, user_id, nick, is_friend) VALUES (?, ?, ?, ?)`
 	SqlDeleteActivityUserByID = `DELETE 
 								 FROM activity_users 
 								 WHERE id = ?`

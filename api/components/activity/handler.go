@@ -96,6 +96,14 @@ func handleEnd(c *fiber.Ctx) error {
 }
 
 func handleApply(c *fiber.Ctx) error {
+	activityUser, err := BindCreateActivityUser(c)
+	if err != nil {
+		return core.Push(c, enum.ErrActivityApply)
+	}
+	if err := Dao.CreateActivityUser(activityUser); err != nil {
+		return core.Push(c, enum.ErrActivityApply)
+	}
+
 	return core.Ok(c, nil)
 }
 
