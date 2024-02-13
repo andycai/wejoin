@@ -1,4 +1,4 @@
-package enum
+package constant
 
 const (
 	PositionGroupMember       = iota // normal member

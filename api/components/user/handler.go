@@ -4,8 +4,8 @@ import (
 	"net/mail"
 
 	"github.com/andycai/wejoin/api/body"
+	"github.com/andycai/wejoin/constant"
 	"github.com/andycai/wejoin/core"
-	"github.com/andycai/wejoin/enum"
 	"github.com/andycai/wejoin/log"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,7 +14,7 @@ import (
 func pushUserInfo(c *fiber.Ctx, id uint) error {
 	info, err := Dao.GetByID(id)
 	if err != nil {
-		return core.Push(c, enum.ErrUserNotFound)
+		return core.Push(c, constant.ErrUserNotFound)
 	}
 
 	return core.Ok(c, info)
@@ -41,12 +41,12 @@ func Register(c *fiber.Ctx) error {
 	password := core.Str(c, "password")
 	confirmPassword := core.Str(c, "confirmPassword")
 	if password != confirmPassword {
-		return core.Push(c, enum.ErrTwoPasswordNotMatch)
+		return core.Push(c, constant.ErrTwoPasswordNotMatch)
 	}
 	err, uid := Dao.Register(username, password, core.IP(c))
 	log.Infof("register err: %v, uid: %d", err, uid)
 	if err != nil {
-		return core.Push(c, enum.ErrUserRegister)
+		return core.Push(c, constant.ErrUserRegister)
 	}
 	return core.Ok(c, map[string]uint{"uid": uid})
 }
@@ -85,16 +85,16 @@ func Update(c *fiber.Ctx) error {
 	// uid := I32(c, "uid")  校验是否味当前用户
 	u := new(body.User)
 	if err := c.BodyParser(u); err != nil {
-		return core.Push(c, enum.ErrParam)
+		return core.Push(c, constant.ErrParam)
 	}
 
 	// email 校验
 	if _, err := mail.ParseAddress(u.Email); err != nil {
-		return core.Push(c, enum.ErrUserEmailFormat)
+		return core.Push(c, constant.ErrUserEmailFormat)
 	}
 
 	if err := Dao.Update(u); err != nil {
-		return core.Push(c, enum.ErrUserUpdateData)
+		return core.Push(c, constant.ErrUserUpdateData)
 	}
 
 	return core.Ok(c, nil)

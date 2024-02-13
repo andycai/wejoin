@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/constant"
 	"github.com/andycai/wejoin/library/utils"
 	"github.com/spf13/cast"
 	"golang.org/x/crypto/bcrypt"
@@ -57,7 +57,7 @@ func I64(c *fiber.Ctx, key string, defaultValue ...string) int64 {
 // Ok 正常响应
 func Ok(c *fiber.Ctx, data interface{}) error {
 	return c.JSON(fiber.Map{
-		"code": enum.Success,
+		"code": constant.Success,
 		"data": data,
 	})
 }
@@ -66,7 +66,7 @@ func Ok(c *fiber.Ctx, data interface{}) error {
 func Push(c *fiber.Ctx, code int) error {
 	return c.JSON(fiber.Map{
 		"code": code,
-		"msg":  enum.CodeText(code),
+		"msg":  constant.CodeText(code),
 	})
 }
 

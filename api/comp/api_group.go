@@ -1,7 +1,7 @@
 package comp
 
 import (
-	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/constant"
 	"github.com/andycai/wejoin/util/slice"
 )
 
@@ -49,7 +49,7 @@ func (g APIGroup) IsMember(uid int32) bool {
 // IsOwner 是否群主
 func (g APIGroup) IsOwner(uid int32) bool {
 	for _, member := range g.Members {
-		if member.UserID == uid && member.Position == enum.PositionGroupOwner {
+		if member.UserID == uid && member.Position == constant.PositionGroupOwner {
 			return true
 		}
 	}
@@ -59,7 +59,7 @@ func (g APIGroup) IsOwner(uid int32) bool {
 // IsManager 是否管理员
 func (g APIGroup) IsManager(uid int32) bool {
 	for _, member := range g.Members {
-		if member.UserID == uid && member.Position == enum.PositionGroupManager {
+		if member.UserID == uid && member.Position == constant.PositionGroupManager {
 			return true
 		}
 	}
@@ -70,7 +70,7 @@ func (g APIGroup) IsManager(uid int32) bool {
 func (g APIGroup) ManagerCount() int {
 	c := 0
 	for _, member := range g.Members {
-		if member.Position > enum.PositionGroupMember {
+		if member.Position > constant.PositionGroupMember {
 			c += 1
 		}
 	}
@@ -107,7 +107,7 @@ func (g *APIGroup) RemoveActivity(aid int32) bool {
 func (g *APIGroup) Promote(uid int32) bool {
 	for _, member := range g.Members {
 		if member.UserID == uid {
-			member.Position = enum.PositionGroupManager
+			member.Position = constant.PositionGroupManager
 			return true
 		}
 	}
@@ -123,10 +123,10 @@ func (g *APIGroup) Transfer(uid, mid int32) bool {
 	for _, member := range g.Members {
 		// 外部自行判断权限
 		if member.UserID == uid {
-			member.Position = enum.PositionGroupMember
+			member.Position = constant.PositionGroupMember
 		}
 		if member.UserID == mid {
-			member.Position = enum.PositionGroupOwner
+			member.Position = constant.PositionGroupOwner
 			b = true
 		}
 	}

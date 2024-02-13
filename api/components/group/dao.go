@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/andycai/wejoin/api/components/activity"
-	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/constant"
 	"github.com/andycai/wejoin/model"
 	"gorm.io/gorm"
 )
@@ -14,18 +14,18 @@ type GroupDao struct{}
 
 var Dao = new(GroupDao)
 
-var newErr = enum.GetError
+var newErr = constant.GetError
 
 //#region private methods
 
 // getMemberLimit return the maximum number of members
 func getMemberLimit(gid uint) uint {
-	return enum.DefaultGroupMemmberCount
+	return constant.DefaultGroupMemmberCount
 }
 
 // getManagerLimit return the maximum number of managers
 func getManagerLimit(gid uint) uint {
-	return enum.DefaultGroupManagerCount
+	return constant.DefaultGroupManagerCount
 }
 
 // isManager is the manager of the group or not(including the owner)
@@ -37,8 +37,8 @@ func isManager(gid, uid uint) (err error) {
 		return
 	}
 
-	if member == nil || member.Position >= enum.PositionGroupOwner {
-		err = newErr(enum.ErrorTextGroupManagerOp)
+	if member == nil || member.Position >= constant.PositionGroupOwner {
+		err = newErr(constant.ErrorTextGroupManagerOp)
 	}
 
 	return
@@ -53,8 +53,8 @@ func isOwner(gid, uid uint) (err error) {
 		return
 	}
 
-	if member == nil || member.Position != enum.PositionGroupOwner {
-		err = newErr(enum.ErrorTextGroupManagerOp)
+	if member == nil || member.Position != constant.PositionGroupOwner {
+		err = newErr(constant.ErrorTextGroupManagerOp)
 	}
 
 	return
@@ -97,7 +97,7 @@ func canJoin(gid uint) (err error) {
 	}
 
 	if count >= int64(getMemberLimit(gid)) {
-		err = newErr(enum.ErrorTextGroupMemberFull)
+		err = newErr(constant.ErrorTextGroupMemberFull)
 	}
 	return
 }
@@ -105,13 +105,13 @@ func canJoin(gid uint) (err error) {
 // canPromote can promote the member or not
 func canPromote(gid uint) (err error) {
 	var count int64
-	err = db.Raw(SqlQueryGroupMemberByGroupIDAndPosition, gid, enum.PositionGroupMember).Count(&count).Error
+	err = db.Raw(SqlQueryGroupMemberByGroupIDAndPosition, gid, constant.PositionGroupMember).Count(&count).Error
 	if err != nil {
 		return
 	}
 
 	if count >= int64(getManagerLimit(gid)) {
-		err = newErr(enum.ErrorTextGroupManagerFull)
+		err = newErr(constant.ErrorTextGroupManagerFull)
 	}
 	return
 }
@@ -146,7 +146,7 @@ func (gd GroupDao) GetByPage(page int, pageSize int) ([]*model.Group, error) {
 // Create create a new group
 func (gd GroupDao) Create(group *model.Group) error {
 	if gd.ExistsName(group.Name) != nil {
-		return newErr(enum.ErrorTextGroupNameExists)
+		return newErr(constant.ErrorTextGroupNameExists)
 	}
 
 	group.Level = 1
@@ -257,7 +257,7 @@ func (gd GroupDao) Approve(gid, uid, mid uint) error {
 	member := model.GroupMember{}
 	member.GroupID = gid
 	member.UserID = mid
-	member.Position = enum.PositionGroupMember
+	member.Position = constant.PositionGroupMember
 	member.Scores = 0
 	member.EnterAt = time.Now()
 	member.Nick = ""
@@ -318,7 +318,7 @@ func (gd GroupDao) Promote(gid, uid, mid uint) error {
 
 	err = isManager(gid, mid)
 	if err == nil {
-		return newErr(enum.ErrorTextGroupAlreadyManager)
+		return newErr(constant.ErrorTextGroupAlreadyManager)
 	}
 
 	err = isOwner(gid, uid)
@@ -326,7 +326,7 @@ func (gd GroupDao) Promote(gid, uid, mid uint) error {
 		return err
 	}
 
-	err = db.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupManager, gid, mid).Error
+	err = db.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, constant.PositionGroupManager, gid, mid).Error
 
 	return err
 }
@@ -351,13 +351,13 @@ func (gd GroupDao) Transfer(gid, uid, mid uint) error {
 	// transaction
 	tx := db.Begin()
 
-	err = tx.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupMember, gid, uid).Error
+	err = tx.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, constant.PositionGroupMember, gid, uid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	err = tx.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, enum.PositionGroupOwner, gid, mid).Error
+	err = tx.Exec(SqlUpdateGroupMemberPositionByGroupIDAndUserID, constant.PositionGroupOwner, gid, mid).Error
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -449,7 +449,7 @@ func (gd GroupDao) Quit(gid, mid uint) error {
 
 	err = isOwner(gid, mid)
 	if err == nil {
-		return newErr(enum.ErrorTextGroupOwnerCannotQuit)
+		return newErr(constant.ErrorTextGroupOwnerCannotQuit)
 	}
 
 	err = db.Exec(SqlDeleteGroupMemberByGroupIDAndUserID, gid, mid).Error
@@ -472,7 +472,7 @@ func (gd GroupDao) UpdateName(gid, uid uint, name string) error {
 	// TODO: 改名次数限制
 
 	if gd.ExistsName(name) != nil {
-		return newErr(enum.ErrorTextGroupNameExists)
+		return newErr(constant.ErrorTextGroupNameExists)
 	}
 
 	err = db.Exec(SqlUpdateGroupNameByID, name, gid).Error

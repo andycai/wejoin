@@ -1,8 +1,8 @@
 package group
 
 import (
+	"github.com/andycai/wejoin/constant"
 	"github.com/andycai/wejoin/core"
-	"github.com/andycai/wejoin/enum"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -10,7 +10,7 @@ import (
 func pushGroupInfo(c *fiber.Ctx, gid uint) error {
 	info, err := Dao.GetByID(gid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupNotFound)
+		return core.Push(c, constant.ErrGroupNotFound)
 	}
 
 	return core.Ok(c, info)
@@ -29,7 +29,7 @@ func GetGroupsByUserID(c *fiber.Ctx) error {
 	uid := core.Uint(c, "uid")
 	groups, err := Dao.GetByUserID(uid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupGetData)
+		return core.Push(c, constant.ErrGroupGetData)
 	}
 
 	return core.Ok(c, groups)
@@ -38,11 +38,11 @@ func GetGroupsByUserID(c *fiber.Ctx) error {
 // handleGetGroupsByPage 获取群组列表（根据用户位置获取最近的群组列表或者获取最活跃的群组列表）
 func handleGetGroupsByPage(c *fiber.Ctx) error {
 	page := c.QueryInt("page", 1)
-	pageSize := c.QueryInt("pageSize", enum.PAGE_SIZE)
+	pageSize := c.QueryInt("pageSize", constant.PAGE_SIZE)
 
 	groups, err := Dao.GetByPage(page, pageSize)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupGetData)
+		return core.Push(c, constant.ErrGroupGetData)
 	}
 
 	return core.Ok(c, groups)
@@ -53,7 +53,7 @@ func handleGetApplicationByGroupID(c *fiber.Ctx) error {
 	gid := core.Uint(c, "id")
 	list, err := Dao.GetApplictionsByGroupID(gid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupApplicationListNotFound)
+		return core.Push(c, constant.ErrGroupApplicationListNotFound)
 	}
 
 	return core.Ok(c, list)
@@ -75,10 +75,10 @@ func handleApply(c *fiber.Ctx) error {
 	}
 	err = Dao.Apply(r.ID, r.Uid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupApply)
+		return core.Push(c, constant.ErrGroupApply)
 	}
 
-	return core.Push(c, enum.SucGroupApply)
+	return core.Push(c, constant.SucGroupApply)
 }
 
 func handleCancel(c *fiber.Ctx) error {
@@ -88,10 +88,10 @@ func handleCancel(c *fiber.Ctx) error {
 	}
 	err = Dao.Cancel(r.ID, r.Uid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupCancel)
+		return core.Push(c, constant.ErrGroupCancel)
 	}
 
-	return core.Push(c, enum.SucGroupCancel)
+	return core.Push(c, constant.SucGroupCancel)
 }
 
 func handleApprove(c *fiber.Ctx) error {
@@ -101,10 +101,10 @@ func handleApprove(c *fiber.Ctx) error {
 	}
 	err = Dao.Approve(r.ID, r.Uid, r.Mid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupApprove)
+		return core.Push(c, constant.ErrGroupApprove)
 	}
 
-	return core.Push(c, enum.SucGroupApprove)
+	return core.Push(c, constant.SucGroupApprove)
 }
 
 func handleRefuse(c *fiber.Ctx) error {
@@ -114,10 +114,10 @@ func handleRefuse(c *fiber.Ctx) error {
 	}
 	err = Dao.Refuse(r.ID, r.Uid, r.Mid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupRefuse)
+		return core.Push(c, constant.ErrGroupRefuse)
 	}
 
-	return core.Push(c, enum.SucGroupRefuse)
+	return core.Push(c, constant.SucGroupRefuse)
 }
 
 func handlePromote(c *fiber.Ctx) error {
@@ -128,10 +128,10 @@ func handlePromote(c *fiber.Ctx) error {
 	err = Dao.Promote(r.ID, r.Uid, r.Mid)
 
 	if err != nil {
-		return core.Push(c, enum.ErrGroupPromote)
+		return core.Push(c, constant.ErrGroupPromote)
 	}
 
-	return core.Push(c, enum.SucGroupPromote)
+	return core.Push(c, constant.SucGroupPromote)
 }
 
 func handleTransfer(c *fiber.Ctx) error {
@@ -142,10 +142,10 @@ func handleTransfer(c *fiber.Ctx) error {
 	err = Dao.Transfer(r.ID, r.Uid, r.Mid)
 
 	if err != nil {
-		return core.Push(c, enum.ErrGroupTransfer)
+		return core.Push(c, constant.ErrGroupTransfer)
 	}
 
-	return core.Push(c, enum.SucGroupTransfer)
+	return core.Push(c, constant.SucGroupTransfer)
 }
 
 func handleFire(c *fiber.Ctx) error {
@@ -156,10 +156,10 @@ func handleFire(c *fiber.Ctx) error {
 	err = Dao.Fire(r.ID, r.Uid, r.Mid)
 
 	if err != nil {
-		return core.Push(c, enum.ErrGroupFire)
+		return core.Push(c, constant.ErrGroupFire)
 	}
 
-	return core.Push(c, enum.SucGroupFire)
+	return core.Push(c, constant.SucGroupFire)
 }
 
 func handleRemove(c *fiber.Ctx) error {
@@ -170,10 +170,10 @@ func handleRemove(c *fiber.Ctx) error {
 	err := Dao.Remove(r.ID, r.Uid)
 
 	if err != nil {
-		return core.Push(c, enum.ErrGroupRemove)
+		return core.Push(c, constant.ErrGroupRemove)
 	}
 
-	return core.Push(c, enum.SucGroupRemove)
+	return core.Push(c, constant.SucGroupRemove)
 }
 
 func handleQuit(c *fiber.Ctx) error {
@@ -184,10 +184,10 @@ func handleQuit(c *fiber.Ctx) error {
 
 	err = Dao.Quit(r.ID, r.Mid)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupQuit)
+		return core.Push(c, constant.ErrGroupQuit)
 	}
 
-	return core.Push(c, enum.SucGroupQuit)
+	return core.Push(c, constant.SucGroupQuit)
 }
 
 // put
@@ -198,10 +198,10 @@ func handleUpdateName(c *fiber.Ctx) error {
 	}
 	err = Dao.UpdateName(r.ID, r.Uid, r.Name)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupUpdateName)
+		return core.Push(c, constant.ErrGroupUpdateName)
 	}
 
-	return core.Push(c, enum.SucGroupUpdateName)
+	return core.Push(c, constant.SucGroupUpdateName)
 }
 
 func handleUpdateLogo(c *fiber.Ctx) error {
@@ -211,10 +211,10 @@ func handleUpdateLogo(c *fiber.Ctx) error {
 	}
 	err = Dao.UpdateLogo(r.ID, r.Uid, r.Logo)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupUpdateName)
+		return core.Push(c, constant.ErrGroupUpdateName)
 	}
 
-	return core.Push(c, enum.SucGroupUpdateName)
+	return core.Push(c, constant.SucGroupUpdateName)
 }
 
 func handleUpdateNotice(c *fiber.Ctx) error {
@@ -224,10 +224,10 @@ func handleUpdateNotice(c *fiber.Ctx) error {
 	}
 	err = Dao.UpdateNotice(r.ID, r.Uid, r.Notice)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupUpdateNotice)
+		return core.Push(c, constant.ErrGroupUpdateNotice)
 	}
 
-	return core.Push(c, enum.SucGroupUpdateNotice)
+	return core.Push(c, constant.SucGroupUpdateNotice)
 }
 
 func handleUpdateAddress(c *fiber.Ctx) error {
@@ -237,8 +237,8 @@ func handleUpdateAddress(c *fiber.Ctx) error {
 	}
 	err = Dao.UpdateAddress(r.ID, r.Uid, r.Address)
 	if err != nil {
-		return core.Push(c, enum.ErrGroupUpdateAddr)
+		return core.Push(c, constant.ErrGroupUpdateAddr)
 	}
 
-	return core.Push(c, enum.SucGroupUpdateAddr)
+	return core.Push(c, constant.SucGroupUpdateAddr)
 }

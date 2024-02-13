@@ -1,4 +1,4 @@
-package enum
+package constant
 
 const (
 	TypeActivityNone      = iota

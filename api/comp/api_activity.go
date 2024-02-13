@@ -4,7 +4,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/andycai/wejoin/enum"
+	"github.com/andycai/wejoin/constant"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
 )
@@ -37,20 +37,20 @@ func (a APIActivity) IsPlanner(uid int32) bool {
 // Settle 结算
 func (a *APIActivity) Settle(fee int32) {
 	switch a.FeeType {
-	case enum.FeeTypeActivityAA:
+	case constant.FeeTypeActivityAA:
 		cost := math.Round(cast.ToFloat64(fee) / cast.ToFloat64(len(a.Queue)))
 		a.FeeMale = cast.ToInt32(cost)
 		a.FeeFemale = cast.ToInt32(cost)
-	case enum.FeeTypeActivityAB:
+	case constant.FeeTypeActivityAB:
 		// a.FeeFemale = cast.ToInt32(math.Round(cast.ToFloat64(fee) - cast.ToFloat64(a.FeeMale*a.maleCount())))
-	case enum.FeeTypeActivityBA:
+	case constant.FeeTypeActivityBA:
 		// a.FeeMale = cast.ToInt32(math.Round(cast.ToFloat64(fee) - cast.ToFloat64(a.FeeFemale*a.femaleCount())))
 	}
 }
 
 // OverQuota 报名的人数超过候补的限制，避免乱报名，如带100000人报名
 func (a APIActivity) OverQuota(total int32) bool {
-	return (cast.ToInt32((a.Queue)) + total - a.Quota) > enum.ActivityOverFlow
+	return (cast.ToInt32((a.Queue)) + total - a.Quota) > constant.ActivityOverFlow
 }
 
 // NotEnough 要取消报名的数量超过已经报名的数量

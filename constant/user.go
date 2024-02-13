@@ -1,4 +1,4 @@
-package enum
+package constant
 
 const (
 	TypeGenderUnspecified = iota // 未指定

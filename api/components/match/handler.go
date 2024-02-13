@@ -9,7 +9,7 @@ func GetMatchByID(c *fiber.Ctx) error {
 	// id := core.I32(c, "id")
 	// match := nil
 	// if err != nil {
-	// 	return core.Push(c, enum.ErrGroupGetData)
+	// 	return core.Push(c, constant.ErrGroupGetData)
 	// }
 
 	// return core.Ok(c, match)

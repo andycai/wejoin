@@ -9,7 +9,7 @@ type ActivityDao struct {
 
 var Dao = new(ActivityDao)
 
-// var newErr = enum.GetError
+// var newErr = constant.GetError
 
 // GetByID get the activity by the activity id
 func (as ActivityDao) GetByID(aid uint) (*model.Activity, error) {
